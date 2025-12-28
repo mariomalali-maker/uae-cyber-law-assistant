@@ -1,34 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Chat History | Cyber Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles/style.css">
+  <meta charset="UTF-8" />
+  <title>History | Cyber Assistant</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body class="chat-body">
+<body class="page-body">
   <nav class="top-nav">
-    <a href="index.html">🏠 Home</a>
+    <a href="index.html" class="brand">🏠 Home</a>
     <a href="chat.html">💬 Chat</a>
-    <a href="history.html" class="active">📁 History</a>
+    <a href="history.html" class="active">📄 History</a>
     <a href="quiz.html">🎯 Cyber Quiz</a>
+    <a href="scam.html">⚠️ Scam Detector</a>
   </nav>
 
-  <h2 style="margin-top:10px;">📁 Conversation History</h2>
-  <p style="color:#9ca3af; margin-bottom:10px;">
-    Stored on this device only. You can clear it anytime.
-  </p>
+  <main class="center-layout">
+    <section class="history-card floating">
+      <h2>Chat History</h2>
+      <p class="chat-sub">
+        Only stored in your browser (local device). You can delete it anytime.
+      </p>
+      <div id="history-list" class="history-list"></div>
+      <button id="clear-history-btn" class="btn danger full-width">
+        Delete all history
+      </button>
+    </section>
+  </main>
 
-  <div class="history-list" id="historyList"></div>
+  <footer class="footer">
+    Created by Mariam – 2025
+  </footer>
 
-  <button id="clearBtn"
-          style="margin-top:12px; padding:8px 14px; border-radius:999px; border:1px solid #ef4444;
-                 background:transparent; color:#fca5a5; cursor:pointer;">
-    Clear all history
-  </button>
+  <script>
+    const list = document.getElementById('history-list');
+    const clearBtn = document.getElementById('clear-history-btn');
 
-  <p class="footer">Created by Mariam – 2025</p>
+    function loadHistory() {
+      list.innerHTML = "";
+      const data = JSON.parse(localStorage.getItem('cyber_history') || '[]');
+      if (!data.length) {
+        list.innerHTML = "<p class='empty'>No saved chats yet.</p>";
+        return;
+      }
+      data.forEach((conv, idx) => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        const preview = conv.messages.find(m => m.role === 'user')?.content || 'Conversation';
+        div.innerHTML = `
+          <div class="history-meta">
+            <strong>Chat #${idx + 1}</strong>
+            <span>${new Date(conv.time).toLocaleString()}</span>
+          </div>
+          <p class="history-preview">${preview}</p>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-  <script src="scripts/history.js"></script>
+    clearBtn.addEventListener('click', () => {
+      if (confirm('Delete all saved chats?')) {
+        localStorage.removeItem('cyber_history');
+        loadHistory();
+      }
+    });
+
+    loadHistory();
+  </script>
 </body>
 </html>
