@@ -1,30 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Chat | Cyber Assistant</title>
-<link rel="stylesheet" href="styles/style.css">
+  <meta charset="UTF-8">
+  <title>Chat – Cyber Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles/style.css">
 </head>
-
 <body class="chat-body">
+  <nav class="top-nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="chat.html" class="active">💬 Chat</a>
+    <a href="history.html">📁 History</a>
+    <a href="quiz.html">🎯 Cyber Quiz</a>
+  </nav>
 
-<nav class="top-nav">
-  <a href="chat.html">💬 Chat</a>
-  <a href="history.html">📁 History</a>
-  <a href="quiz.html">🎯 Quiz</a>
-</nav>
+  <h2 style="margin-top:10px; margin-bottom:6px;">💬 Cyber Security AI Assistant</h2>
+  <p id="welcomeText" style="color:#9ca3af; margin-bottom:18px;">
+    Loading user...
+  </p>
 
-<h2>💬 Smart AI Assistant</h2>
+  <div class="chat-card floating">
+    <div class="chat-header-row">
+      <span>🛡 Online Safety & Cyber Law Helper</span>
+      <small id="statusText">Ready</small>
+    </div>
 
-<div id="chat-box" class="chat-window"></div>
+    <div class="pills">
+      <span class="pill">Cyber security focus</span>
+      <span class="pill">UAE law context</span>
+      <span class="pill">AI powered</span>
+    </div>
 
-<div class="bubble-input">
-  <input id="message" placeholder="Ask anything about cyber safety...">
-  <button onclick="sendMessage()">Send</button>
-</div>
+    <div id="messages-container"></div>
 
-<p class="footer">Created by Mariam - 2025</p>
+    <div id="errorBox" style="color:#f97373; margin:5px 0; display:none;"></div>
 
-<script src="scripts/chat.js"></script>
+    <form id="chatForm" class="bubble-input">
+      <input id="messageInput" type="text"
+        placeholder="Example: Someone hacked my Snapchat, what should I do?"
+        autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <p class="footer">Created by Mariam – 2025</p>
+
+  <script>
+    const messagesDiv = document.getElementById("messages-container");
+    const chatForm = document.getElementById("chatForm");
+    const messageInput = document.getElementById("messageInput");
+    const errorBox = document.getElementById("errorBox");
+    const welcomeText = document.getElementById("welcomeText");
+    const statusText = document.getElementById("statusText");
+
+    let userName = localStorage.getItem("cyberUserName");
+
+    // if came directly to chat on phone with no login
+    if (!userName || userName === "null") {
+      userName = "Guest";
+      localStorage.setItem("cyberUserName", userName);
+    }
+
+    welcomeText.textContent =
+      `Welcome, ${userName}. Ask freely about hacked accounts, blackmail, scams, privacy, or any online issue.`;
+
+    function addMessage(text, sender) {
+      const div = document.createElement("div");
+      div.className = sender === "user" ? "user-msg" : "ai-msg";
+      div.textContent = text;
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function addTyping() {
+      const div = document.createElement("div");
+      div.className = "ai-msg loading";
+      div.id = "typingBubble";
+      div.textContent = "Thinking";
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function removeTyping() {
+      const t = document.getElementById("typingBubble");
+      if (t) t.remove();
+    }
+
+    async function callApi(text) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, username: userName }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      return res;
+    }
+
+    function saveToHistory(question, answer) {
+      const key = "cyberChatHistory";
+      const existing = JSON.parse(localStorage.getItem(key) || "[]");
+      existing.push({
+        time: new Date().toISOString(),
+        name: userName,
+        question,
+        answer
+      });
+      localStorage.setItem(key, JSON.stringify(existing.slice(-100)));
+    }
+
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      errorBox.style.display = "none";
+      addMessage(text, "user");
+      messageInput.value = "";
+      statusText.textContent = "Thinking…";
+
+      addTyping();
+
+      try {
+        const res = await callApi(text);
+        removeTyping();
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+          console.error("API error:", data.error || res.status);
+          errorBox.textContent = data.error || "Error, try again later.";
+          errorBox.style.display = "block";
+          addMessage("Sorry, something went wrong. Please try again.", "ai");
+          statusText.textContent = "Error";
+          return;
+        }
+
+        addMessage(data.answer, "ai");
+        saveToHistory(text, data.answer);
+        statusText.textContent = "Ready";
+      } catch (err) {
+        console.error(err);
+        removeTyping();
+        if (err.name === "AbortError") {
+          errorBox.textContent = "The request took too long. Please try again.";
+        } else {
+          errorBox.textContent = "Network error, please check your connection.";
+        }
+        errorBox.style.display = "block";
+        addMessage("I couldn't connect right now. Please try again.", "ai");
+        statusText.textContent = "Offline?";
+      }
+    });
+
+    // Greeting
+    addMessage(
+`Hi ${userName}! I’m your cyber security assistant.
+
+You can ask things like:
+- "My Snapchat was hacked, what should I do?"
+- "Someone is threatening me with my photos."
+- "How can I protect my personal data online?"
+
+I’ll give general guidance with UAE cyber law context when possible.
+This is general information only, not official legal advice.`,
+      "ai"
+    );
+  </script>
 </body>
 </html>
