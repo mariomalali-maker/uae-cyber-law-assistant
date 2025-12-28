@@ -2,60 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cyber Quiz | Cyber Safety Assistant</title>
+  <title>Cyber Quiz | Cyber Assistant</title>
   <link rel="stylesheet" href="styles/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body class="app-body">
+<body class="page-body">
 
   <nav class="top-nav">
-    <div class="nav-left">
-      <span class="nav-logo">🛡 Cyber Safety Assistant</span>
-    </div>
-    <div class="nav-right">
-      <a href="index.html">🏠 Home</a>
-      <a href="chat.html">💬 Chat</a>
-      <a href="history.html">📁 History</a>
-      <a href="quiz.html" class="active">🎯 Cyber Quiz</a>
-      <a href="scam.html">⚠️ Scam Detector</a>
-    </div>
+    <a href="index.html" class="brand">🏠 Home</a>
+    <a href="chat.html">💬 Chat</a>
+    <a href="history.html">📄 History</a>
+    <a href="quiz.html" class="active">🎯 Cyber Quiz</a>
+    <a href="scam.html">⚠️ Scam Detector</a>
   </nav>
 
-  <main class="center-wrapper">
-    <section class="card quiz-card floating">
+  <main class="center-layout">
+    <section class="quiz-card floating">
       <h2>🎯 Cyber Safety Quiz</h2>
-      <p class="subtitle">
+      <p class="chat-sub">
         10 quick questions with a 10s limit each. Test how well you protect yourself online.
       </p>
 
-      <p id="timer" class="timer-text"></p>
-
-      <button id="startQuizBtn" class="btn primary-btn">
-        Start quiz
-      </button>
-
-      <div class="quiz-box" id="quiz-box">
-        <p id="question">Press "Start quiz" to begin.</p>
-        <div id="options"></div>
+      <div id="quiz-start">
+        <p>Ready? You’ll have only <strong>10 seconds</strong> per question.</p>
+        <button id="start-quiz-btn" class="primary-btn">Start Quiz</button>
       </div>
 
-      <button id="nextBtn" class="btn secondary-btn" style="display:none;">
-        Next ➜
-      </button>
+      <div id="quiz-main" style="display:none;">
+        <p id="timer">Time Left: <strong>10</strong>s</p>
+        <h3 id="question-title"></h3>
+        <div id="options"></div>
+        <p id="feedback" class="quiz-feedback"></p>
+        <button id="nextBtn" class="btn" style="display:none;">Next ➜</button>
+      </div>
 
-      <h3 id="scoreBox" class="score-box" style="display:none;"></h3>
+      <h3 id="scoreBox" style="display:none;"></h3>
     </section>
   </main>
 
-  <p class="footer">Created by Mariam – 2025</p>
+  <footer class="footer">
+    Created by Mariam – 2025
+  </footer>
 
   <script src="scripts/quiz.js"></script>
 </body>
 </html>
-style="display:none; font-size:13px; opacity:0.9;"></p>
 
-  <p class="footer">Created by Mariam – 2025</p>
-</div>
-
-<script src="scripts/quiz.js"></script>
-</body>
-</html>
