@@ -1,214 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Chat Assistant</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chat</title>
 <style>
-:root {
-  --bg: #0d1524;
-  --text: #e6f1ff;
-  --user: #00c48c;
-  --bot: #132033;
-}
-body.light {
-  --bg: #f4f7fa;
-  --text: #0b1220;
-  --user: #007f64;
-  --bot: #ffffff;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, sans-serif;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-header {
-  padding: 12px;
-  background: rgba(255,255,255,0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  backdrop-filter: blur(10px);
-}
-
-#theme, #lang {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: none;
-  font-size: 0.9rem;
-  background: #132033;
-  color: var(--text);
-}
-
-#messages {
-  flex: 1;
-  padding: 14px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.msg {
-  max-width: 80%;
-  padding: 10px 14px;
-  border-radius: 14px;
-  font-size: 1rem;
-  line-height: 1.4;
-  word-wrap: break-word;
-  animation: fadeIn 0.2s ease;
-}
-.user { 
-  margin-left: auto;
-  background: var(--user);
-  color: #fff;
-  border-bottom-right-radius: 4px;
-}
-.bot { 
-  background: var(--bot);
-  border-bottom-left-radius: 4px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-@keyframes fadeIn {
-  from {opacity:0; transform:translateY(6px);}
-  to {opacity:1; transform:translateY(0);}
-}
-
-#input-area {
-  display: flex;
-  gap: 8px;
-  padding: 12px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-}
-
-#text {
-  flex: 1;
-  padding: 10px;
-  border-radius: 999px;
-  border: none;
-  outline: none;
-  font-size: 1rem;
-}
-
-.btn {
-  background: var(--user);
-  color: #fff;
-  border-radius: 999px;
-  border: none;
-  padding: 12px;
-  font-size: 1.2rem;
-}
-
-.btn:active { transform: scale(0.95); }
-
-/* floating back button */
-#back {
-  position: fixed;
-  top: 14px; left: 14px;
-  font-size: 1.4rem;
-  text-decoration: none;
-  color: var(--text);
-}
+:root{--bg:#0d1524;--text:#e6f1ff;--user:#00c48c;--bot:#132033;}
+body.light{--bg:#f4f7fa;--text:#0b1220;--user:#007f64;--bot:#fff;}
+body{margin:0;background:var(--bg);color:var(--text);
+display:flex;flex-direction:column;height:100vh;font-family:system-ui,sans-serif;}
+header{padding:12px;display:flex;gap:10px;}
+select,button{padding:8px;border-radius:8px;border:none;}
+#messages{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:80%;padding:10px;border-radius:14px;animation:fade .2s;}
+.user{margin-left:auto;background:var(--user);color:white;}
+.bot{background:var(--bot);border:1px solid rgba(255,255,255,.1);}
+#input{display:flex;gap:8px;padding:10px;}
+#text{flex:1;padding:10px;border-radius:999px;border:none;}
+#mic,#snd,#spk{padding:12px;border-radius:999px;border:none;background:var(--user);color:white;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 
 <body>
-
-<a id="back" href="welcome.html">⟵</a>
+<a href="welcome.html" style="padding:10px;color:var(--text);text-decoration:none;">⟵</a>
 
 <header>
-  <select id="lang">
-    <option value="en">English</option>
-    <option value="ar">العربية</option>
-  </select>
+  <select id="lang"><option value="en">EN</option><option value="ar">AR</option></select>
   <button id="theme">Dark/Light</button>
 </header>
 
 <div id="messages"></div>
 
-<div id="input-area">
-  <input id="text" placeholder="Type or press 🎤 to speak..." autocomplete="off" />
-  <button id="mic" class="btn">🎤</button>
-  <button id="send" class="btn">➤</button>
-  <button id="speak" class="btn">🔊</button>
+<div id="input">
+  <input id="text" placeholder="type...">
+  <button id="mic">🎤</button>
+  <button id="snd">➤</button>
+  <button id="spk">🔊</button>
 </div>
 
 <script>
-// THEME ----
-document.getElementById("theme").onclick = () => {
-  document.body.classList.toggle("light");
-  localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
-};
-if(localStorage.getItem("theme")==="light"){document.body.classList.add("light")}
+if(localStorage.getItem("theme")==="light")document.body.classList.add("light");
+theme.onclick=()=>{document.body.classList.toggle("light");
+localStorage.setItem("theme",document.body.classList.contains("light")?"light":"dark")};
 
-// LANGUAGE ----
-const lang = document.getElementById("lang");
-if(localStorage.getItem("lang")) lang.value = localStorage.getItem("lang");
-lang.onchange = ()=> localStorage.setItem("lang", lang.value);
+if(localStorage.getItem("lang"))lang.value=localStorage.getItem("lang");
+lang.onchange=()=>localStorage.setItem("lang",lang.value);
 
-// SEND MESSAGE ----
-const text = document.getElementById("text");
-const messages = document.getElementById("messages");
-
-function addMsg(content, type="bot"){
-  const div = document.createElement("div");
-  div.className = "msg " + type;
-  div.textContent = content;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-}
+function add(c,t){let d=document.createElement("div");d.className="msg "+t;d.textContent=c;messages.append(d);messages.scrollTop=999999}
 
 async function send(){
-  const msg = text.value.trim();
-  if(!msg) return;
-  addMsg(msg, "user");
-  text.value = "";
-  
-  const res = await fetch("/api/chat",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({ message:msg, language:lang.value })
-  });
-  const data = await res.json();
-  addMsg(data.reply || "Error", "bot");
-}
-document.getElementById("send").onclick = send;
-
-// ENTER = send
-text.addEventListener("keydown",e=>{
-  if(e.key==="Enter") send();
-});
-
-// VOICE INPUT 🎤 ----
-let rec;
-document.getElementById("mic").onclick = ()=>{
-  if(!("webkitSpeechRecognition" in window)){
-    alert("Voice not supported in this browser");return;
+  let m=text.value.trim(); if(!m)return;
+  add(m,"user"); text.value="";
+  let body={
+    message:m,
+    language:lang.value,
+    username:localStorage.getItem("name")||"User",
+    gender:localStorage.getItem("gender")||"none",
+    tone:localStorage.getItem("tone")||"supportive",
+    mode:"chat"
+  };
+  let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  let j=await r.json();
+  add(j.reply,"bot");
+  if(localStorage.getItem("voice")==="on"){
+    let s=new SpeechSynthesisUtterance(j.reply);
+    s.lang=lang.value==="ar"?"ar":"en-US"; speechSynthesis.speak(s);
   }
-  rec = new webkitSpeechRecognition();
-  rec.lang = lang.value==="ar" ? "ar" : "en-US";
-  rec.start();
-  rec.onresult = (e)=>{ text.value = e.results[0][0].transcript; }
-};
+}
 
-// VOICE OUTPUT 🔊 ----
-document.getElementById("speak").onclick = ()=>{
-  const last = [...messages.querySelectorAll(".bot")].pop();
-  if(!last) return;
-  const speech = new SpeechSynthesisUtterance(last.textContent);
-  speech.lang = lang.value==="ar" ? "ar" : "en-US";
-  speech.rate = 1;
-  window.speechSynthesis.speak(speech);
-};
+snd.onclick=send;
+text.onkeydown=e=>e.key==="Enter"&&send();
+
+mic.onclick=()=>{
+  if(!("webkitSpeechRecognition" in window))return alert("Voice not supported");
+  let rec=new webkitSpeechRecognition();
+  rec.lang=lang.value==="ar"?"ar":"en-US"; rec.start();
+  rec.onresult=e=>text.value=e.results[0][0].transcript;
+}
+
+spk.onclick=()=>{
+  let last=[...document.querySelectorAll(".bot")].pop();
+  if(!last)return;
+  let s=new SpeechSynthesisUtterance(last.textContent);
+  s.lang=lang.value==="ar"?"ar":"en-US"; speechSynthesis.speak(s);
+}
+</script>
+
+</body>
+</html>
+
 </script>
 
 </body>
