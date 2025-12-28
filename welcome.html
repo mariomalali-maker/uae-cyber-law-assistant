@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>You’re Safe Here</title>
+
+<style>
+:root {
+  --bg: #0d1524;
+  --text: #e6f1ff;
+  --card: #132033;
+  --accent: #00c48c; /* green cyber */
+  --accent-hover: #00e6a2;
+}
+
+/* Light mode variables */
+body.light {
+  --bg: #f4f7fa;
+  --text: #0b1220;
+  --card: #ffffff;
+  --accent: #007f64;
+  --accent-hover: #009f80;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  display: flex;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  text-align: center;
+}
+
+/* Center container */
+#wrapper {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1rem;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+/* Buttons */
+.menu-btn {
+  background: var(--card);
+  color: var(--text);
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  border: 1px solid rgba(255,255,255,0.07);
+  text-decoration: none;
+  transition: 0.2s;
+  display: block;
+}
+
+body.light .menu-btn {
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.menu-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+/* Floating chat bubble */
+#chat-bubble {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  background: var(--accent);
+  padding: 16px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.4rem;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  transition: 0.2s;
+}
+
+#chat-bubble:hover {
+  transform: scale(1.1);
+  background: var(--accent-hover);
+}
+
+/* Responsive */
+@media (max-width:500px) {
+  h1 { font-size: 1.6rem; }
+  .menu-btn { font-size: 1rem; padding: 12px; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="wrapper">
+  <h1>You’re safe here.</h1>
+  <p class="subtitle">Cyber guidance based on UAE laws — not official legal advice.</p>
+
+  <a href="chat.html" class="menu-btn">💬 Chat Assistant</a>
+  <a href="scam.html" class="menu-btn">🚨 Scam Detector</a>
+  <a href="quiz.html" class="menu-btn">🧠 Quiz Zone (English Only)</a>
+  <a href="settings.html" class="menu-btn">⚙️ Settings</a>
+</div>
+
+<!-- Floating Chat bubble -->
+<a id="chat-bubble" href="chat.html">💬</a>
+
+</body>
+</html>
