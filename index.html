@@ -2,140 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>UAE Cyber Law Assistant</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: white;
-    margin: 0; padding: 0;
-    text-align: center;
-  }
-  /* Popup Windows */
-  .popup {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: #1e293b;
-    padding: 30px; border-radius: 10px;
-    width: 300px;
-    display: none;
-  }
-  input { padding: 10px; width: 90%; margin: 7px 0; border-radius: 5px; }
-  button {
-    background:#38bdf8; border:none;
-    padding: 10px; margin-top: 10px;
-    width:95%; border-radius: 8px;
-    cursor:pointer; font-weight:bold;
-  }
-
-  /* Floating chat box */
-  #chatBox {
-    margin: 80px auto;
-    width: 90%; max-width: 450px;
-    background:#1e293b; padding:20px;
-    border-radius:15px;
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0% { transform: translateY(-5px); }
-    50% { transform: translateY(5px); }
-    100% { transform: translateY(-5px); }
-  }
-
-  /* Thinking dots */
-  #thinking { display:none; font-size:14px; margin-top:5px; color:#93c5fd; }
-
-  .signature {
-    margin-top: 80px;
-    opacity: 0.6;
-    font-family: "Brush Script MT", cursive;
-    font-size: 22px;
-  }
-
-</style>
+<title>Login | Cyber Assistant</title>
+<link rel="stylesheet" href="styles/style.css">
 </head>
-<body>
+<body class="login-body">
 
-<h2 style="margin-top:40px;">🇦🇪 UAE Cyber Law Assistant</h2>
-<p>Smart AI guide for online UAE cases & cyber safety</p>
+<div class="login-container floating">
+    <h1>Welcome</h1>
+    <p>Sign in to continue.</p>
 
-<!-- LOGIN POPUP -->
-<div id="loginPopup" class="popup">
-  <h3>Login</h3>
-  <input id="email" type="email" placeholder="Email (optional)">
-  <input id="password" type="password" placeholder="Password (optional)">
-  <button onclick="login()">Login</button>
-  <button onclick="skipLogin()" style="background:#64748b">Continue without login</button>
+    <form onsubmit="return loginUser(event)">
+        <input id="email" type="email" placeholder="Email" required>
+        <input id="password" type="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+        <p class="skip" onclick="skipLogin()">Continue without login →</p>
+    </form>
+
 </div>
 
-<!-- NAME POPUP -->
-<div id="namePopup" class="popup">
-  <h3>Your Name?</h3>
-  <input id="username" placeholder="Enter your name">
-  <button onclick="saveName()">Continue</button>
-</div>
-
-<!-- CHAT -->
-<div id="chatBox" style="display:none;">
-  <input id="question" placeholder="Ask your cyber law question..." style="padding:10px;width:90%;border-radius:8px;">
-  <button onclick="sendMessage()">Send</button>
-  
-  <p id="thinking">Typing...</p>
-
-  <h3>Response:</h3>
-  <div id="answer" style="min-height:100px;padding:15px;background:#0d1b2a;border-radius:10px;"></div>
-</div>
-
-<div class="signature">
-  Created by Mariam - 2025
-</div>
-
-<script>
-/* ----- LOGIN FLOW ----- */
-window.onload = () => {
-  document.getElementById("loginPopup").style.display = "block";
-};
-
-function login() {
-  document.getElementById("loginPopup").style.display = "none";
-  document.getElementById("namePopup").style.display = "block";
-}
-
-function skipLogin() {
-  document.getElementById("loginPopup").style.display = "none";
-  document.getElementById("namePopup").style.display = "block";
-}
-
-function saveName() {
-  const name = document.getElementById("username").value;
-  if(!name) return alert("Please enter your name!");
-  localStorage.setItem("username", name);
-  document.getElementById("namePopup").style.display = "none";
-  document.getElementById("chatBox").style.display = "block";
-}
-
-/* ----- SEND MESSAGE ----- */
-async function sendMessage(){
-  const q = document.getElementById("question").value;
-  const username = localStorage.getItem("username") || "Guest";
-
-  document.getElementById("thinking").style.display = "block";
-
-  const res = await fetch("/api/chat", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ message: q, username })
-  });
-
-  const data = await res.json();
-  document.getElementById("thinking").style.display = "none";
-
-  document.getElementById("answer").innerText = data.answer || "⚠️ Error, try again.";
-}
-</script>
-
+<script src="scripts/login.js"></script>
 </body>
 </html>
-
