@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UAE Cyber Law Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  /* Login / Name Popup */
+  #loginPopup, #namePopup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 350px;
+    display: none;
+  }
+
+  /* Chat Container */
+  #chatContainer {
+    width: 420px;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    animation: float 3s ease-in-out infinite;
+    display: none;
+  }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  input, button {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    margin: 5px 0;
+    width: 90%;
+  }
+
+  button {
+    background: #34d399;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .message {
+    background: #0f172a;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+  }
+
+  #signature {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    font-family: cursive;
+    opacity: 0.7;
+  }
+
+  #thinking {
+    display: none;
+    margin: 10px 0;
+    text-align: center;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN POPUP -->
+<div id="loginPopup">
+  <h3>Login</h3>
+  <input id="email" type="email" placeholder="Email (optional)">
+  <input id="password" type="password" placeholder="Password (optional)">
+  <button onclick="continueToName()">Continue</button>
+  <button onclick="skipLogin()">Continue without login</button>
+</div>
+
+<!-- NAME POPUP -->
+<div id="namePopup">
+  <h3>Enter your name</h3>
+  <input id="username" type="text" placeholder="Your name">
+  <button onclick="startChat()">Start</button>
+</div>
+
+<!-- CHAT UI -->
+<div id="chatContainer">
+  <h2>🇦🇪 UAE Cyber Law Assistant</h2>
+  <p>Ask anything related to cybersecurity in the UAE:</p>
+  
+  <input id="userMessage" type="text" placeholder="Type your question here...">
+  <button onclick="sendMessage()">Send</button>
+
+  <div id="thinking">💭 typing...</div>
+
+  <div id="chatMessages"></div>
+</div>
+
+<div id="signature">created by Mariam - 2025</div>
+
+<script>
+
+const OPENAI_API_KEY = "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";
+
+
+document.getElementById("loginPopup").style.display = "block";
+let userName = "";
+
+function continueToName(){ document.getElementById("loginPopup").style.display="none"; document.getElementById("namePopup").style.display="block"; }
+function skipLogin(){ document.getElementById("loginPopup").style.display="none"; document.getElementById("namePopup").style.display="block"; }
+
+function startChat(){
+  userName = document.getElementById("username").value || "visitor";
+  document.getElementById("namePopup").style.display="none";
+  document.getElementById("chatContainer").style.display="block";
+}
+
+/* CHAT SYSTEM RULES */
+const systemPrompt = `
+You are "UAE Cyber Law Helper", created by Mariam.
+Goal: help people in the UAE understand cyber security & online laws.
+If asked "who created you" → say "I was created by Mariam."
+If asked "what is your goal" → say "My goal is to increase cyber security awareness in the UAE."
+
+Allowed topics:
+- UAE cybercrime law (Federal Decree-Law No. 34 of 2021)
+- reporting cybercrime (ecrime.ae, 800-CYBER, 999)
+- hacking, blackmail, threats, online safety
+- snapchat/instagram/whatsapp issues
+- anything related to security in general
+- saftey for person
+- how to protect your self and data 
+
+Do NOT answer:
+- celebrity gossip
+- personal info about people
+- hacking or illegal help
+- medical, political or religious questions
+- identity of others
+
+If off-topic, respond:
+"I can only help with UAE cyber security or online law topics."
+
+Always add references:
+- ecrime.ae
+- moi.gov.ae
+- Dubai Police App
+- publicprosecution.gov.ae
+
+Always end with:
+"This is general information only, not official legal advice."
+`;
+
+/* SEND MESSAGE */
+async function sendMessage(){
+  const msg = document.getElementById("userMessage").value;
+  if(!msg) return;
+
+  showMessage(`🟦 ${msg}`);
+  document.getElementById("userMessage").value = "";
+  document.getElementById("thinking").style.display = "block";
+
+  const reply = await askGPT(msg);
+  showMessage(`🟥 ${reply}`);
+  document.getElementById("thinking").style.display = "none";
+}
+
+function showMessage(text){
+  const box = document.createElement("div");
+  box.classList.add("message");
+  box.innerText = text;
+  document.getElementById("chatMessages").appendChild(box);
+}
+
+/* CALL OPENAI */
+async function askGPT(question){
+  try{
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer " + OPENAI_API_KEY
+      },
+      body:JSON.stringify({
+        model:"gpt-3.5-turbo",
+        messages:[
+          {role:"system", content:systemPrompt},
+          {role:"user", content:question}
+        ]
+      })
+    });
+
+    const data = await res.json();
+    return data.choices[0].message.content;
+  } catch(err){
+    return "❌ Error. Check API key.";
+  }
+}
+</script>
+</body>
+</html>
