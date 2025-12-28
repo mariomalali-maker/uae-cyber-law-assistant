@@ -1,208 +1,289 @@
-const quizData = [
+// scripts/quiz.js
+
+const quizBox = document.getElementById("quiz-box");
+const timerEl = document.getElementById("timer");
+const nextBtn = document.getElementById("nextBtn");
+const scoreBox = document.getElementById("scoreBox");
+const leaderBoard = document.getElementById("leaderBoard");
+
+let currentIndex = -1;
+let score = 0;
+let timeLeft = 10;
+let timerId = null;
+
+const QUIZ_KEY = "cyber_quiz_best_score";
+
+const questions = [
   {
-    q: "What is the safest type of password?",
-    a: [
-      "Your name + birthdate",
-      "At least 12 characters with letters, numbers & symbols",
-      "12345678",
-      "Password1"
+    q: "If someone hacks your Snapchat in the UAE, what is the safest first step?",
+    options: [
+      "Post about it on your story",
+      "Give them your password so they stop",
+      "Change your password and enable 2FA",
+      "Do nothing and wait"
+    ],
+    correct: 2
+  },
+  {
+    q: "Sharing someone’s private photos without consent online is:",
+    options: [
+      "Just a joke",
+      "Allowed if they are your friend",
+      "A serious crime under UAE cyber laws",
+      "Only wrong if they complain"
+    ],
+    correct: 2
+  },
+  {
+    q: "A message says: 'You won a free iPhone, click this link and enter your card details.' What is this?",
+    options: [
+      "Normal offer",
+      "Phishing / scam",
+      "Safe promotion",
+      "Bank message"
     ],
     correct: 1
   },
   {
-    q: "Someone sends you a link saying you won a prize. What should you do?",
-    a: [
-      "Click it quickly before it expires",
-      "Share it with all friends",
-      "Ignore it or check it only from the official website/app",
-      "Give them your password to confirm"
+    q: "Which password is strongest?",
+    options: [
+      "mariam123",
+      "Password2024",
+      "@M!r1am_2025#",
+      "qwerty"
     ],
     correct: 2
   },
   {
-    q: "What is two-factor authentication (2FA)?",
-    a: [
-      "Logging in from two phones",
-      "Using two passwords for the same account",
-      "A second step like SMS/app code after the password",
-      "Saving the password in the browser"
+    q: "If someone is blackmailing you with your photos online in the UAE, you should:",
+    options: [
+      "Send them more pictures",
+      "Delete all chats so no evidence",
+      "Keep screenshots and report to ecrime.ae",
+      "Pay them once"
     ],
     correct: 2
   },
   {
-    q: "If someone hacks your social media account, what is the FIRST thing you should try?",
-    a: [
-      "Argue with them in DMs",
-      "Try to reset your password using email/phone",
-      "Create a new account and ignore it",
-      "Post your password publicly"
+    q: "Two-factor authentication (2FA) means:",
+    options: [
+      "Using two phones",
+      "Logging in from two countries",
+      "Using password plus extra code / app / SMS",
+      "Changing password daily"
+    ],
+    correct: 2
+  },
+  {
+    q: "Posting rumours and fake news about others online in the UAE is:",
+    options: [
+      "Harmless fun",
+      "Protected free speech",
+      "Punishable under UAE cybercrime laws",
+      "Only wrong on WhatsApp"
+    ],
+    correct: 2
+  },
+  {
+    q: "Which Wi-Fi is safer for sensitive logins?",
+    options: [
+      "Random public Wi-Fi with no password",
+      "Friend’s hotspot with password",
+      "Any free Wi-Fi in the mall",
+      "Unknown open Wi-Fi in the street"
     ],
     correct: 1
   },
   {
-    q: "Which of these is a sign of a phishing email?",
-    a: [
-      "Comes from official bank domain with correct style",
-      "Has spelling mistakes and strange link asking for login",
-      "Uses your real name only",
-      "Is sent by a family member"
-    ],
-    correct: 1
-  },
-  {
-    q: "Public Wi-Fi is safest when you:",
-    a: [
-      "Use it with no protection",
-      "Log in to all banking apps",
-      "Use a VPN and avoid sensitive logins",
-      "Share it with strangers"
+    q: "What should you NEVER share on social media publicly?",
+    options: [
+      "Cute coffee pictures",
+      "Travel photos after you return",
+      "Your full Emirates ID details",
+      "Sunset views"
     ],
     correct: 2
   },
   {
-    q: "What should you do if someone threatens to share your private photos online?",
-    a: [
-      "Send them more photos so they stop",
-      "Pay whatever they ask",
-      "Block them and keep it secret",
-      "Save all evidence & report via ecrime.ae or the police"
-    ],
-    correct: 3
-  },
-  {
-    q: "Which is the best way to store passwords?",
-    a: [
-      "Write them on paper in your bag",
-      "Use the same password everywhere",
-      "Use a trusted password manager",
-      "Tell them to a close friend"
-    ],
-    correct: 2
-  },
-  {
-    q: "What is personal data?",
-    a: [
-      "Only passwords",
-      "Only photos",
-      "Any info that can identify you (name, phone, ID, location, etc.)",
-      "Only bank details"
-    ],
-    correct: 2
-  },
-  {
-    q: "How often should you update important passwords (email, banking)?",
-    a: [
-      "Never, keep them forever",
-      "Only when you forget them",
-      "Regularly, and immediately if you suspect a breach",
-      "Every day"
+    q: "If you receive a suspicious link from a 'friend' account that was probably hacked, you should:",
+    options: [
+      "Click it quickly",
+      "Forward it to everyone",
+      "Ignore it and warn your friend on another channel",
+      "Type your password to log in"
     ],
     correct: 2
   }
 ];
 
-let index = 0;
-let score = 0;
-let timer = null;
-let timeLeft = 10;
+function showStartScreen() {
+  quizBox.innerHTML = `
+    <h3>Ready to start the quiz?</h3>
+    <p>You have 10 seconds for each question. Try to score as high as you can!</p>
+    <p style="font-size:13px; opacity:0.8;">تقدر تجاوب وانت مرتاح، الهدف أنك تتعلم كيف تحمي نفسك إلكترونياً 💻🛡</p>
+    <button class="quiz-btn start-btn" id="startQuizBtn">Start Quiz</button>
+  `;
+  timerEl.style.display = "none";
+  nextBtn.style.display = "none";
+  scoreBox.style.display = "none";
+  leaderBoard.style.display = "none";
+
+  const btn = document.getElementById("startQuizBtn");
+  btn.addEventListener("click", () => {
+    currentIndex = -1;
+    score = 0;
+    timerEl.style.display = "block";
+    nextQuestion();
+  });
+}
 
 function startTimer() {
-  clearInterval(timer);
+  clearInterval(timerId);
   timeLeft = 10;
-  document.getElementById("timer").innerHTML =
-    'Time Left: <strong>' + timeLeft + '</strong>s';
-
-  timer = setInterval(() => {
+  updateTimerText();
+  timerId = setInterval(() => {
     timeLeft--;
-    document.getElementById("timer").innerHTML =
-      'Time Left: <strong>' + timeLeft + '</strong>s';
-
+    updateTimerText();
     if (timeLeft <= 0) {
-      clearInterval(timer);
-      lockQuestion();
-      showFeedback(false, "⏰ Time is up!");
+      clearInterval(timerId);
+      lockOptions();
+      nextBtn.style.display = "block";
     }
   }, 1000);
 }
 
-function loadQ() {
-  const q = quizData[index];
-  document.getElementById("qCounter").innerText =
-    `Question ${index + 1} of ${quizData.length}`;
-  document.getElementById("question").innerText = q.q;
-
-  const optionsDiv = document.getElementById("options");
-  optionsDiv.innerHTML = "";
-
-  q.a.forEach((choice, i) => {
-    const btn = document.createElement("button");
-    btn.innerText = choice;
-    btn.className = "quiz-btn";
-    btn.onclick = () => checkAnswer(i, btn);
-    optionsDiv.appendChild(btn);
-  });
-
-  document.getElementById("nextBtn").style.display = "none";
-  document.getElementById("scoreBox").style.display = "none";
-  document.getElementById("feedback").style.display = "none";
-
-  startTimer();
-}
-
-function lockQuestion() {
-  const buttons = document.querySelectorAll(".quiz-btn");
-  buttons.forEach(b => (b.disabled = true));
-  document.getElementById("nextBtn").style.display = "inline-block";
-}
-
-function showFeedback(correct, msg) {
-  const fb = document.getElementById("feedback");
-  fb.style.display = "block";
-  fb.style.marginTop = "10px";
-  fb.style.fontWeight = "600";
-  fb.style.color = correct ? "#4ade80" : "#f97373";
-  fb.innerText = msg;
-}
-
-function checkAnswer(i, btn) {
-  clearInterval(timer);
-  const q = quizData[index];
-
-  const buttons = document.querySelectorAll(".quiz-btn");
-  buttons.forEach((b, idx) => {
-    b.disabled = true;
-    if (idx === q.correct) b.classList.add("correct");
-  });
-
-  if (i === q.correct) {
-    score++;
-    btn.classList.add("correct");
-    showFeedback(true, "✅ Correct!");
-  } else {
-    btn.classList.add("wrong");
-    showFeedback(false, "❌ Not correct.");
-  }
-
-  document.getElementById("nextBtn").style.display = "inline-block";
+function updateTimerText() {
+  timerEl.innerHTML = `Time Left: <strong>${timeLeft}</strong>s`;
 }
 
 function nextQuestion() {
-  index++;
-  if (index >= quizData.length) {
+  currentIndex++;
+  if (currentIndex >= questions.length) {
     endQuiz();
+    return;
+  }
+
+  const qObj = questions[currentIndex];
+  quizBox.innerHTML = `
+    <h3>Question ${currentIndex + 1} of ${questions.length}</h3>
+    <p style="margin-top:8px; margin-bottom:12px;">${qObj.q}</p>
+    <div id="options"></div>
+    <p id="feedback" style="margin-top:10px; font-size:14px;"></p>
+  `;
+
+  const optionsDiv = document.getElementById("options");
+  qObj.options.forEach((opt, idx) => {
+    const btn = document.createElement("button");
+    btn.className = "quiz-btn";
+    btn.textContent = opt;
+    btn.dataset.index = idx;
+    btn.addEventListener("click", () => handleAnswer(idx));
+    optionsDiv.appendChild(btn);
+  });
+
+  nextBtn.style.display = "none";
+  startTimer();
+}
+
+function handleAnswer(choiceIndex) {
+  clearInterval(timerId);
+  const qObj = questions[currentIndex];
+  const feedback = document.getElementById("feedback");
+  const optionsDiv = document.getElementById("options");
+  const buttons = optionsDiv.querySelectorAll("button");
+
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === qObj.correct) {
+      btn.style.background = "#16a34a";
+    }
+    if (i === choiceIndex && i !== qObj.correct) {
+      btn.style.background = "#b91c1c";
+    }
+  });
+
+  if (choiceIndex === qObj.correct) {
+    score++;
+    feedback.textContent = "✅ Correct! Nice job.";
+    feedback.style.color = "#22c55e";
   } else {
-    loadQ();
+    feedback.textContent = "❌ Wrong. It’s okay, you’re learning.";
+    feedback.style.color = "#f97316";
+  }
+
+  nextBtn.style.display = "block";
+}
+
+function lockOptions() {
+  const optionsDiv = document.getElementById("options");
+  if (!optionsDiv) return;
+  const buttons = optionsDiv.querySelectorAll("button");
+  const qObj = questions[currentIndex];
+
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === qObj.correct) {
+      btn.style.background = "#16a34a";
+    }
+  });
+
+  const feedback = document.getElementById("feedback");
+  if (feedback && !feedback.textContent) {
+    feedback.textContent = "⏰ Time is up! The correct answer is highlighted in green.";
+    feedback.style.color = "#f97316";
   }
 }
 
 function endQuiz() {
-  document.getElementById("options").innerHTML = "";
-  document.getElementById("question").innerText = "Quiz finished!";
-  document.getElementById("nextBtn").style.display = "none";
-
-  const scoreBox = document.getElementById("scoreBox");
+  quizBox.innerHTML = `
+    <h3>Quiz Finished 🎉</h3>
+    <p>You answered <strong>${score}</strong> out of <strong>${questions.length}</strong> correctly.</p>
+  `;
+  timerEl.style.display = "none";
+  nextBtn.style.display = "none";
   scoreBox.style.display = "block";
-  scoreBox.innerText = `You scored ${score} out of ${quizData.length}.`;
+
+  let message;
+  let badge = "";
+  if (score === questions.length) {
+    message = "Perfect! You’re a true Cyber Guardian 🛡🔥";
+    badge = "🏅 Platinum Cyber Guardian";
+  } else if (score >= 8) {
+    message = "Amazing! You’re very aware of cyber safety.";
+    badge = "🥇 Gold Cyber Guardian";
+  } else if (score >= 5) {
+    message = "Good start! You know some key points, keep learning.";
+    badge = "🥈 Silver Cyber Guardian";
+  } else {
+    message = "It’s okay. The goal is to learn and get safer online. Try again!";
+    badge = "🥉 Cyber Learner";
+  }
+
+  scoreBox.textContent = message + "  " + badge;
+
+  const prevBest = parseInt(localStorage.getItem(QUIZ_KEY) || "0", 10);
+  if (score > prevBest) {
+    localStorage.setItem(QUIZ_KEY, String(score));
+  }
+
+  const best = Math.max(score, prevBest);
+  leaderBoard.style.display = "block";
+  leaderBoard.textContent = `🏆 Your best score so far: ${best} / ${questions.length}`;
+
+  const restartBtn = document.createElement("button");
+  restartBtn.className = "quiz-btn start-btn";
+  restartBtn.textContent = "Restart Quiz 🔁";
+  restartBtn.addEventListener("click", () => {
+    currentIndex = -1;
+    score = 0;
+    timerEl.style.display = "block";
+    nextQuestion();
+  });
+  quizBox.appendChild(restartBtn);
 }
 
-window.onload = loadQ;
+nextBtn.addEventListener("click", () => {
+  nextQuestion();
+});
+
+showStartScreen();
