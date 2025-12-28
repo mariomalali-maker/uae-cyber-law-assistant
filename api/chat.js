@@ -1,29 +1,85 @@
-// File: api/chat.js
-// Runs on Vercel as a serverless function
-
+// api/chat.js
 export default async function handler(req, res) {
-  // Only allow POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { message, username } = req.body || {};
-  const safeName = username || "User";
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: "Server API key is missing." });
+  }
+
+  const { message, username, gender, lang } = req.body || {};
 
   if (!message || typeof message !== "string") {
-    return res.status(400).json({ error: "No message provided" });
+    return res.status(400).json({ error: "Message is required." });
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const safeName = username && typeof username === "string" ? username : "User";
+  const safeGender = gender === "female" || gender === "male" ? gender : "unspecified";
+  const userLang = (lang === "ar" || lang === "en") ? lang : "auto";
 
-  if (!apiKey) {
-    // This means Vercel env variable is missing
-    console.error("❌ Missing OPENAI_API_KEY in Vercel");
-    return res.status(500).json({ error: "Server misconfigured (no API key)" });
-  }
+  // Build a system prompt that:
+  // - Focuses on UAE cyber safety
+  // - Always tries to give references & law names
+  // - Asks for more details when the question is unclear
+  const systemPrompt = `
+You are an AI assistant that helps with **online safety, cyber security and UAE cyber laws**.
+
+User info:
+- Name: ${safeName}
+- Gender: ${safeGender}
+- Preferred language: ${userLang} (if "auto", detect from user message).
+
+Your behaviour:
+
+1. **Scope**
+   - Focus on: hacking, account theft, online threats, blackmail, fake links, privacy, cyberbullying, social media issues, scams, digital evidence, and UAE cyber-law context.
+   - If the question is completely unrelated (for example "how to cook pasta"), politely say you are for cyber safety / UAE online law, then give a short safety angle if possible.
+
+2. **Language**
+   - Answer in the same language the user used in the last message (Arabic or English).
+   - If the message is mixed, choose the dominant language.
+
+3. **Use the user's name**
+   - In the FIRST sentence, use the user's name: e.g. "Mariam, I'm sorry this happened to you…".
+   - After that, you can say "you" normally.
+   - If gender is known:
+        - female  → you may occasionally say things like "as a sister" in Arabic ("أختي") if it feels natural.
+        - male    → you may occasionally say "أخي" if appropriate.
+     (Don’t overuse it.)
+
+4. **Ask for details when needed**
+   - If the question is too short or missing important info (no platform, no app name, no country, no time frame…), ask 1–2 short follow-up questions BEFORE giving the final full answer.
+   - Example: "To help you better, Mariam, can you tell me: which app was hacked, and do you still have access to your email or phone?"
+
+5. **UAE law references & sources (VERY IMPORTANT)**
+   - Whenever possible, connect your advice to **real UAE legal context**, for example:
+       - "Federal Decree-Law No. 34 of 2021 on Combatting Rumours and Cybercrime"
+       - "Federal Decree-Law No. 5 of 2012 on Combatting Cybercrimes" (older law, mention only if relevant)
+   - Only mention **article numbers** if you are reasonably confident. If not sure, say:
+       - "under the UAE cybercrime law (such as Federal Decree-Law No. 34 of 2021)…"
+   - Always try to mention **1–3 trusted UAE sources** in natural language, like:
+       - the UAE Government Portal (u.ae)
+       - Dubai Police
+       - Abu Dhabi Police
+       - the official ecrime.ae platform
+       - the Telecommunications and Digital Government Regulatory Authority (TDRA)
+     You don’t have to give URLs every time, just the names are enough.
+   - Put references near the end, e.g. "According to guidance on the UAE Government Portal (u.ae)…".
+
+6. **Structure of the answer**
+   - Start with an empathetic line using the user's name.
+   - Then give **clear numbered steps** (1, 2, 3…) with practical actions.
+   - Then add a small **“Legal / reporting options”** section mentioning reporting to:
+       - ecrime.ae for cybercrime reports in the UAE
+       - 999 for emergencies (if there is danger or serious threat)
+   - Finish with this sentence (adapt language to Arabic/English):
+       - English: "This is general information only and not official legal advice."
+       - Arabic: "هذه معلومات عامة وليست استشارة قانونية رسمية."
+  `;
 
   try {
-    // Call OpenAI Chat Completions using your project key (sk-proj-...)
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -31,80 +87,41 @@ export default async function handler(req, res) {
         "Authorization": "Bearer " + apiKey
       },
       body: JSON.stringify({
-        model: "gpt-4o", // 💡 smartest balance model
+        model: "gpt-4o-mini",
         messages: [
-          {
-            role: "system",
-            content: `
-You are an advanced cyber security & online safety assistant created by Mariam.
-
-Style:
-- Very smart, like ChatGPT.
-- Accepts ANY input: UPPERCASE, lowercase, slang, typos, mixed Arabic/English, Emirati dialect.
-- Tries to understand user meaning even if the sentence is broken or messy.
-- Talks in a friendly modern tone, but still respectful and professional.
-- Can sometimes use light emojis when appropriate (not too many).
-
-Focus:
-- Online safety, hacking, privacy, cyberbullying, blackmail, scams, threats, social media misuse, and digital evidence.
-- Prefer to answer from a UAE cyber security / UAE law perspective when relevant.
-- Always try to give clear steps: what to do now, what to avoid, how to protect themselves.
-
-Law rules:
-- When relevant, mention UAE laws in general terms, for example:
-  "UAE cybercrime laws", or
-  "Federal Decree-Law No. 34 of 2021 on Combatting Rumours and Cybercrime".
-- Only mention specific article numbers if you are confident. DO NOT invent article numbers.
-- Always end the answer with this exact sentence:
-  "This is general information only, not official legal advice."
-
-Special behaviour:
-- If user asks "who created you" or similar, say Mariam created you to help people in the UAE understand cyber security and how to protect themselves online.
-- If the question is totally unrelated (for example: celebrity gossip, astrology, random life questions with no online angle), answer briefly but gently redirect to online safety topics.
-- If user is clearly in danger (blackmail, threats, harassment, serious hacking, financial fraud), advise them to:
-  - Keep evidence (screenshots, messages),
-  - Avoid replying to the abuser,
-  - Report using official channels like ecrime.ae or calling 999 in emergencies in the UAE.
-
-Language:
-- Main answers in English.
-- You may understand Arabic or slang but reply mostly in clear English, unless user prefers Arabic.
-          `.trim()
-          },
+          { role: "system", content: systemPrompt },
           {
             role: "user",
-            content: `${safeName} says: ${message}`
+            content: message
           }
-        ]
+        ],
+        temperature: 0.5,
+        max_tokens: 700
       })
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      console.error("OpenAI API error status:", response.status, data);
-
-      // Do NOT leak the full key back to the user if OpenAI puts it in error text
-      let cleanMessage = "Unknown error from AI service.";
-
-      if (data && data.error && data.error.message) {
-        if (data.error.message.includes("Incorrect API key provided")) {
-          cleanMessage = "Incorrect API key. Check your OPENAI_API_KEY in Vercel.";
-        } else {
-          cleanMessage = data.error.message;
-        }
-      }
-
-      return res.status(500).json({ error: cleanMessage });
+      const errorText = await response.text();
+      console.error("OpenAI API error:", errorText);
+      return res.status(500).json({
+        error: "OpenAI API error",
+        detail: errorText
+      });
     }
 
-    const answer =
-      data.choices?.[0]?.message?.content?.trim() ||
-      "I'm not sure what to say. Can you try rephrasing your question?";
+    const data = await response.json();
+
+    if (!data.choices || !data.choices[0]?.message?.content) {
+      console.error("Unexpected OpenAI response:", data);
+      return res.status(500).json({ error: "Empty AI response" });
+    }
+
+    const answer = data.choices[0].message.content.trim();
 
     return res.status(200).json({ answer });
   } catch (err) {
-    console.error("Server error calling OpenAI:", err);
-    return res.status(500).json({ error: "Server error while talking to AI" });
+    console.error("Server error:", err);
+    return res.status(500).json({ error: "Server error talking to AI." });
   }
 }
+
