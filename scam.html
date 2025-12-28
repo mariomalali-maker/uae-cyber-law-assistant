@@ -1,45 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Scam Detector | Cyber Assistant</title>
-  <link rel="stylesheet" href="styles/style.css" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
-<body class="page-body">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Scam Detector</title>
 
-  <nav class="top-nav">
-    <a href="index.html" class="brand">🏠 Home</a>
-    <a href="chat.html">💬 Chat</a>
-    <a href="history.html">📄 History</a>
-    <a href="quiz.html">🎯 Cyber Quiz</a>
-    <a href="scam.html" class="active">⚠️ Scam Detector</a>
-  </nav>
-
-  <main class="center-layout">
-    <section class="scam-card floating">
-      <h2>⚠️ Scam & Fake Message Detector</h2>
-      <p class="chat-sub">
-        Paste a suspicious message, DM, email, or ad. I’ll help you check if it looks like a scam.
-      </p>
-
-      <textarea id="scam-text" placeholder="Paste the message here…"></textarea>
-
-      <label class="file-label">
-        Optional screenshot (for your own reference only, not uploaded):
-        <input type="file" id="screenshot-input" accept="image/*" />
-      </label>
-
-      <button id="check-scam-btn" class="primary-btn">Analyze</button>
-
-      <div id="scam-result" class="scam-result"></div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    Created by Mariam – 2025
-  </footer>
-
-  <script src="scripts/scam.js"></script>
-</body>
-</html>
+<style>
+:root {
+  --bg:#0d1524; --text:#e6f1ff; --accent:#00c48c;
+  --safe:#008f4a; --warn:#e6b400; --danger:#d13f50;
+}
+body.light{
+  --bg:#f4f7fa; --text:#0b1220; --accent:#007f64;
+}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:system-ui,sans-serif;
+  display:flex; flex-direction:column; height:100vh;
+}
+header{
+  padding:12px; display:flex; justify-content:space-between;
+  align-items:center; background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(8px);
+}
+#theme{
+  padding:8px 12px; border:none; border-radius:8px;
+  background:#132033; color:var(--text);
+}
+textarea{
+  width:90%; max-width:600px; margin:20px auto;
+  height:180px; border-radius:12px; padding:12px;
+  border:none; outline:none; font-size:1rem; background:#132033; color:var(--text);
+}
+body.light textarea{background:white;color:var(--text);}
+button{
+  padding:14px 20px; border-radius:12px; border:none;
+  background:var(--accent); color
