@@ -2,107 +2,217 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Online Safety & Cyber Law Helper</title>
+  <title>Cyber Safety & UAE Law Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles/style.css">
   <style>
-    /* Extra layout tweaks for chat page only */
-
-    .chat-page {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #1c2840, #050816);
-      color: #fff;
+    body {
       margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827, #020617);
+      color: #f9fafb;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    .chat-main {
+    .top-nav {
+      display: flex;
+      gap: 16px;
+      padding: 10px 18px;
+      background: rgba(15,23,42,0.95);
+      border-bottom: 1px solid #1f2937;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .top-nav a {
+      color: #e5e7eb;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      transition: background 0.2s;
+    }
+
+    .top-nav a.active,
+    .top-nav a:hover {
+      background: rgba(55,65,81,0.8);
+    }
+
+    main {
       flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 12px 60px;
+    }
+
+    .chat-shell {
+      width: 100%;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 10px 60px;
+      gap: 12px;
     }
 
     .chat-card {
       width: 100%;
-      max-width: 900px;
-      background: linear-gradient(145deg, #111827, #030712);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      background: linear-gradient(145deg, #020617, #0b1220);
+      border-radius: 24px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+      border: 1px solid #1f2937;
       position: relative;
       overflow: hidden;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
     }
 
     .chat-header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
-    .chat-labels {
+    .title-block h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .title-block p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    #status-label {
+      font-size: 12px;
+      color: #9ca3af;
       display: flex;
-      gap: 8px;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34,197,94,0.7);
+    }
+
+    .labels-row {
+      display: flex;
       flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
       font-size: 11px;
     }
 
     .chip {
       padding: 4px 8px;
       border-radius: 999px;
-      background: rgba(148, 163, 184, 0.15);
-      border: 1px solid rgba(148,163,184,0.5);
-    }
-
-    .status-dot {
-      display: inline-block;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #22c55e;
-      margin-right: 5px;
-    }
-
-    #status-label {
-      font-size: 12px;
-      color: #9ca3af;
+      background: rgba(31,41,55,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+      color: #d1d5db;
     }
 
     .messages-box {
-      margin-top: 10px;
-      background: rgba(15,23,42,0.9);
-      border-radius: 16px;
-      padding: 12px 14px;
+      background: rgba(15,23,42,0.95);
+      border-radius: 18px;
+      padding: 10px 12px;
+      border: 1px solid rgba(55,65,81,0.8);
       max-height: 420px;
       overflow-y: auto;
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 14px;
     }
 
     .msg {
       margin: 6px 0;
       padding: 10px 12px;
       border-radius: 12px;
-      font-size: 14px;
-      line-height: 1.4;
-      max-width: 100%;
+      white-space: pre-wrap;
       word-wrap: break-word;
+      line-height: 1.4;
     }
 
     .user-msg {
       background: #16a34a;
+      color: #ecfdf5;
       align-self: flex-end;
-      color: #f9fafb;
     }
 
     .ai-msg {
       background: #020617;
-      border: 1px solid rgba(148,163,184,0.35);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: #e5e7eb;
     }
 
-    .typing-bubble {
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    #chat-input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(75,85,99,0.9);
+      background: #020617;
+      color: #f9fafb;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    #chat-input::placeholder {
+      color: #6b7280;
+    }
+
+    #send-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 0 18px;
+      background: linear-gradient(135deg,#22c55e,#06b6d4);
+      color: #020617;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 0 20px rgba(34,197,94,0.4);
+    }
+
+    #send-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .helper {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    .footer-sign {
+      font-family: "Brush Script MT", "Pacifico", cursive;
+      font-size: 16px;
+      color: #f97316;
+      opacity: 0.8;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .typing-msg {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -120,88 +230,17 @@
     .dot:nth-child(3) { animation-delay: 0.3s; }
 
     @keyframes blink {
-      0%, 100% { opacity: 0.15; transform: translateY(0); }
+      0%,100% { opacity: 0.2; transform: translateY(0); }
       50% { opacity: 1; transform: translateY(-2px); }
     }
 
-    .chat-input-row {
-      display: flex;
-      margin-top: 14px;
-      gap: 8px;
-    }
-
-    #chat-input {
-      flex: 1;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.4);
-      padding: 10px 14px;
-      font-size: 14px;
-      outline: none;
-      background:#020617;
-      color:#f9fafb;
-    }
-
-    #chat-input::placeholder {
-      color: #6b7280;
-    }
-
-    #send-btn {
-      border-radius: 999px;
-      border:none;
-      padding: 0 18px;
-      background: linear-gradient(135deg,#22c55e,#06b6d4);
-      color:#020617;
-      font-weight:600;
-      cursor:pointer;
-      font-size:14px;
-      box-shadow:0 0 20px rgba(34,197,94,0.4);
-    }
-
-    #send-btn:disabled {
-      opacity: 0.5;
-      cursor: default;
-      box-shadow:none;
-    }
-
-    .helper-text {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-top: 6px;
-    }
-
-    .footer-mini {
-      text-align:center;
-      font-size:12px;
-      color:#9ca3af;
-      margin: 12px 0 8px;
-    }
-
-    /* floating cloud effect */
-    .float-cloud {
-      animation: floatCloud 4s ease-in-out infinite;
-    }
-
-    @keyframes floatCloud {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
-      100% { transform: translateY(0px); }
-    }
-
-    /* Simple responsive */
     @media (max-width: 640px) {
-      .chat-card {
-        border-radius: 0;
-        box-shadow: none;
-      }
-      .chat-main {
-        padding: 10px 0 60px;
-      }
+      main { padding: 10px 6px 50px; }
+      .chat-card { border-radius: 0; }
     }
   </style>
 </head>
-<body class="chat-page">
-
-  <!-- top nav -->
+<body>
   <nav class="top-nav">
     <a href="index.html">🏠 Home</a>
     <a href="chat.html" class="active">💬 Chat</a>
@@ -209,49 +248,44 @@
     <a href="quiz.html">🎯 Cyber Quiz</a>
   </nav>
 
-  <main class="chat-main">
-    <section class="chat-card float-cloud">
-
-      <div class="chat-header-row">
-        <div>
-          <h2 style="margin:0;font-size:20px;">
-            🔐 Online Safety & Cyber Law Helper
-          </h2>
-          <p style="margin:4px 0 0;font-size:12px;color:#9ca3af;">
-            Smart answers for online safety, hacking issues & digital laws.
-          </p>
+  <main>
+    <div class="chat-shell">
+      <section class="chat-card">
+        <div class="chat-header-row">
+          <div class="title-block">
+            <h1>Cyber Safety & UAE Law Assistant</h1>
+            <p>Ask anything… even with slang or typos. I’ll try to understand you.</p>
+          </div>
+          <div id="status-label">
+            <span class="status-dot"></span>
+            <span>Online</span>
+          </div>
         </div>
-        <div id="status-label">
-          <span class="status-dot"></span> Online
+
+        <div class="labels-row">
+          <span class="chip">GPT-4o · Smart</span>
+          <span class="chip">Understands slang & typos</span>
+          <span class="chip">UAE cyber law context</span>
         </div>
-      </div>
 
-      <div class="chat-labels">
-        <span class="chip">Cyber security focus</span>
-        <span class="chip">UAE law context (general)</span>
-        <span class="chip">AI powered</span>
-      </div>
+        <div id="messages" class="messages-box"></div>
 
-      <div id="messages" class="messages-box">
-        <!-- messages go here -->
-      </div>
+        <form id="chat-form" class="input-row">
+          <input
+            id="chat-input"
+            type="text"
+            autocomplete="off"
+            placeholder="Example: my snap got hacked wallah what should I do?">
+          <button id="send-btn" type="submit">Send</button>
+        </form>
 
-      <form id="chat-form" class="chat-input-row">
-        <input
-          id="chat-input"
-          type="text"
-          autocomplete="off"
-          placeholder="Write anything… (example: my Snapchat was hacked, what Should I do?)">
-        <button id="send-btn" type="submit">Send</button>
-      </form>
+        <p class="helper">
+          Tip: You can write freely like you talk. I’ll still try to understand and guide you based on online safety and UAE law context.
+        </p>
+      </section>
 
-      <p class="helper-text">
-        I can help with: account hacking, online threats, privacy issues, scams, cyberbullying, screenshots, blackmail and more – always from a UAE online safety perspective.
-      </p>
-
-    </section>
-
-    <p class="footer-mini">Created by Mariam – 2025</p>
+      <p class="footer-sign">Created by Mariam – 2025</p>
+    </div>
   </main>
 
   <script>
@@ -261,60 +295,63 @@
     const statusLabel = document.getElementById("status-label");
     const sendBtn = document.getElementById("send-btn");
 
-    const userName = localStorage.getItem("cyber_user_name") || "User";
+    const NAME_KEY = "cyber_user_name";
+    const HISTORY_KEY = "cyber_chat_history_v2";
 
-    // Load simple history from localStorage
-    const HISTORY_KEY = "cyber_chat_history";
-    function loadHistory() {
-      const raw = localStorage.getItem(HISTORY_KEY);
-      if (!raw) return;
-      try {
-        const arr = JSON.parse(raw);
-        arr.forEach(msg => addBubble(msg.text, msg.type, false));
-      } catch(e) {
-        console.error("History parse error", e);
-      }
-    }
+    const userName = localStorage.getItem(NAME_KEY) || "User";
 
-    function saveMessage(text, type) {
-      const raw = localStorage.getItem(HISTORY_KEY);
+    function saveHistoryItem(text, type) {
       let arr = [];
-      if (raw) {
-        try { arr = JSON.parse(raw) || []; } catch(e) { arr = []; }
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        if (raw) arr = JSON.parse(raw) || [];
+      } catch (e) {
+        arr = [];
       }
       arr.push({ text, type, ts: Date.now() });
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(arr.slice(-50)));
+      if (arr.length > 50) arr = arr.slice(arr.length - 50);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
     }
 
     function addBubble(text, type, save = true) {
       const div = document.createElement("div");
-      div.className = type === "user" ? "msg user-msg" : "msg ai-msg";
+      div.className = "msg " + (type === "user" ? "user-msg" : "ai-msg");
       div.textContent = text;
       messagesBox.appendChild(div);
       messagesBox.scrollTop = messagesBox.scrollHeight;
-      if (save) saveMessage(text, type);
+      if (save) saveHistoryItem(text, type);
     }
 
-    function addTypingBubble() {
+    function addTyping() {
       const div = document.createElement("div");
       div.className = "msg ai-msg";
-      div.id = "typing-bubble";
-      div.innerHTML = '<span class="typing-bubble"><span>Thinking</span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';
+      div.id = "typing";
+      div.innerHTML = '<span class="typing-msg"><span>Thinking</span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';
       messagesBox.appendChild(div);
       messagesBox.scrollTop = messagesBox.scrollHeight;
     }
 
-    function removeTypingBubble() {
-      const el = document.getElementById("typing-bubble");
+    function removeTyping() {
+      const el = document.getElementById("typing");
       if (el) el.remove();
     }
 
-    // On load, welcome + history
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        if (!raw) return;
+        const arr = JSON.parse(raw);
+        arr.forEach(item => addBubble(item.text, item.type, false));
+      } catch (e) {
+        console.error("History parse error", e);
+      }
+    }
+
     window.addEventListener("load", () => {
       loadHistory();
       if (!localStorage.getItem(HISTORY_KEY)) {
         addBubble(
-          `Hi ${userName.toLowerCase()}! I'm your cyber security assistant. You can ask things like:\n- "My Snapchat was hacked, what should I do?"\n- "Someone is threatening me with my photos, what are my options?"\n- "How can I protect my personal data online?"\nI'll give general guidance with UAE cyber law context when possible. This is general information only, not official legal advice.`,
+          `Hey ${userName}! I’m your cyber safety assistant. You can talk to me like you talk to your friends, even with slang or typos.\nExamples:\n- "my snap got hacked wallah help"\n- "someone is threatening me with my pics what do i do"\n- "how to protect my insta from getting hacked"\nI’ll try to give clear steps and mention UAE cyber laws when it fits. This is general information only, not official legal advice.`,
           "ai",
           true
         );
@@ -326,11 +363,11 @@
       const text = input.value.trim();
       if (!text) return;
 
-      addBubble(text, "user");
+      addBubble(text, "user", true);
       input.value = "";
-      statusLabel.innerHTML = '<span class="status-dot"></span> Thinking…';
       sendBtn.disabled = true;
-      addTypingBubble();
+      statusLabel.innerHTML = '<span class="status-dot"></span><span>Thinking…</span>';
+      addTyping();
 
       try {
         const res = await fetch("/api/chat", {
@@ -340,24 +377,26 @@
         });
 
         const data = await res.json();
-
-        removeTypingBubble();
+        removeTyping();
 
         if (data.answer) {
-          addBubble(data.answer, "ai");
-          statusLabel.innerHTML = '<span class="status-dot"></span> Online';
+          addBubble(data.answer, "ai", true);
+          statusLabel.innerHTML = '<span class="status-dot"></span><span>Online</span>';
         } else if (data.error) {
-          addBubble("⚠️ AI error: " + data.error, "ai");
-          statusLabel.innerHTML = '<span class="status-dot" style="background:#f97316;"></span> Error';
+          addBubble("⚠️ AI error: " + data.error, "ai", true);
+          statusLabel.innerHTML =
+            '<span class="status-dot" style="background:#f97316; box-shadow:none;"></span><span>Error</span>';
         } else {
-          addBubble("⚠️ Unexpected AI response.", "ai");
-          statusLabel.innerHTML = '<span class="status-dot" style="background:#f97316;"></span> Error';
+          addBubble("⚠️ Unexpected AI response.", "ai", true);
+          statusLabel.innerHTML =
+            '<span class="status-dot" style="background:#f97316; box-shadow:none;"></span><span>Error</span>';
         }
       } catch (err) {
         console.error(err);
-        removeTypingBubble();
-        addBubble("⚠️ Network error, please try again.", "ai");
-        statusLabel.innerHTML = '<span class="status-dot" style="background:#f97316;"></span> Error';
+        removeTyping();
+        addBubble("⚠️ Network error, please try again.", "ai", true);
+        statusLabel.innerHTML =
+          '<span class="status-dot" style="background:#f97316; box-shadow:none;"></span><span>Error</span>';
       } finally {
         sendBtn.disabled = false;
       }
