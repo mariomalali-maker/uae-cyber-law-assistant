@@ -1,37 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Scam Detector</title>
-
 <style>
-:root {
-  --bg:#0d1524; --text:#e6f1ff; --accent:#00c48c;
-  --safe:#008f4a; --warn:#e6b400; --danger:#d13f50;
+body{margin:0;padding:20px;background:#0d1524;color:white;font-family:system-ui,sans-serif;}
+textarea{width:100%;height:180px;border-radius:12px;padding:12px;background:#132033;color:white;border:none;}
+button{width:100%;padding:12px;border:none;border-radius:12px;background:#00c48c;color:white;margin-top:10px;}
+#out{display:none;margin-top:20px;padding:14px;background:#132033;border-radius:12px;}
+.danger{border-left:6px solid #d13f50;}
+.warn{border-left:6px solid #e6b400;}
+.safe{border-left:6px solid #009f64;}
+</style>
+</head>
+
+<body>
+<a href="welcome.html" style="color:white;">⟵</a>
+<h2>🚨 Scam Detector</h2>
+
+<textarea id="txt" placeholder="Paste message here..."></textarea>
+<button id="check">Check</button>
+<button id="speak">🔊</button>
+<div id="out"></div>
+
+<script>
+check.onclick=async()=>{
+  let t=txt.value.trim(); if(!t)return alert("paste first");
+  let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({message:t,mode:"scam"})});
+  let j=await r.json();
+  out.style.display="block"; out.textContent=j.reply+"\n\n⚠️ UAE: report at ecrime.ae";
+  let low=j.reply.toLowerCase();
+  out.className=""; 
+  if(low.includes("danger"))out.classList.add("danger");
+  else if(low.includes("suspicious")||low.includes("warning"))out.classList.add("warn");
+  else out.classList.add("safe");
 }
-body.light{
-  --bg:#f4f7fa; --text:#0b1220; --accent:#007f64;
-}
-body{
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:system-ui,sans-serif;
-  display:flex; flex-direction:column; height:100vh;
-}
-header{
-  padding:12px; display:flex; justify-content:space-between;
-  align-items:center; background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(8px);
-}
-#theme{
-  padding:8px 12px; border:none; border-radius:8px;
-  background:#132033; color:var(--text);
-}
-textarea{
-  width:90%; max-width:600px; margin:20px auto;
-  height:180px; border-radius:12px; padding:12px;
-  border:none; outline:none; font-size:1rem; background:#132033; color:var(--text);
-}
+speak.onclick=()=>{let s=new SpeechSynthesisUtterance(out.textContent);speechSynthesis.speak(s)}
+</script>
+
+<a href="chat.html" style="position:fixed;bottom:22px;right:22px;background:#00c48c;padding:14px;border-radius:50%;color:white;">💬</a>
+</body>
+</html>
+
 body.light textarea{background:white;color:var(--text);}
 button{
   padding:14px 20px; border-radius:12px; border:none;
