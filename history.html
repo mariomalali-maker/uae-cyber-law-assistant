@@ -1,37 +1,34 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8">
-<link rel="stylesheet" href="styles/style.css">
-<title>History</title>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat History | Cyber Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles/style.css">
 </head>
 <body class="chat-body">
+  <nav class="top-nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="chat.html">💬 Chat</a>
+    <a href="history.html" class="active">📁 History</a>
+    <a href="quiz.html">🎯 Cyber Quiz</a>
+  </nav>
 
-<nav class="top-nav">
-  <a href="chat.html">💬 Chat</a>
-  <a href="history.html">📁 History</a>
-  <a href="quiz.html">🎯 Quiz</a>
-</nav>
+  <h2 style="margin-top:10px;">📁 Conversation History</h2>
+  <p style="color:#9ca3af; margin-bottom:10px;">
+    Stored on this device only. You can clear it anytime.
+  </p>
 
-<h2>📁 Previous Chats</h2>
+  <div class="history-list" id="historyList"></div>
 
-<div id="history"></div>
+  <button id="clearBtn"
+          style="margin-top:12px; padding:8px 14px; border-radius:999px; border:1px solid #ef4444;
+                 background:transparent; color:#fca5a5; cursor:pointer;">
+    Clear all history
+  </button>
 
-<button onclick="clearHistory()">Delete All</button>
+  <p class="footer">Created by Mariam – 2025</p>
 
-<script>
-function loadHistory(){
-  const div = document.getElementById("history");
-  Object.keys(localStorage).forEach(key=>{
-    if(!isNaN(key)) div.innerHTML += `<p>${localStorage[key]}</p>`;
-  });
-}
-function clearHistory(){
-  Object.keys(localStorage).forEach(key=>{ if(!isNaN(key)) localStorage.removeItem(key); });
-  alert("Deleted");
-  location.reload();
-}
-loadHistory();
-</script>
-
+  <script src="scripts/history.js"></script>
 </body>
 </html>
