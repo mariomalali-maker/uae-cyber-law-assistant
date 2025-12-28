@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scam Detector | Cyber Assistant</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body class="page-body">
+
+  <nav class="top-nav">
+    <a href="index.html" class="brand">🏠 Home</a>
+    <a href="chat.html">💬 Chat</a>
+    <a href="history.html">📄 History</a>
+    <a href="quiz.html">🎯 Cyber Quiz</a>
+    <a href="scam.html" class="active">⚠️ Scam Detector</a>
+  </nav>
+
+  <main class="center-layout">
+    <section class="scam-card floating">
+      <h2>⚠️ Scam & Fake Message Detector</h2>
+      <p class="chat-sub">
+        Paste a suspicious message, DM, email, or ad. I’ll help you check if it looks like a scam.
+      </p>
+
+      <textarea id="scam-text" placeholder="Paste the message here…"></textarea>
+
+      <label class="file-label">
+        Optional screenshot (for your own reference only, not uploaded):
+        <input type="file" id="screenshot-input" accept="image/*" />
+      </label>
+
+      <button id="check-scam-btn" class="primary-btn">Analyze</button>
+
+      <div id="scam-result" class="scam-result"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    Created by Mariam – 2025
+  </footer>
+
+  <script src="scripts/scam.js"></script>
+</body>
+</html>
