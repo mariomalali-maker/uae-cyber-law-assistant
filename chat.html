@@ -1,85 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Online Safety & Cyber Law Helper</title>
-<link rel="stylesheet" href="styles/style.css">
-</head>
+  <meta charset="UTF-8">
+  <title>Online Safety & Cyber Law Helper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/style.css">
+  <style>
+    /* Extra layout tweaks for chat page only */
 
-<body class="chat-body">
-
-<!-- Navigation -->
-<nav class="top-nav">
-  <a href="index.html">🏠 Home</a>
-  <a href="chat.html" class="active">💬 Chat</a>
-  <a href="history.html">📁 History</a>
-  <a href="quiz.html">🎯 Cyber Quiz</a>
-</nav>
-
-<h2>🔐 Online Safety & Cyber Law Helper</h2>
-<p style="opacity:0.8;">Smart answers for online safety, hacking issues & digital laws</p>
-
-<div class="chat-box floating">
-  <div id="messages" class="messages-area"></div>
-
-  <form id="chat-form" class="input-area">
-    <input id="chat-input" type="text" placeholder="Write anything… (example: My Snapchat got hacked)" autocomplete="off" />
-    <button type="submit">Send</button>
-  </form>
-</div>
-
-<p id="status-label" style="margin-top:10px; opacity:0.7;">Online</p>
-<p class="footer">Created by Mariam – 2025</p>
-
-<script>
-  const form = document.getElementById("chat-form");
-  const input = document.getElementById("chat-input");
-  const messagesBox = document.getElementById("messages");
-  const statusLabel = document.getElementById("status-label");
-  const userName = localStorage.getItem("cyber_user_name") || "User";
-
-  function addBubble(text, type) {
-    const div = document.createElement("div");
-    div.className = type === "user" ? "msg user-msg" : "msg ai-msg";
-    div.textContent = text;
-    messagesBox.appendChild(div);
-    messagesBox.scrollTop = messagesBox.scrollHeight;
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) return;
-    addBubble(text, "user");
-    input.value = "";
-    statusLabel.textContent = "⏳ Thinking...";
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, username: userName })
-      });
-
-      const data = await res.json();
-
-      if (data.answer) {
-        addBubble(data.answer, "ai");
-        statusLabel.textContent = "Online";
-      } else if (data.error) {
-        addBubble("⚠️ AI error: " + data.error, "ai");
-        statusLabel.textContent = "Error";
-      } else {
-        addBubble("⚠️ Unexpected AI response", "ai");
-        statusLabel.textContent = "Error";
-      }
-    } catch {
-      addBubble("⚠️ Network error, try again.", "ai");
-      statusLabel.textContent = "Error";
+    .chat-page {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1c2840, #050816);
+      color: #fff;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
     }
-  });
-</script>
 
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px 60px;
+    }
+
+    .chat-card {
+      width: 100%;
+      max-width: 900px;
+      background: linear-gradient(145deg, #111827, #030712);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chat-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .chat-labels {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+
+    .chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.15);
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #22c55e;
+      margin-right: 5px;
+    }
+
+    #status-label {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .messages-box {
+      margin-top: 10px;
+      background: rgba(15,23,42,0.9);
+      border-radius: 16px;
+      padding: 12px 14px;
+      max-height: 420px;
+      overflow-y: auto;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .msg {
+      margin: 6px 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+
+    .user-msg {
+      background: #16a34a;
+      align-self: flex-end;
+      color: #f9fafb;
+    }
+
+    .ai-msg {
+      background: #020617;
+      border: 1px solid rgba(148,163,184,0.35);
+    }
+
+    .typing-bubble {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #9ca3af;
+      animation: blink 1s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) { animation-delay: 0.15s; }
+    .dot:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.15; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-2px); }
+    }
+
+    .chat-input-row {
+      display: flex;
+      margin-top: 14px;
+      gap: 8px;
+    }
+
+    #chat-input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+      background:#020617;
+      color:#f9fafb;
+    }
+
+    #chat-input::placeholder {
+      color: #6b7280;
+    }
+
+    #send-btn {
+      border-radius: 999px;
+      border:none;
+      padding: 0 18px;
+      background: linear-gradient(135deg,#22c55e,#06b6d4);
+      color:#020617;
+      font-weight:600;
+      cursor:pointer;
+      font-size:14px;
+      box-shadow:0 0 20px rgba(34,197,94,0.4);
+    }
+
+    #send-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow:none;
+    }
+
+    .helper-text {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    .footer-mini {
+      text-align:center;
+      font-size:12px;
+      color:#9ca3af;
+      margin: 12px 0 8px;
+    }
+
+    /* floating cloud effect */
+    .float-cloud {
+      animation: floatCloud 4s ease-in-out infinite;
+    }
+
+    @keyframes floatCloud {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Simple responsive */
+    @media (max-width: 640px) {
+      .chat-card {
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .chat-main {
+        padding: 10px 0 60px;
+      }
+    }
+  </style>
+</head>
+<body class="chat-page">
+
+  <!-- top nav -->
+  <nav class="top-nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="chat.html" class="active">💬 Chat</a>
+    <a href="history.html">📁 History</a>
+    <a href="quiz.html">🎯 Cyber Quiz</a>
+  </nav>
+
+  <main class="chat-main">
+    <section class="chat-card float-cloud">
+
+      <div class="chat-header-row">
+        <div>
+          <h2 style="margin:0;font-size:20px;">
+            🔐 Online Safety & Cyber Law Helper
+          </h2>
+          <p style="margin:4px 0 0;font-size:12px;color:#9ca3af;">
+            Smart answers for online safety, hacking issues & digital laws.
+          </p>
+        </div>
+        <div id="status-label">
+          <span class="status-dot"></span> Online
+        </div>
+      </div>
+
+      <div class="chat-labels">
+        <span class="chip">Cyber security focus</span>
+        <span class="chip">UAE law context (general)</span>
+        <span class="chip">AI powered</span>
+      </div>
+
+      <div id="messages" class="messages-box">
+        <!-- messages go here -->
+      </div>
+
+      <form id="chat-form" class="chat-input-row">
+        <input
+          id="chat-input"
+          type="text"
+          autocomplete="off"
+          placeholder="Write anything… (example: my Snapchat was hacked, what Should I do?)">
+        <button id="send-btn" type="submit">Send</button>
+      </form>
+
+      <p class="helper-text">
+        I can help with: account hacking, online threats, privacy issues, scams, cyberbullying, screenshots, blackmail and more – always from a UAE online safety perspective.
+      </p>
+
+    </section>
+
+    <p class="footer-mini">Created by Mariam – 2025</p>
+  </main>
+
+  <script>
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("chat-input");
+    const messagesBox = document.getElementById("messages");
+    const statusLabel = document.getElementById("status-label");
+    const sendBtn = document.getElementById("send-btn");
+
+    const userName = localStorage.getItem("cyber_user_name") || "User";
+
+    // Load simple history from localStorage
+    const HISTORY_KEY = "cyber_chat_history";
+    function loadHistory() {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      if (!raw) return;
+      try {
+        const arr = JSON.parse(raw);
+        arr.forEach(msg => addBubble(msg.text, msg.type, false));
+      } catch(e) {
+        console.error("History parse error", e);
+      }
+    }
+
+    function saveMessage(text, type) {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      let arr = [];
+      if (raw) {
+        try { arr = JSON.parse(raw) || []; } catch(e) { arr = []; }
+      }
+      arr.push({ text, type, ts: Date.now() });
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(arr.slice(-50)));
+    }
+
+    function addBubble(text, type, save = true) {
+      const div = document.createElement("div");
+      div.className = type === "user" ? "msg user-msg" : "msg ai-msg";
+      div.textContent = text;
+      messagesBox.appendChild(div);
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+      if (save) saveMessage(text, type);
+    }
+
+    function addTypingBubble() {
+      const div = document.createElement("div");
+      div.className = "msg ai-msg";
+      div.id = "typing-bubble";
+      div.innerHTML = '<span class="typing-bubble"><span>Thinking</span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';
+      messagesBox.appendChild(div);
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+    }
+
+    function removeTypingBubble() {
+      const el = document.getElementById("typing-bubble");
+      if (el) el.remove();
+    }
+
+    // On load, welcome + history
+    window.addEventListener("load", () => {
+      loadHistory();
+      if (!localStorage.getItem(HISTORY_KEY)) {
+        addBubble(
+          `Hi ${userName.toLowerCase()}! I'm your cyber security assistant. You can ask things like:\n- "My Snapchat was hacked, what should I do?"\n- "Someone is threatening me with my photos, what are my options?"\n- "How can I protect my personal data online?"\nI'll give general guidance with UAE cyber law context when possible. This is general information only, not official legal advice.`,
+          "ai",
+          true
+        );
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      addBubble(text, "user");
+      input.value = "";
+      statusLabel.innerHTML = '<span class="status-dot"></span> Thinking…';
+      sendBtn.disabled = true;
+      addTypingBubble();
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, username: userName })
+        });
+
+        const data = await res.json();
+
+        removeTypingBubble();
+
+        if (data.answer) {
+          addBubble(data.answer, "ai");
+          statusLabel.innerHTML = '<span class="status-dot"></span> Online';
+        } else if (data.error) {
+          addBubble("⚠️ AI error: " + data.error, "ai");
+          statusLabel.innerHTML = '<span class="status-dot" style="background:#f97316;"></span> Error';
+        } else {
+          addBubble("⚠️ Unexpected AI response.", "ai");
+          statusLabel.innerHTML = '<span class="status-dot" style="background:#f97316;"></span> Error';
+        }
+      } catch (err) {
+        console.error(err);
+        removeTypingBubble();
+        addBubble("⚠️ Network error, please try again.", "ai");
+        statusLabel.innerHTML = '<span class="status-dot" style="background:#f97316;"></span> Error';
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
-
