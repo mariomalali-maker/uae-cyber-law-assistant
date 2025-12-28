@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Cyber Quiz | Cyber Assistant</title>
-<link rel="stylesheet" href="styles/style.css">
+  <meta charset="UTF-8">
+  <title>Cyber Quiz | Cyber Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles/style.css">
 </head>
-
 <body class="chat-body">
+  <nav class="top-nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="chat.html">💬 Chat</a>
+    <a href="history.html">📁 History</a>
+    <a href="quiz.html" class="active">🎯 Cyber Quiz</a>
+  </nav>
 
+  <h2 style="margin-top:10px;">🎯 Cyber Security Quiz</h2>
+  <p id="timer" style="font-size:16px; margin:6px 0;">
+    Time Left: <strong>10</strong>s
+  </p>
 
-<nav class="top-nav">
-  <a href="chat.html">💬 Chat</a>
-  <a href="history.html">📁 History</a>
-  <a href="quiz.html" class="active">🎯 Cyber Quiz</a>
-</nav>
+  <div class="quiz-box floating" id="quiz-box">
+    <p id="qCounter" style="margin-bottom:8px; color:#a5b4fc;">Question 1 of 10</p>
+    <p id="question">Loading Question...</p>
+    <div id="options" style="margin-top:10px;"></div>
+    <p id="feedback" style="display:none;"></p>
+  </div>
 
-<h2> Cyber Security Quiz </h2>
-<p id="timer" style="font-size:18px; margin:10px 0;">Time Left: <strong>10</strong>s</p>
+  <button id="nextBtn" onclick="nextQuestion()" style="display:none; margin-top:15px;">
+    Next ➜
+  </button>
 
-<div class="quiz-box floating" id="quiz-box">
-  <p id="qCounter" style="margin-bottom:8px; color:#a5b4fc;">Question 1 of 10</p>
-  <p id="question">Loading Question...</p>
-  <div id="options"></div>
-</div>
+  <h3 id="scoreBox" style="display:none; margin-top:15px;"></h3>
 
+  <p class="footer">Created by Mariam – 2025</p>
 
-<button id="nextBtn" onclick="nextQuestion()" style="display:none; margin-top:15px;">Next ➜</button>
-
-<h3 id="scoreBox" style="display:none;"></h3>
-
-<p class="footer">Created by Mariam - 2025</p>
-
-<script src="scripts/quiz.js"></script>
+  <script src="scripts/quiz.js"></script>
 </body>
 </html>
