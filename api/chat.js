@@ -122,7 +122,7 @@ Important:
 }
 
       console.log("OpenAI API ERROR:", data);
-      return res.status(500).json({ answer: "❌ Error, try again later." });
+      return res.status(500).json({ answer: "Error, try again later." });
     }
 
     res.status(200).json({
@@ -131,6 +131,6 @@ Important:
 
   } catch (err) {
     console.error("Server Error:", err);
-    res.status(500).json({ answer: "❌ Server crashed, check Vercel logs." });
+    res.status(500).json({ answer: "Server crashed, check Vercel logs." });
   }
 }
