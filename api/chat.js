@@ -1,63 +1,45 @@
-// /api/chat.js
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+<script>
+const API_URL = "https://uae-cyber-law-assistant-jirm32ss7-mariams-projects-6c30daf9.vercel.app/api/chat"; 
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: "Missing OpenAI API Key in Vercel" });
-  }
-
-  const {
-    message = "",
-    mode = "chat",
-    language = "en",
-  } = req.body || {};
-
-  if (!message.trim()) {
-    return res.status(400).json({ error: "Message cannot be empty" });
-  }
-
-  // SELECT PROMPT BASED ON MODE
-  const systemPrompt =
-    mode === "scam"
-      ? `Analyze the message for scam or phishing patterns. 
-         Highlight red flags and provide guidance for UAE users.
-         Do not claim to be a lawyer. No official legal advice.`
-      : `You are a UAE cyber safety helper. 
-         Help with hacked accounts, blackmail, privacy, cyberbullying.
-         Mention UAE reporting channels (ecrime.ae) when relevant.
-         Do not claim to be a lawyer. No official legal advice.`;
+document.getElementById("sendBtn").addEventListener("click", async () => {
+  const input = document.getElementById("userInput");
+  const message = input.value.trim();
+  if (!message) return;
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: message }
-        ],
-        temperature: 0.4
-      })
+        message,
+        username: "User",
+        gender: "other",
+        mode: "chat"
+      }),
     });
 
-    const data = await response.json();
+    if (!res.ok) {
+      throw new Error("Server Error");
+    }
 
-    // SAFETY: always check
-    const reply = data?.choices?.[0]?.message?.content || "I couldn't respond.";
-
-    return res.status(200).json({ reply });
-
-  } catch (error) {
-    console.error("API Error:", error);
-    return res.status(500).json({ error: "Server error, check console." });
+    const data = await res.json();
+    displayMessage(data.answer);
+  } catch (err) {
+    displayMessage("⚠️ Network error, please try again.");
   }
-}
 
+  input.value = "";
+});
+
+function displayMessage(text) {
+  const container = document.getElementById("chatMessages");
+  const msg = document.createElement("div");
+  msg.className = "msg-ai";
+  msg.textContent = text;
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+}
+</script>
 
