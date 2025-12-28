@@ -8,20 +8,22 @@
 
 <body class="chat-body">
 
-<!-- 🌟 TOP NAVIGATION -->
+
 <nav class="top-nav">
   <a href="chat.html">💬 Chat</a>
   <a href="history.html">📁 History</a>
   <a href="quiz.html" class="active">🎯 Cyber Quiz</a>
 </nav>
 
-<h2>🎯 Cyber Security Quiz</h2>
+<h2> Cyber Security Quiz </h2>
 <p id="timer" style="font-size:18px; margin:10px 0;">Time Left: <strong>10</strong>s</p>
 
 <div class="quiz-box floating" id="quiz-box">
+  <p id="qCounter" style="margin-bottom:8px; color:#a5b4fc;">Question 1 of 10</p>
   <p id="question">Loading Question...</p>
   <div id="options"></div>
 </div>
+
 
 <button id="nextBtn" onclick="nextQuestion()" style="display:none; margin-top:15px;">Next ➜</button>
 
