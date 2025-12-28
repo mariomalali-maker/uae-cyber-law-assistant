@@ -24,9 +24,9 @@ const quizData = [
   {
     q: "What is a strong password example?",
     options: [
-      "mariam123",
+      "omar123",
       "password",
-      "M!r!am_2025#UAE",
+      "Om1r_2025#UAE",
       "123456"
     ],
     correct: 2
@@ -166,10 +166,10 @@ function checkAnswer(chosenIndex) {
   btns.forEach((b, idx) => {
     b.disabled = true;
     if (idx === item.correct) {
-      b.style.backgroundColor = "#16a34a"; // green correct
+      b.style.backgroundColor = "#16a34a"; // green
     }
     if (idx === chosenIndex && idx !== item.correct) {
-      b.style.backgroundColor = "#b91c1c"; // red wrong
+      b.style.backgroundColor = "#b91c1c"; // red
     }
   });
 
@@ -208,4 +208,5 @@ if (startBtn) {
     loadQuestion();
   });
 }
+
 
