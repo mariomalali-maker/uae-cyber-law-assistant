@@ -1,101 +1,90 @@
+// api/chat.js
+
 export default async function handler(req, res) {
+  // Only allow POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return res
-      .status(500)
-      .json({ error: "Server misconfigured (missing OPENAI_API_KEY)." });
-  }
-
   try {
+    // In Vercel Node functions, body is already parsed JSON
     const { message, username } = req.body || {};
-    if (!message || typeof message !== "string") {
-      return res.status(400).json({ error: "Message text is required." });
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: "Empty message." });
     }
 
-    const safeName =
-      typeof username === "string" && username.trim()
-        ? username.trim()
-        : "Guest";
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return res
+        .status(500)
+        .json({ error: "Server misconfigured: OPENAI_API_KEY is missing." });
+    }
 
+    // 🧠 System prompt – NO blocking, just preferences
     const systemPrompt = `
-You are a friendly but professional cyber security & cyber law assistant.
+You are an AI assistant called "Online Safety & Cyber Law Helper".
 
-FOCUS:
-- Focus on cyber security, online behaviour, scams, privacy, hacked accounts, blackmail, and cybercrime.
-- Use UAE situations and mention UAE cybercrime laws when relevant
-  (for example "Federal Decree-Law No. 34 of 2021 on Combatting Rumours and Cybercrime").
-- You MAY answer general global cyber-safety questions, but prefer UAE context when possible.
+You behave like ChatGPT:
+- You accept ANY kind of question and try to help.
+- You answer in clear, friendly, simple English.
+- You can talk about general topics, not only UAE.
 
-STYLE:
-- Speak clearly and simply, like talking to a university student.
-- Occasionally use the user's name (${safeName}).
-- Use short paragraphs and bullet points.
-- Always end with: "This is general information only, not official legal advice."
+But you PREFER to:
+- Emphasise online safety, cyber security, privacy, social media risks, and digital evidence.
+- When the user talks about hacking, blackmail, threats, harassment, fraud, or account compromise,
+  explain practical steps to protect themselves and how to report.
+- If the user is clearly in the UAE, you may mention that serious cyber issues can be reported via
+  ecrime.ae or by calling 999 in emergencies.
 
-RULES:
-- If the question is clearly NOT about security / digital / online stuff (like cooking, clothes, celebrities, sports gossip),
-  say: "I can only help with cyber security, digital safety, and cybercrime topics (especially in the UAE)."
-- If the user asks "who created you" or "who made you":
-  - say Mariam created you to help people in the UAE understand cyber security and what to do in online problems.
-- For serious issues (blackmail, threats, hacked accounts, financial fraud, doxxing):
-  - Tell them to keep evidence (screenshots, usernames, links).
-  - Suggest reporting via official UAE channels (e.g. ecrime.ae, 999 in emergencies, or local police).
-- Do NOT invent specific law article numbers. Only mention article numbers if you are confident.
-- Avoid political debates and religious arguments.
-`;
+Legal info:
+- You may mention "UAE cybercrime laws" in GENERAL terms.
+- Do NOT invent fake article numbers or pretend to be an official lawyer.
+- Always end the answer with: "This is general information only, not official legal advice."
 
-    const payload = {
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        {
-          role: "user",
-          content: `${safeName} asks: ${message}`,
-        },
-      ],
-    };
+Personality:
+- Be respectful and calm, like a helpful advisor.
+- If the user asks "who created you" or "who built you", answer:
+  "I was created by Mariam to help people understand online safety and cyber security."
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000);
+The user's display name is: ${username || "User"}.
+Address them by name sometimes to keep it friendly.
+    `.trim();
 
-    const completion = await fetch("https://api.openai.com/v1/chat/completions", {
+    // Call OpenAI
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + apiKey,
       },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: message },
+        ],
+      }),
     });
 
-    clearTimeout(timeoutId);
+    const data = await response.json();
 
-    if (!completion.ok) {
-      const errText = await completion.text();
-      console.error("OpenAI error:", completion.status, errText);
-      return res
-        .status(500)
-        .json({ error: "AI service error. Please try again later." });
+    // If OpenAI returns an error object
+    if (!response.ok) {
+      console.error("OpenAI API error:", data);
+      const msg =
+        (data && data.error && data.error.message) ||
+        "Unknown error from AI service.";
+      return res.status(500).json({ error: msg });
     }
 
-    const data = await completion.json();
-
     const answer =
-      data?.choices?.[0]?.message?.content ??
-      "I couldn't generate a response. Please try again.";
+      data.choices?.[0]?.message?.content?.trim() ||
+      "I'm not sure what to say. Can you try rephrasing your question?";
 
     return res.status(200).json({ answer });
   } catch (err) {
-    console.error("Handler error:", err);
-    if (err.name === "AbortError") {
-      return res
-        .status(504)
-        .json({ error: "The request took too long. Please try again." });
-    }
-    return res.status(500).json({ error: "Unexpected server error." });
+    console.error("Server crash:", err);
+    return res.status(500).json({ error: "Server error: " + err.message });
   }
 }
