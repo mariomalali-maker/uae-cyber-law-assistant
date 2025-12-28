@@ -63,6 +63,9 @@ function startQuiz() {
 }
 
 function loadQ() {
+  document.getElementById("qCounter").innerText =
+    `Question ${index + 1} of ${quizData.length}`;
+
   document.getElementById("question").innerText = quizData[index].q;
   const optionsDiv = document.getElementById("options");
   optionsDiv.innerHTML = "";
@@ -77,6 +80,7 @@ function loadQ() {
 
   document.getElementById("nextBtn").style.display = "none";
 }
+
 
 function startTimer() {
   timeLeft = 10;
