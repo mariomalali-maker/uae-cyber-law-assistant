@@ -1,6 +1,6 @@
 // scripts/quiz.js
 
-const quizData = [
+const questions = [
   {
     q: "If someone hacks your Snapchat in the UAE, what is the BEST first step?",
     options: [
@@ -12,201 +12,188 @@ const quizData = [
     correct: 1
   },
   {
-    q: "Which website is commonly used in the UAE to report cybercrime incidents?",
+    q: "Someone is threatening to leak your private photos unless you pay. What should you do?",
     options: [
-      "ecrime.ae",
-      "uae-news.ae",
-      "snapchat.com",
-      "instagram.com"
-    ],
-    correct: 0
-  },
-  {
-    q: "What is a strong password example?",
-    options: [
-      "omar123",
-      "password",
-      "Om1r_2025#UAE",
-      "123456"
-    ],
-    correct: 2
-  },
-  {
-    q: "A stranger sends you a link saying “you won an iPhone”. What should you do?",
-    options: [
-      "Click quickly before it expires",
-      "Share it with friends",
-      "Ignore/delete the message",
-      "Send your ID first"
-    ],
-    correct: 2
-  },
-  {
-    q: "Which is safer for login security?",
-    options: [
-      "Only password",
-      "Two-factor authentication (2FA)",
-      "Using the same password everywhere",
-      "Writing password on paper in class"
-    ],
-    correct: 1
-  },
-  {
-    q: "Someone threatens to leak your photos unless you pay. What should you do?",
-    options: [
-      "Pay them immediately",
-      "Block them and stay silent",
-      "Report to ecrime.ae or police and keep all evidence",
+      "Pay once so they stop",
+      "Block them and never report",
+      "Save evidence and report through ecrime.ae or the police",
       "Delete your account and disappear"
     ],
     correct: 2
   },
   {
-    q: "Public Wi-Fi in a café is…",
+    q: "Which password is safest?",
     options: [
-      "Always 100% safe",
-      "Risky, especially for logging into bank / email",
-      "Only dangerous at home",
-      "Safer than mobile data"
-    ],
-    correct: 1
-  },
-  {
-    q: "Which info should you NEVER share with strangers online?",
-    options: [
-      "Favorite color",
-      "Pet’s name",
-      "Full home address and Emirates ID picture",
-      "Favorite food"
+      "omar123",
+      "P@ssword",
+      "Q!3kz#89qLm!2",
+      "snapchatpassword"
     ],
     correct: 2
   },
   {
-    q: "What is phishing?",
+    q: "A bank sends you a link on WhatsApp to update your card. What do you do?",
     options: [
-      "Catching real fish",
-      "Fake messages or websites trying to steal your data",
-      "Playing games online",
-      "Sending memes to friends"
+      "Click and enter your card details",
+      "Forward to friends so they also check",
+      "Call the official bank number to verify before doing anything",
+      "Ignore but keep the link for later"
+    ],
+    correct: 2
+  },
+  {
+    q: "What does 2FA (two-factor authentication) do?",
+    options: [
+      "Makes your account public",
+      "Adds an extra step like SMS or app code to log in",
+      "Deletes old messages automatically",
+      "Saves your password to the cloud"
     ],
     correct: 1
   },
   {
-    q: "How long is each question available in this quiz (time limit)?",
+    q: "You’re using public Wi-Fi in a café. What’s safest?",
     options: [
-      "5 seconds",
-      "10 seconds",
-      "30 seconds",
-      "No time limit"
+      "Log in to all your banking apps",
+      "Use a VPN and avoid sensitive accounts",
+      "Share the Wi-Fi password on your story",
+      "Turn off all security settings"
+    ],
+    correct: 1
+  },
+  {
+    q: "A stranger keeps making new accounts to harass you. Best step?",
+    options: [
+      "Keep replying so they get bored",
+      "Change your name and disappear",
+      "Collect screenshots and report the accounts",
+      "Send them your location"
+    ],
+    correct: 2
+  },
+  {
+    q: "Which file is MOST suspicious to download?",
+    options: [
+      "Homework.pdf from your teacher",
+      "Invoice.exe from an unknown email",
+      "Bank statement.pdf from official bank app",
+      "Your own photo from gallery"
+    ],
+    correct: 1
+  },
+  {
+    q: "What is a strong sign that a DM is a scam?",
+    options: [
+      "It comes from your close friend",
+      "It says you won a big prize and asks for your password",
+      "It uses polite language",
+      "It has emojis"
+    ],
+    correct: 1
+  },
+  {
+    q: "Why is it risky to reuse the same password everywhere?",
+    options: [
+      "It’s hard to remember",
+      "One leak can give attackers access to all your accounts",
+      "Websites don’t allow it",
+      "It makes your phone slow"
     ],
     correct: 1
   }
 ];
 
-let current = -1;
+let currentIndex = 0;
 let score = 0;
 let timerId = null;
-const timePerQuestion = 10;
+let timeLeft = 10;
 
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const nextBtn = document.getElementById("nextBtn");
-const scoreBox = document.getElementById("scoreBox");
+const startBox = document.getElementById("quiz-start");
+const quizMain = document.getElementById("quiz-main");
 const timerEl = document.getElementById("timer");
-const startBtn = document.getElementById("startQuizBtn");
+const qTitle = document.getElementById("question-title");
+const optionsBox = document.getElementById("options");
+const feedbackEl = document.getElementById("feedback");
+const scoreBox = document.getElementById("scoreBox");
+const nextBtn = document.getElementById("nextBtn");
+const startBtn = document.getElementById("start-quiz-btn");
 
-function startTimer() {
-  let timeLeft = timePerQuestion;
+startBtn.addEventListener("click", () => {
+  startBox.style.display = "none";
+  quizMain.style.display = "block";
+  currentIndex = 0;
+  score = 0;
+  showQuestion();
+});
+
+function showQuestion() {
+  clearInterval(timerId);
+  timeLeft = 10;
   timerEl.innerHTML = `Time Left: <strong>${timeLeft}</strong>s`;
-
   timerId = setInterval(() => {
     timeLeft--;
     timerEl.innerHTML = `Time Left: <strong>${timeLeft}</strong>s`;
     if (timeLeft <= 0) {
       clearInterval(timerId);
-      timerEl.innerHTML = `Time's up!`;
       lockOptions();
+      feedbackEl.textContent = "⏰ Time’s up!";
       nextBtn.style.display = "inline-block";
     }
   }, 1000);
-}
 
-function lockOptions() {
-  const btns = optionsEl.querySelectorAll("button");
-  btns.forEach(b => b.disabled = true);
-}
-
-function loadQuestion() {
-  current++;
-  if (current >= quizData.length) {
-    finishQuiz();
-    return;
-  }
-
-  const item = quizData[current];
-  questionEl.textContent = `Question ${current + 1}: ${item.q}`;
-  optionsEl.innerHTML = "";
+  const q = questions[currentIndex];
+  qTitle.textContent = `Question ${currentIndex + 1}: ${q.q}`;
+  optionsBox.innerHTML = "";
+  feedbackEl.textContent = "";
   nextBtn.style.display = "none";
 
-  item.options.forEach((opt, idx) => {
+  q.options.forEach((opt, idx) => {
     const btn = document.createElement("button");
     btn.className = "quiz-btn";
     btn.textContent = opt;
-    btn.addEventListener("click", () => checkAnswer(idx));
-    optionsEl.appendChild(btn);
+    btn.addEventListener("click", () => handleAnswer(btn, idx));
+    optionsBox.appendChild(btn);
   });
-
-  clearInterval(timerId);
-  startTimer();
 }
 
-function checkAnswer(chosenIndex) {
-  const item = quizData[current];
-  const btns = optionsEl.querySelectorAll("button");
-  btns.forEach((b, idx) => {
+function lockOptions() {
+  [...optionsBox.querySelectorAll("button")].forEach(b => {
     b.disabled = true;
-    if (idx === item.correct) {
-      b.style.backgroundColor = "#16a34a"; // green
-    }
-    if (idx === chosenIndex && idx !== item.correct) {
-      b.style.backgroundColor = "#b91c1c"; // red
-    }
   });
+}
 
-  if (chosenIndex === item.correct) {
+function handleAnswer(btn, idx) {
+  if (btn.disabled) return;
+  clearInterval(timerId);
+  const correct = questions[currentIndex].correct;
+
+  lockOptions();
+
+  if (idx === correct) {
+    btn.classList.add("correct");
+    feedbackEl.textContent = "✅ Correct! Nice job protecting yourself.";
     score++;
-    scoreBox.style.display = "block";
-    scoreBox.textContent = `✅ Correct! Score: ${score}/${quizData.length}`;
   } else {
-    scoreBox.style.display = "block";
-    scoreBox.textContent = `❌ Incorrect. Current score: ${score}/${quizData.length}`;
+    btn.classList.add("wrong");
+    const allBtns = [...optionsBox.querySelectorAll("button")];
+    allBtns[correct].classList.add("correct");
+    feedbackEl.textContent = "❌ Not the safest choice. Check the green answer.";
   }
 
-  clearInterval(timerId);
   nextBtn.style.display = "inline-block";
 }
 
-function finishQuiz() {
-  questionEl.textContent = "Quiz finished! 🎉";
-  optionsEl.innerHTML = "";
-  timerEl.textContent = "";
-  nextBtn.style.display = "none";
-  scoreBox.style.display = "block";
-  scoreBox.textContent = `Your final score: ${score}/${quizData.length}.`;
-}
-
 nextBtn.addEventListener("click", () => {
-  loadQuestion();
+  currentIndex++;
+  if (currentIndex >= questions.length) {
+    endQuiz();
+  } else {
+    showQuestion();
+  }
 });
 
-if (startBtn) {
-  startBtn.addEventListener("click", () => {
-    score = 0;
-    current = -1;
-    scoreBox.style.display = "none";
-    startBtn.style.display = "none";
-    loadQuestion();
-  });
+function endQuiz() {
+  quizMain.style.display = "none";
+  scoreBox.style.display = "block";
+  scoreBox.textContent = `You scored ${score} / ${questions.length}.`;
 }
-
-
