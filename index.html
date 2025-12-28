@@ -1,25 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Login | Cyber Assistant</title>
-<link rel="stylesheet" href="styles/style.css">
+  <meta charset="UTF-8">
+  <title>Cyber Security Hub – Login</title>
+  <link rel="stylesheet" href="styles/style.css">
 </head>
 <body class="login-body">
 
-<div class="login-container floating">
-    <h1>Welcome</h1>
-    <p>Sign in to continue.</p>
+  <!-- Top nav -->
+  <nav class="top-nav">
+    <a href="index.html" class="active">🏠 Home</a>
+    <a href="chat.html">💬 Chat</a>
+    <a href="quiz.html">🎯 Cyber Quiz - Test Your Level</a>
+  </nav>
 
-    <form onsubmit="return loginUser(event)">
-        <input id="email" type="email" placeholder="Email" required>
-        <input id="password" type="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-        <p class="skip" onclick="skipLogin()">Continue without login →</p>
+  <!-- Hero section like GitHub -->
+  <section style="max-width:900px; margin-top:80px; text-align:left;">
+    <p style="color:#38bdf8; font-weight:500; margin-bottom:10px;">UAE Cyber Safety Project</p>
+    <h1 style="font-size:40px; font-weight:700; margin:0 0 10px;">
+      The future of safe digital life<br> starts with awareness.
+    </h1>
+    <p style="max-width:550px; color:#cbd5f5; margin-bottom:30px;">
+      Learn how UAE cyber laws protect you online. Chat with an AI assistant, 
+      explore real-life scenarios, and test your knowledge with a cyber-quiz.
+    </p>
+
+    <form id="loginForm" style="display:flex; flex-direction:column; gap:10px; max-width:420px;">
+      <input id="nameInput" type="text" placeholder="Your name" required
+             style="padding:12px; border-radius:10px; border:1px solid #1f2937; background:#0b1120; color:white;">
+      <input id="emailInput" type="email" placeholder="Email address" required
+             style="padding:12px; border-radius:10px; border:1px solid #1f2937; background:#0b1120; color:white;">
+      <input id="passwordInput" type="password" placeholder="Password" required
+             style="padding:12px; border-radius:10px; border:1px solid #1f2937; background:#0b1120; color:white;">
+      <button type="submit"
+              style="margin-top:5px; padding:12px; border-radius:999px; border:none; background:#22c55e; color:#022c22; font-weight:600; cursor:pointer;">
+        Sign in &rarr; Chat
+      </button>
     </form>
 
-</div>
+    <button id="guestBtn"
+            style="margin-top:15px; background:transparent; border:none; color:#9ca3af; cursor:pointer;">
+      Continue as guest (name only)
+    </button>
+  </section>
 
-<script src="scripts/login.js"></script>
+  <p class="footer">Created by Mariam – 2025</p>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const guestBtn = document.getElementById("guestBtn");
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("nameInput").value.trim();
+      const email = document.getElementById("emailInput").value.trim();
+
+      
+      localStorage.setItem("cyberUserName", name);
+      localStorage.setItem("cyberUserEmail", email);
+      window.location.href = "chat.html";
+    });
+
+    guestBtn.addEventListener("click", () => {
+      const name = prompt("Enter your name:");
+      if (!name) return;
+      localStorage.setItem("cyberUserName", name.trim());
+      localStorage.removeItem("cyberUserEmail");
+      window.location.href = "chat.html";
+    });
+  </script>
 </body>
 </html>
