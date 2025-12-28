@@ -1,37 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport"content="width=device-width,initial-scale=1">
 <title>Settings</title>
 <style>
-body{margin:0;padding:20px;background:#0d1524;color:white;font-family:system-ui,sans-serif;max-width:600px;margin:auto;}
-input,select,button{width:100%;padding:10px;border-radius:8px;border:none;background:#132033;color:white;margin-bottom:10px;}
-button{background:#00c48c;font-weight:600;}
-</style>
-</head>
-
+body{background:#050816;color:white;font-family:system-ui,sans-serif;margin:0;padding:20px;}
+input,select,button{width:100%;padding:10px;margin-top:10px;border-radius:10px;background:#111827;color:white;border:none;}
+nav{display:flex;gap:16px;padding:14px 20px;background:#0f1629;margin:-20px -20px 20px -20px;border-bottom:1px solid rgba(255,255,255,.12);}
+nav a{color:white;text-decoration:none;font-size:.9rem;padding:6px 10px;border-radius:8px;}
+nav a:hover{background:#1f2937;}nav .active{background:#3b82f6;}
+</style></head>
 <body>
-<a href="welcome.html" style="color:white;">⟵ Back</a>
-<h2>⚙️ Settings</h2>
 
-<label>Name</label><input id="name">
-<label>Gender</label><select id="gender"><option>none</option><option>female</option><option>male</option></select>
-<label>Tone</label><select id="tone"><option>supportive</option><option>friendly</option><option>formal</option><option>strict</option><option>soft</option></select>
-<label>Voice</label><select id="voice"><option>on</option><option>off</option></select>
-<button id="save">Save</button>
-<button id="reset" style="background:#d13f50;">Reset All</button>
+<nav>
+<a href="index.html">🏠 Home</a>
+<a href="chat.html">💬 Chat</a>
+<a href="quiz.html">🧠 Quiz</a>
+<a href="scam.html">🛑 Scam</a>
+<a class="active" href="settings.html">⚙️ Settings</a>
+</nav>
+
+<h2>⚙️ Settings</h2>
+<label>Voice Output</label>
+<select id="voice"><option>on</option><option>off</option></select>
+<button onclick="save()">Save</button>
 
 <script>
-let f=["name","gender","tone","voice"];
-f.forEach(i=>{if(localStorage.getItem(i))document.getElementById(i).value=localStorage.getItem(i)});
-save.onclick=()=>{f.forEach(i=>localStorage.setItem(i,document.getElementById(i).value));alert("saved")};
-reset.onclick=()=>{localStorage.clear();location.reload()};
+document.getElementById("voice").value=localStorage.getItem("voice")||"on";
+function save(){localStorage.setItem("voice",voice.value);alert("saved")}
 </script>
-
-<a href="chat.html" style="position:fixed;bottom:22px;right:22px;background:#00c48c;padding:14px;border-radius:50%;color:white;">💬</a>
-</body>
-</html>
-
-<button id="clear">Clear Chat History</button>
-<button id="reset" style="background:#d13f50;">Reset All Settings</button>
-
-<scrip
+</body></html>
