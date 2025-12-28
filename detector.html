@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Scam & Phishing Detector | Cyber Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="styles/style.css">
   <style>
     body {
       margin:0;
@@ -15,7 +14,6 @@
       display:flex;
       flex-direction:column;
     }
-
     .top-nav {
       display:flex;
       gap:16px;
@@ -27,7 +25,6 @@
       top:0;
       z-index:10;
     }
-
     .top-nav a {
       color:#e5e7eb;
       text-decoration:none;
@@ -35,12 +32,10 @@
       border-radius:999px;
       font-size:14px;
     }
-
     .top-nav a.active,
     .top-nav a:hover {
       background:rgba(55,65,81,0.8);
     }
-
     main {
       flex:1;
       display:flex;
@@ -48,7 +43,6 @@
       align-items:flex-start;
       padding:24px 10px 60px;
     }
-
     .detector-card {
       width:100%;
       max-width:640px;
@@ -59,24 +53,20 @@
       border:1px solid #1f2937;
       animation: float 4s ease-in-out infinite;
     }
-
     @keyframes float {
       0% { transform:translateY(0); }
       50% { transform:translateY(-8px); }
       100% { transform:translateY(0); }
     }
-
     h1 {
       font-size:20px;
       margin:0 0 4px;
     }
-
     .subtitle {
       font-size:13px;
       color:#9ca3af;
       margin-bottom:12px;
     }
-
     textarea {
       width:100%;
       min-height:120px;
@@ -89,33 +79,27 @@
       resize:vertical;
       outline:none;
     }
-
     textarea::placeholder {
       color:#6b7280;
     }
-
     .field-label {
       font-size:13px;
       margin:10px 0 4px;
     }
-
     .file-row {
       display:flex;
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
     }
-
     input[type="file"] {
       font-size:12px;
       max-width:260px;
     }
-
     .file-name {
       font-size:12px;
       color:#9ca3af;
     }
-
     #preview-img {
       margin-top:8px;
       max-width:100%;
@@ -124,7 +108,6 @@
       border:1px solid #374151;
       display:none;
     }
-
     #analyze-btn {
       margin-top:12px;
       border-radius:999px;
@@ -137,13 +120,11 @@
       cursor:pointer;
       box-shadow:0 12px 25px rgba(249,115,22,0.4);
     }
-
     #analyze-btn:disabled {
       opacity:0.6;
       cursor:default;
       box-shadow:none;
     }
-
     #result-box {
       margin-top:14px;
       background:#020617;
@@ -155,13 +136,11 @@
       min-height:40px;
       white-space:pre-wrap;
     }
-
     .hint {
       font-size:12px;
       color:#9ca3af;
       margin-top:6px;
     }
-
     .footer {
       text-align:center;
       font-size:12px;
@@ -188,10 +167,10 @@
     </p>
 
     <label class="field-label" for="scam-text">Suspicious message or link:</label>
-    <textarea id="scam-text" placeholder="Example: a WhatsApp message asking for bank details, a weird Instagram link, or a blackmail message..."></textarea>
+    <textarea id="scam-text" placeholder="Example: WhatsApp message asking for bank details, weird Instagram link, or blackmail message..."></textarea>
 
     <p class="hint">
-      💡 For best results, paste the full text of the message. The image upload is for evidence / project demo only.
+      💡 For best results, paste the <strong>full text</strong>. The image upload is for evidence / demo only.
     </p>
 
     <label class="field-label" for="scam-file">Upload screenshot (optional):</label>
@@ -206,7 +185,7 @@
     <div id="result-box">Result will appear here.</div>
 
     <p class="hint">
-      I will not actually read the image content. I’ll only use the text you paste, and treat the image as extra evidence the user has kept.
+      I will not actually read the image content. I only use the text you paste, and treat the screenshot as extra evidence you kept.
     </p>
   </section>
 </main>
@@ -224,7 +203,6 @@
   const NAME_KEY = "cyber_user_name";
   const userName = localStorage.getItem(NAME_KEY) || "User";
 
-  // Show file name + small preview
   scamFile.addEventListener("change", () => {
     const file = scamFile.files[0];
     if (!file) {
@@ -255,7 +233,7 @@
 
     let extraInfo = "";
     if (file) {
-      extraInfo = `\n\nThe user also uploaded an image as evidence. File name: "${file.name}". I cannot see the image, but treat it as a screenshot of the message / conversation.`;
+      extraInfo = `\n\nThe user also uploaded an image as evidence. File name: "${file.name}". I cannot see the image, but treat it as a screenshot of the conversation.`;
     }
 
     const prompt =
@@ -286,6 +264,11 @@
       analyzeBtn.disabled = false;
     }
   });
+</script>
+
+</body>
+</html>
+
 </script>
 
 </body>
