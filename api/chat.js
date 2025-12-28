@@ -9,61 +9,68 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "API key missing" });
   }
 
-  
+  if (!message) {
+    return res.status(400).json({ error: "No message provided" });
+  }
+
   const blockTopics = [
     "celebrity","actor","football","team","singer","youtuber",
     "politics","religion","medical","anime","movie","series"
   ];
+
   if (blockTopics.some(w => message.toLowerCase().includes(w))) {
     return res.json({
-      answer: "⚠️ I only answer UAE cyber security and online law questions. Please ask something related."
+      answer: "⚠️ Sorry, I only answer **UAE cyber security & online law** questions."
     });
   }
 
-  
-  const msg = message.toLowerCase();
-  if (msg.includes("who created you")) {
+  if (message.toLowerCase().includes("who created you")) {
     return res.json({
-      answer: `👋 I was created by mariam to help people in the UAE understand cyber security laws and what actions to take if they face online issues.`
+      answer: `👋 I was created by **Mariam** to help people in the UAE understand cyber security laws and what to do if they face online issues.`
     });
   }
 
-  
-  const completion = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + process.env.OPENAI_API_KEY
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `
+  try {
+    const completion = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `
 You are a UAE cyber security law assistant.
 Rules:
-- Always answer professionally and clearly.
-- Always include relevant UAE law references when available, like:
-  "Federal Decree-Law No. 34 of 2021 on Combatting Rumours and Cybercrime".
-- If giving article numbers, only mention if you're confident (do not invent numbers).
-- Always suggest reporting serious issues to ecrime.ae or calling 999 in emergencies.
+- Always answer clearly and professionally.
+- Include UAE law references when available (ex: Federal Decree-Law No. 34 of 2021).
+- Do NOT invent article numbers; only mention if certain.
+- Suggest reporting crimes to ecrime.ae or the police if needed.
+- If asked "who made you": Mariam made you to increase awareness.
 - End every answer with: "This is general information only, not official legal advice."
-- If asked about you: say Mariam created you to increase UAE cyber security awareness.
           `
-        },
-        { role: "user", content: `${username} says: ${message}` }
-      ]
-    })
-  });
+          },
+          { role: "user", content: `${username || "Guest"} says: ${message}` }
+        ]
+      })
+    });
 
-  const data = await completion.json();
+    const data = await completion.json();
 
-  if (!data.choices) {
-    return res.json({ answer: "❌ Error: API response failed. Try again." });
+    if (!data.choices) {
+      console.log("OpenAI API ERROR:", data);
+      return res.status(500).json({ answer: "❌ Error, try again later." });
+    }
+
+    res.status(200).json({
+      answer: data.choices[0].message.content
+    });
+
+  } catch (err) {
+    console.error("Server Error:", err);
+    res.status(500).json({ answer: "❌ Server crashed, check Vercel logs." });
   }
-
-  res.status(200).json({
-    answer: data.choices[0].message.content
-  });
 }
