@@ -1,96 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Chat</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cyber Safety Chat</title>
+
 <style>
-:root{--bg:#0d1524;--text:#e6f1ff;--user:#00c48c;--bot:#132033;}
-body.light{--bg:#f4f7fa;--text:#0b1220;--user:#007f64;--bot:#fff;}
-body{margin:0;background:var(--bg);color:var(--text);
-display:flex;flex-direction:column;height:100vh;font-family:system-ui,sans-serif;}
-header{padding:12px;display:flex;gap:10px;}
-select,button{padding:8px;border-radius:8px;border:none;}
-#messages{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
-.msg{max-width:80%;padding:10px;border-radius:14px;animation:fade .2s;}
-.user{margin-left:auto;background:var(--user);color:white;}
-.bot{background:var(--bot);border:1px solid rgba(255,255,255,.1);}
-#input{display:flex;gap:8px;padding:10px;}
-#text{flex:1;padding:10px;border-radius:999px;border:none;}
-#mic,#snd,#spk{padding:12px;border-radius:999px;border:none;background:var(--user);color:white;}
-@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:#050816;
+  color:white;
+}
+nav{
+  display:flex;
+  gap:16px;
+  padding:14px 20px;
+  background:#0f1629;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  overflow-x:auto;
+}
+nav a{
+  color:white;
+  text-decoration:none;
+  font-size:.9rem;
+  padding:6px 10px;
+  border-radius:8px;
+}
+nav a:hover{
+  background:#1f2937;
+}
+nav .active{
+  background:#22c55e;
+  color:#000;
+}
+
+#container{
+  max-width:780px;
+  margin:30px auto;
+  background:#0d1322;
+  padding:22px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.messages{
+  height:430px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.msg{
+  max-width:78%;
+  padding:10px 14px;
+  border-radius:12px;
+  font-size:.95rem;
+  animation:pop .25s ease;
+  line-height:1.35;
+}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.97);}to{opacity:1;transform:none;}}
+
+.user{background:#22c55e;color:black;margin-left:auto;}
+.bot{background:#111827;border:1px solid rgba(255,255,255,.15)}
+
+.input-box{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  background:#0f172a;
+  border-radius:12px;
+  margin-top:14px;
+}
+.input-box input{
+  flex:1;
+  background:transparent;
+  border:none;
+  padding:10px;
+  color:white;
+  outline:none;
+}
+.input-box button{
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+}
+.send{background:#22c55e;color:black;}
+.mic,.speak{background:#1e293b;color:white;}
+
 </style>
 </head>
 
 <body>
-<a href="welcome.html" style="padding:10px;color:var(--text);text-decoration:none;">⟵</a>
 
-<header>
-  <select id="lang"><option value="en">EN</option><option value="ar">AR</option></select>
-  <button id="theme">Dark/Light</button>
-</header>
+<nav>
+  <a href="index.html">🏠 Home</a>
+  <a class="active" href="chat.html">💬 Chat</a>
+  <a href="quiz.html">🧠 Cyber Quiz</a>
+  <a href="scam.html">🛑 Scam Detector</a>
+  <a href="settings.html">⚙️ Settings</a>
+  <button id="en">EN</button><button id="ar">AR</button>
+</nav>
 
-<div id="messages"></div>
+<div id="container">
+  <h2>Cyber Safety & UAE Law Assistant</h2>
+  <p style="opacity:.7">Ask anything related to hacking, blackmail, privacy or UAE cyber laws.</p>
 
-<div id="input">
-  <input id="text" placeholder="type...">
-  <button id="mic">🎤</button>
-  <button id="snd">➤</button>
-  <button id="spk">🔊</button>
+  <div class="messages" id="messages"></div>
+
+  <div class="input-box">
+    <input type="text" id="input" placeholder="Example: my insta got hacked wallah help" />
+    <button class="mic" id="mic">🎤</button>
+    <button class="speak" id="speak">🔊</button>
+    <button class="send" id="send">Send</button>
+  </div>
 </div>
 
 <script>
-if(localStorage.getItem("theme")==="light")document.body.classList.add("light");
-theme.onclick=()=>{document.body.classList.toggle("light");
-localStorage.setItem("theme",document.body.classList.contains("light")?"light":"dark")};
+// LANGUAGE
+let lang = "en";
+document.getElementById("en").onclick = ()=> lang="en";
+document.getElementById("ar").onclick = ()=> lang="ar";
 
-if(localStorage.getItem("lang"))lang.value=localStorage.getItem("lang");
-lang.onchange=()=>localStorage.setItem("lang",lang.value);
+// ADD MESSAGE
+function add(text,type){
+  let d=document.createElement("div");
+  d.className="msg "+type;
+  d.textContent=text;
+  document.getElementById("messages").appendChild(d);
+  d.scrollIntoView({behavior:"smooth",block:"end"});
+}
 
-function add(c,t){let d=document.createElement("div");d.className="msg "+t;d.textContent=c;messages.append(d);messages.scrollTop=999999}
-
+// SEND
 async function send(){
-  let m=text.value.trim(); if(!m)return;
-  add(m,"user"); text.value="";
-  let body={
-    message:m,
-    language:lang.value,
-    username:localStorage.getItem("name")||"User",
-    gender:localStorage.getItem("gender")||"none",
-    tone:localStorage.getItem("tone")||"supportive",
-    mode:"chat"
-  };
-  let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-  let j=await r.json();
-  add(j.reply,"bot");
-  if(localStorage.getItem("voice")==="on"){
-    let s=new SpeechSynthesisUtterance(j.reply);
-    s.lang=lang.value==="ar"?"ar":"en-US"; speechSynthesis.speak(s);
-  }
+  const input=document.getElementById("input");
+  const t=input.value.trim();
+  if(!t)return;
+  add(t,"user");
+  input.value="";
+
+  const res = await fetch("/api/chat",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({message:t,language:lang})
+  });
+  const data = await res.json();
+  add(data.reply,"bot");
 }
+document.getElementById("send").onclick = send;
+document.getElementById("input").onkeydown = e=>{
+  if(e.key==="Enter") send();
+};
 
-snd.onclick=send;
-text.onkeydown=e=>e.key==="Enter"&&send();
-
-mic.onclick=()=>{
-  if(!("webkitSpeechRecognition" in window))return alert("Voice not supported");
+// 🎤 Voice Input
+document.getElementById("mic").onclick = ()=>{
+  if(!("webkitSpeechRecognition" in window)) return alert("not supported");
   let rec=new webkitSpeechRecognition();
-  rec.lang=lang.value==="ar"?"ar":"en-US"; rec.start();
-  rec.onresult=e=>text.value=e.results[0][0].transcript;
-}
+  rec.lang=lang==="ar"?"ar":"en-US";
+  rec.start();
+  rec.onresult = e=> document.getElementById("input").value = e.results[0][0].transcript;
+};
 
-spk.onclick=()=>{
+// 🔊 Speak Reply
+document.getElementById("speak").onclick = ()=>{
   let last=[...document.querySelectorAll(".bot")].pop();
   if(!last)return;
   let s=new SpeechSynthesisUtterance(last.textContent);
-  s.lang=lang.value==="ar"?"ar":"en-US"; speechSynthesis.speak(s);
-}
+  s.lang=lang==="ar"?"ar":"en-US";
+  speechSynthesis.speak(s);
+};
 </script>
-
-</body>
-</html>
-
-</script>
-
 </body>
 </html>
