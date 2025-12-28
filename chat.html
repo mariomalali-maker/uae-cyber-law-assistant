@@ -1,430 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Cyber Safety & UAE Law Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg-dark: #050816;
-      --bg-card-dark: #0f172a;
-      --text-dark: #f9fafb;
-      --accent: #22c55e;
-      --accent-soft: rgba(34, 197, 94, 0.1);
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chat Assistant</title>
 
-      --bg-light: #f3f4f6;
-      --bg-card-light: #ffffff;
-      --text-light: #020617;
-    }
+<style>
+:root {
+  --bg: #0d1524;
+  --text: #e6f1ff;
+  --user: #00c48c;
+  --bot: #132033;
+}
+body.light {
+  --bg: #f4f7fa;
+  --text: #0b1220;
+  --user: #007f64;
+  --bot: #ffffff;
+}
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-dark);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 32px 12px;
-      transition: background 0.25s, color 0.25s;
-    }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
-    body.light {
-      background: var(--bg-light);
-      color: var(--text-light);
-    }
+header {
+  padding: 12px;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
+}
 
-    .app-shell {
-      width: 100%;
-      max-width: 900px;
-      border-radius: 24px;
-      padding: 24px;
-      background: rgba(15, 23, 42, 0.95);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      transition: background 0.25s, border-color 0.25s;
-    }
+#theme, #lang {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  background: #132033;
+  color: var(--text);
+}
 
-    body.light .app-shell {
-      background: var(--bg-card-light);
-      border-color: rgba(148, 163, 184, 0.4);
-    }
+#messages {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
+.msg {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 1rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  animation: fadeIn 0.2s ease;
+}
+.user { 
+  margin-left: auto;
+  background: var(--user);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.bot { 
+  background: var(--bot);
+  border-bottom-left-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
 
-    .title-block h1 {
-      margin: 0;
-      font-size: 1.4rem;
-      font-weight: 700;
-    }
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(6px);}
+  to {opacity:1; transform:translateY(0);}
+}
 
-    .title-block p {
-      margin: 4px 0 0;
-      font-size: 0.9rem;
-      color: #9ca3af;
-    }
+#input-area {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+}
 
-    body.light .title-block p {
-      color: #6b7280;
-    }
+#text {
+  flex: 1;
+  padding: 10px;
+  border-radius: 999px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
 
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+.btn {
+  background: var(--user);
+  color: #fff;
+  border-radius: 999px;
+  border: none;
+  padding: 12px;
+  font-size: 1.2rem;
+}
 
-    select {
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: transparent;
-      color: inherit;
-      font-size: 0.85rem;
-      outline: none;
-    }
+.btn:active { transform: scale(0.95); }
 
-    body.light select {
-      background: #f9fafb;
-    }
-
-    .toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .toggle-switch {
-      width: 38px;
-      height: 20px;
-      border-radius: 999px;
-      background: #1f2937;
-      position: relative;
-      transition: background 0.2s;
-    }
-
-    body.light .toggle-switch {
-      background: #e5e7eb;
-    }
-
-    .toggle-knob {
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: #f9fafb;
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      transition: transform 0.2s;
-    }
-
-    body.light .toggle-knob {
-      transform: translateX(18px);
-    }
-
-    .system-message {
-      border-radius: 16px;
-      padding: 14px 16px;
-      font-size: 0.9rem;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      margin-bottom: 16px;
-      line-height: 1.4;
-    }
-
-    body.light .system-message {
-      background: #f9fafb;
-    }
-
-    .chat-window {
-      border-radius: 16px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      display: flex;
-      flex-direction: column;
-      height: 420px;
-      overflow: hidden;
-      transition: background 0.25s;
-    }
-
-    body.light .chat-window {
-      background: #ffffff;
-    }
-
-    .messages {
-      padding: 14px 16px;
-      flex: 1;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-    }
-
-    .message {
-      margin-bottom: 10px;
-      max-width: 80%;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      line-height: 1.4;
-      word-wrap: break-word;
-    }
-
-    .message.user {
-      margin-left: auto;
-      background: var(--accent);
-      color: #022c22;
-      border-bottom-right-radius: 2px;
-    }
-
-    .message.bot {
-      background: #020617;
-      border-bottom-left-radius: 2px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-    }
-
-    body.light .message.bot {
-      background: #f3f4f6;
-      border-color: #e5e7eb;
-    }
-
-    .message.error {
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.6);
-      color: #fecaca;
-    }
-
-    body.light .message.error {
-      color: #7f1d1d;
-      background: #fee2e2;
-    }
-
-    .input-row {
-      padding: 10px;
-      display: flex;
-      gap: 8px;
-      border-top: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.96);
-    }
-
-    body.light .input-row {
-      background: #f9fafb;
-    }
-
-    .input-row input {
-      flex: 1;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      outline: none;
-      background: transparent;
-      color: inherit;
-    }
-
-    body.light .input-row input {
-      background: #ffffff;
-    }
-
-    .send-btn {
-      border-radius: 999px;
-      padding: 0 18px;
-      border: none;
-      background: var(--accent);
-      color: #022c22;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
-      white-space: nowrap;
-    }
-
-    .send-btn:active {
-      transform: scale(0.97);
-      box-shadow: 0 0 0;
-    }
-
-    .send-btn[disabled] {
-      opacity: 0.5;
-      cursor: default;
-    }
-
-    .status-text {
-      margin-top: 8px;
-      font-size: 0.8rem;
-      color: #9ca3af;
-    }
-
-    body.light .status-text {
-      color: #6b7280;
-    }
-
-    @media (max-width: 640px) {
-      .app-shell {
-        padding: 18px;
-      }
-      .message {
-        max-width: 100%;
-      }
-    }
-  </style>
+/* floating back button */
+#back {
+  position: fixed;
+  top: 14px; left: 14px;
+  font-size: 1.4rem;
+  text-decoration: none;
+  color: var(--text);
+}
+</style>
 </head>
+
 <body>
-  <div class="app-shell">
-    <div class="header">
-      <div class="title-block">
-        <h1>Cyber Safety &amp; UAE Law Assistant</h1>
-        <p>Ask about hacking, online threats, privacy, social media, cyberbullying, and more.</p>
-      </div>
-      <div class="controls">
-        <!-- language switch: English / Arabic -->
-        <select id="language-select">
-          <option value="en">English</option>
-          <option value="ar">العربية</option>
-        </select>
 
-        <!-- theme toggle -->
-        <label class="toggle" id="theme-toggle">
-          <span>Dark</span>
-          <div class="toggle-switch">
-            <div class="toggle-knob"></div>
-          </div>
-          <span>Light</span>
-        </label>
-      </div>
-    </div>
+<a id="back" href="welcome.html">⟵</a>
 
-    <div class="system-message">
-      Hi Mariam! I’m your cyber safety assistant. You can ask things like:
-      <br />– “My Snapchat was hacked, what should I do?”
-      <br />– “Someone is threatening me with photos, what are my options in the UAE?”
-      <br />– “How can I protect my data and avoid scams?”
-      <br /><br />
-      I’ll give clear steps, mention UAE cybercrime laws when they apply, and add references to official UAE sources when possible
-      (like UAE Public Prosecution or UAE Police). This is general information only, not official legal advice.
-    </div>
+<header>
+  <select id="lang">
+    <option value="en">English</option>
+    <option value="ar">العربية</option>
+  </select>
+  <button id="theme">Dark/Light</button>
+</header>
 
-    <div class="chat-window">
-      <div id="messages" class="messages"></div>
+<div id="messages"></div>
 
-      <form id="chat-form" class="input-row">
-        <input
-          id="user-input"
-          type="text"
-          placeholder="Example: my Snapchat was hacked, what should I do?"
-          autocomplete="off"
-        />
-        <button type="submit" class="send-btn" id="send-btn">
-          Send
-        </button>
-      </form>
-    </div>
+<div id="input-area">
+  <input id="text" placeholder="Type or press 🎤 to speak..." autocomplete="off" />
+  <button id="mic" class="btn">🎤</button>
+  <button id="send" class="btn">➤</button>
+  <button id="speak" class="btn">🔊</button>
+</div>
 
-    <div id="status" class="status-text"></div>
-  </div>
+<script>
+// THEME ----
+document.getElementById("theme").onclick = () => {
+  document.body.classList.toggle("light");
+  localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+};
+if(localStorage.getItem("theme")==="light"){document.body.classList.add("light")}
 
-  <script>
-    const messagesEl = document.getElementById("messages");
-    const form = document.getElementById("chat-form");
-    const input = document.getElementById("user-input");
-    const sendBtn = document.getElementById("send-btn");
-    const statusEl = document.getElementById("status");
-    const languageSelect = document.getElementById("language-select");
-    const themeToggle = document.getElementById("theme-toggle");
+// LANGUAGE ----
+const lang = document.getElementById("lang");
+if(localStorage.getItem("lang")) lang.value = localStorage.getItem("lang");
+lang.onchange = ()=> localStorage.setItem("lang", lang.value);
 
-    // ----- THEME -----
-    (function initTheme() {
-      const saved = localStorage.getItem("uaeAssistantTheme");
-      if (saved === "light") {
-        document.body.classList.add("light");
-      }
-    })();
+// SEND MESSAGE ----
+const text = document.getElementById("text");
+const messages = document.getElementById("messages");
 
-    themeToggle.addEventListener("click", () => {
-      document.body.classList.toggle("light");
-      const isLight = document.body.classList.contains("light");
-      localStorage.setItem("uaeAssistantTheme", isLight ? "light" : "dark");
-    });
+function addMsg(content, type="bot"){
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.textContent = content;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
 
-    // ----- LANGUAGE (chat only, not quiz page) -----
-    (function initLanguage() {
-      const saved = localStorage.getItem("uaeAssistantLang");
-      if (saved === "ar") {
-        languageSelect.value = "ar";
-      }
-    })();
+async function send(){
+  const msg = text.value.trim();
+  if(!msg) return;
+  addMsg(msg, "user");
+  text.value = "";
+  
+  const res = await fetch("/api/chat",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ message:msg, language:lang.value })
+  });
+  const data = await res.json();
+  addMsg(data.reply || "Error", "bot");
+}
+document.getElementById("send").onclick = send;
 
-    languageSelect.addEventListener("change", () => {
-      localStorage.setItem("uaeAssistantLang", languageSelect.value);
-    });
+// ENTER = send
+text.addEventListener("keydown",e=>{
+  if(e.key==="Enter") send();
+});
 
-    function addMessage(content, type = "bot") {
-      const div = document.createElement("div");
-      div.className = "message " + type;
-      div.innerText = content;
-      messagesEl.appendChild(div);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
+// VOICE INPUT 🎤 ----
+let rec;
+document.getElementById("mic").onclick = ()=>{
+  if(!("webkitSpeechRecognition" in window)){
+    alert("Voice not supported in this browser");return;
+  }
+  rec = new webkitSpeechRecognition();
+  rec.lang = lang.value==="ar" ? "ar" : "en-US";
+  rec.start();
+  rec.onresult = (e)=>{ text.value = e.results[0][0].transcript; }
+};
 
-    function setStatus(text) {
-      statusEl.textContent = text || "";
-    }
+// VOICE OUTPUT 🔊 ----
+document.getElementById("speak").onclick = ()=>{
+  const last = [...messages.querySelectorAll(".bot")].pop();
+  if(!last) return;
+  const speech = new SpeechSynthesisUtterance(last.textContent);
+  speech.lang = lang.value==="ar" ? "ar" : "en-US";
+  speech.rate = 1;
+  window.speechSynthesis.speak(speech);
+};
+</script>
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const text = input.value.trim();
-      if (!text) return;
-
-      const language = languageSelect.value;
-
-      addMessage(text, "user");
-      input.value = "";
-      setStatus("Thinking...");
-      sendBtn.disabled = true;
-
-      try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text, language }),
-        });
-
-        if (!res.ok) {
-          throw new Error("Server returned " + res.status);
-        }
-
-        const data = await res.json();
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        addMessage(data.reply || "Sorry, I couldn’t generate a reply.", "bot");
-        setStatus("");
-      } catch (err) {
-        console.error(err);
-        addMessage(
-          "Network error. Please check your connection or try again in a moment.",
-          "error"
-        );
-        setStatus("Network error while talking to the assistant.");
-      } finally {
-        sendBtn.disabled = false;
-      }
-    });
-  </script>
 </body>
 </html>
