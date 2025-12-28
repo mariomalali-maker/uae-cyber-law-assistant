@@ -1,48 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Cyber Quiz | Cyber Assistant</title>
-  <link rel="stylesheet" href="styles/style.css" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiz</title>
+<style>
+body{margin:0;padding:20px;background:#0d1524;color:white;font-family:system-ui,sans-serif;}
+.card{background:#132033;padding:20px;border-radius:12px;}
+button{padding:10px;width:100%;margin-top:10px;border:none;border-radius:8px;background:#00c48c;color:white;}
+</style>
 </head>
-<body class="page-body">
 
-  <nav class="top-nav">
-    <a href="index.html" class="brand">🏠 Home</a>
-    <a href="chat.html">💬 Chat</a>
-    <a href="history.html">📄 History</a>
-    <a href="quiz.html" class="active">🎯 Cyber Quiz</a>
-    <a href="scam.html">⚠️ Scam Detector</a>
-  </nav>
+<body>
+<a href="welcome.html" style="color:white;">⟵</a>
+<h2>🧠 Quiz Zone</h2>
+<div class="card" id="q"></div>
 
-  <main class="center-layout">
-    <section class="quiz-card floating">
-      <h2>🎯 Cyber Safety Quiz</h2>
-      <p class="chat-sub">
-        10 quick questions with a 10s limit each. Test how well you protect yourself online.
-      </p>
+<script>
+let quiz=[
+{q:"Is sharing someone's photo without permission legal in UAE?",a:"no"},
+{q:"Where to report scams?",a:"ecrime.ae"},
+{q:"Give OTP to others?",a:"no"}
+];
+let i=0,s=0;
+function show(){
+ if(i>=quiz.length)return q.innerHTML=`Done! Score: ${s}/${quiz.length}`;
+ q.innerHTML=`<h3>${quiz[i].q}</h3><input id='a'><button onclick='check()'>Answer</button>`;
+}
+function check(){
+ let a=document.getElementById("a").value.trim().toLowerCase();
+ if(a===quiz[i].a){s++;alert("✔");} else alert("✖ "+quiz[i].a);
+ i++;show();
+}
+show();
+</script>
 
-      <div id="quiz-start">
-        <p>Ready? You’ll have only <strong>10 seconds</strong> per question.</p>
-        <button id="start-quiz-btn" class="primary-btn">Start Quiz</button>
-      </div>
-
-      <div id="quiz-main" style="display:none;">
-        <p id="timer">Time Left: <strong>10</strong>s</p>
-        <h3 id="question-title"></h3>
-        <div id="options"></div>
-        <p id="feedback" class="quiz-feedback"></p>
-        <button id="nextBtn" class="btn" style="display:none;">Next ➜</button>
-      </div>
-
-      <h3 id="scoreBox" style="display:none;"></h3>
-    </section>
-  </main>
-
-  <footer class="footer">
-    Created by Mariam – 2025
-  </footer>
+<a href="chat.html" style="position:fixed;bottom:22px;right:22px;background:#00c48c;padding:14px;border-radius:50%;color:white;">💬</a>
+</body>
+</html>
 
   <script src="scripts/quiz.js"></script>
 </body>
