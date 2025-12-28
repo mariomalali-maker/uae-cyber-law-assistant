@@ -1,73 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
+<head><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Settings</title>
-
 <style>
-:root{
-  --bg:#0d1524; --text:#e6f1ff; --card:#132033;
-  --accent:#00c48c;
-}
-body.light{--bg:#f4f7fa;--text:#0b1220;--card:#ffffff;--accent:#007f64;}
-body{
-  margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;
-  min-height:100vh;padding:20px;display:flex;flex-direction:column;gap:20px;
-  max-width:600px;margin:auto;
-}
-label{font-size:1rem;margin-bottom:8px;display:block;}
-input,select,button{
-  width:100%;padding:10px;border-radius:8px;border:none;font-size:1rem;
-  margin-bottom:14px;background:var(--card);color:var(--text);
-}
-button{background:var(--accent);color:white;font-weight:600;}
-hr{border:0;border-top:1px solid rgba(255,255,255,0.1);}
-#back{position:fixed;top:14px;left:14px;color:var(--text);font-size:1.4rem;text-decoration:none;}
+body{margin:0;padding:20px;background:#0d1524;color:white;font-family:system-ui,sans-serif;max-width:600px;margin:auto;}
+input,select,button{width:100%;padding:10px;border-radius:8px;border:none;background:#132033;color:white;margin-bottom:10px;}
+button{background:#00c48c;font-weight:600;}
 </style>
 </head>
 
 <body>
-
-<a id="back" href="welcome.html">⟵</a>
+<a href="welcome.html" style="color:white;">⟵ Back</a>
 <h2>⚙️ Settings</h2>
 
-<label>Your Name</label>
-<input type="text" id="name" placeholder="Enter your name">
+<label>Name</label><input id="name">
+<label>Gender</label><select id="gender"><option>none</option><option>female</option><option>male</option></select>
+<label>Tone</label><select id="tone"><option>supportive</option><option>friendly</option><option>formal</option><option>strict</option><option>soft</option></select>
+<label>Voice</label><select id="voice"><option>on</option><option>off</option></select>
+<button id="save">Save</button>
+<button id="reset" style="background:#d13f50;">Reset All</button>
 
-<label>Gender</label>
-<select id="gender">
-  <option value="none">Prefer not to say</option>
-  <option value="female">Female</option>
-  <option value="male">Male</option>
-  <option value="other">Other</option>
-</select>
+<script>
+let f=["name","gender","tone","voice"];
+f.forEach(i=>{if(localStorage.getItem(i))document.getElementById(i).value=localStorage.getItem(i)});
+save.onclick=()=>{f.forEach(i=>localStorage.setItem(i,document.getElementById(i).value));alert("saved")};
+reset.onclick=()=>{localStorage.clear();location.reload()};
+</script>
 
-<label>Preferred Tone</label>
-<select id="tone">
-  <option value="supportive">Supportive</option>
-  <option value="friendly">Friendly</option>
-  <option value="formal">Formal</option>
-  <option value="strict">Strict</option>
-  <option value="soft">Soft</option>
-</select>
-
-<label>Chat Language</label>
-<select id="language">
-  <option value="en">English</option>
-  <option value="ar">Arabic</option>
-</select>
-
-<label>Voice Output</label>
-<select id="voice">
-  <option value="on">On</option>
-  <option value="off">Off</option>
-</select>
-
-<label>Theme</label>
-<button id="theme">Toggle Dark/Light</button>
-
-<hr>
+<a href="chat.html" style="position:fixed;bottom:22px;right:22px;background:#00c48c;padding:14px;border-radius:50%;color:white;">💬</a>
+</body>
+</html>
 
 <button id="clear">Clear Chat History</button>
 <button id="reset" style="background:#d13f50;">Reset All Settings</button>
