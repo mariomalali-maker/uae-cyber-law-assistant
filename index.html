@@ -1,74 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Cyber Security Hub – Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles/style.css">
+  <meta charset="UTF-8" />
+  <title>Cyber Safety Hub | Mariam</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body class="login-body">
+<body class="page-body">
+
+  <!-- Top nav -->
   <nav class="top-nav">
-    <a href="index.html" class="active"> HomePage 🏠</a>
-    <a href="chat.html"> Chat 💬</a>
-    <a href="history.html">History 📁 </a>
-    <a href="quiz.html">Cyber Quiz - Test Your Self 🎯 </a>
+    <a href="index.html" class="brand">🏠 HomePage</a>
+    <a href="chat.html">💬 Chat</a>
+    <a href="history.html">📄 History</a>
+    <a href="quiz.html">🎯 Cyber Quiz</a>
+    <a href="scam.html">⚠️ Scam Detector</a>
   </nav>
 
-  <section class="login-hero">
-    <div>
-      <p class="login-tag">Smart cyber safety hub</p>
-      <h1>The future of safe<br> digital life starts here.</h1>
-      <p class="lead">
-        Ask an AI about real online problems, learn what UAE cyber laws say,
+  <main class="hero-layout">
+    <section class="hero-text floating">
+      <p class="tagline">Smart cyber safety hub</p>
+      <h1>The future of safe<br>digital life starts here.</h1>
+      <p class="hero-desc">
+        Ask an AI about real online problems, see which UAE cyber laws might apply,
         and practice staying safe with a quick cyber quiz.
       </p>
-      <ul style="list-style:none; color:#9ca3af; font-size:0.92rem;">
-        <li>• Guidance for hacked accounts, blackmail, scams & privacy leaks.</li>
-        <li>• Answers with UAE law context & official reporting options.</li>
-        <li>• Fun 10-question cyber quiz with instant feedback.</li>
+      <ul class="hero-bullets">
+        <li>🛡️ Your Guidance for hacked accounts, blackmail, scams & privacy leaks.</li>
+        <li>📚 Answers with UAE law context & official reporting options.</li>
+        <li>🎯 Fun 10-question cyber quiz with instant feedback ! Test Your Self </li>
       </ul>
-    </div>
+    </section>
 
-    <div class="login-card floating">
-      <h3>Sign in to your cyber lab</h3>
-      <p>Log in with email or continue as guest. Your name lets the AI speak to you personally.</p>
+    <section class="login-card floating">
+      <h2>Sign in to your cyber lab</h2>
+      <p class="login-sub">
+        Your name and gender let the AI talk to you personally.
+      </p>
 
-      <form id="loginForm">
-        <input id="nameInput" type="text" placeholder="Your name" required>
-        <input id="emailInput" type="email" placeholder="Email address" required>
-        <input id="passwordInput" type="password" placeholder="Password" required>
-        <button type="submit" class="primary">Sign in → Chat</button>
+      <form id="login-form" class="login-form">
+        <label>
+          Name
+          <input type="text" id="name" placeholder="Mariam" required />
+        </label>
+
+        <label>
+          Gender
+          <select id="gender" required>
+            <option value="">Select</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="other">Prefer not to say</option>
+          </select>
+        </label>
+
+        <label>
+          Email (optional)
+          <input type="email" id="email" placeholder="you@example.com" />
+        </label>
+
+        <label>
+          Password (optional)
+          <input type="password" id="password" placeholder="••••••••" />
+        </label>
+
+        <button type="submit" class="btn primary-btn">Sign in → Chat</button>
       </form>
 
-      <button id="guestBtn" class="ghost">
+      <button id="guest-btn" class="btn ghost-btn">
         Continue as guest (name only)
       </button>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <p class="footer">created by Mariam – 2025</p>
+  <footer class="footer">
+    Created by Mariam – 2025
+  </footer>
 
   <script>
-    const loginForm = document.getElementById("loginForm");
-    const guestBtn = document.getElementById("guestBtn");
+    // Save name + gender and go to chat
+    const loginForm = document.getElementById('login-form');
+    const guestBtn  = document.getElementById('guest-btn');
 
-    loginForm.addEventListener("submit", (e) => {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const name = document.getElementById("nameInput").value.trim();
-      const email = document.getElementById("emailInput").value.trim();
+      const name   = document.getElementById('name').value.trim() || 'Guest';
+      const gender = document.getElementById('gender').value || 'other';
 
-      localStorage.setItem("cyberUserName", name || "Guest");
-      localStorage.setItem("cyberUserEmail", email || "");
+      localStorage.setItem('cyber_user_name', name);
+      localStorage.setItem('cyber_user_gender', gender);
 
-      window.location.href = "chat.html";
+      window.location.href = 'chat.html';
     });
 
-    guestBtn.addEventListener("click", () => {
-      const name = prompt("Please Enter your name:");
-      if (!name) return;
-      localStorage.setItem("cyberUserName", name.trim());
-      localStorage.removeItem("cyberUserEmail");
-      window.location.href = "chat.html";
+    guestBtn.addEventListener('click', () => {
+      const name = document.getElementById('name').value.trim() || 'Guest';
+      localStorage.setItem('cyber_user_name', name);
+      localStorage.setItem('cyber_user_gender', 'other');
+      window.location.href = 'chat.html';
     });
   </script>
 </body>
