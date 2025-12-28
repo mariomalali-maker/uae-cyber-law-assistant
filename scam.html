@@ -1,49 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Scam Detector</title>
+
 <style>
-body{margin:0;padding:20px;background:#0d1524;color:white;font-family:system-ui,sans-serif;}
-textarea{width:100%;height:180px;border-radius:12px;padding:12px;background:#132033;color:white;border:none;}
-button{width:100%;padding:12px;border:none;border-radius:12px;background:#00c48c;color:white;margin-top:10px;}
-#out{display:none;margin-top:20px;padding:14px;background:#132033;border-radius:12px;}
-.danger{border-left:6px solid #d13f50;}
-.warn{border-left:6px solid #e6b400;}
-.safe{border-left:6px solid #009f64;}
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:#050816;
+  color:white;
+}
+nav{
+  display:flex;
+  gap:16px;
+  padding:14px 20px;
+  background:#0f1629;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  overflow-x:auto;
+}
+nav a{
+  color:white;
+  text-decoration:none;
+  font-size:.9rem;
+  padding:6px 10px;
+  border-radius:8px;
+}
+nav a:hover{background:#1f2937;}
+nav .active{background:#ef4444;color:white;}
+
+#container{
+  max-width:780px;
+  margin:30px auto;
+  background:#0d1322;
+  padding:22px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+}
+
+textarea{
+  width:100%;
+  background:#0f172a;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  padding:14px;
+  color:white;
+  height:130px;
+  resize:none;
+  outline:none;
+}
+
+button{
+  padding:10px 16px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+.check{background:#ef4444;color:white;width:100%;margin-top:10px;}
+.speak{background:#111827;color:white;width:100%;margin-top:8px;}
+
+.output{
+  margin-top:14px;
+  background:#111827;
+  border:1px solid rgba(255,255,255,.12);
+  padding:14px;
+  min-height:100px;
+  border-radius:12px;
+  font-size:.95rem;
+  display:none;
+  animation:fade .25s ease;
+}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 </style>
 </head>
 
 <body>
-<a href="welcome.html" style="color:white;">⟵</a>
-<h2>🚨 Scam Detector</h2>
 
-<textarea id="txt" placeholder="Paste message here..."></textarea>
-<button id="check">Check</button>
-<button id="speak">🔊</button>
-<div id="out"></div>
+<nav>
+  <a href="index.html">🏠 Home</a>
+  <a href="chat.html">💬 Chat</a>
+  <a href="quiz.html">🧠 Cyber Quiz</a>
+  <a class="active" href="scam.html">🛑 Scam Detector</a>
+  <a href="settings.html">⚙️ Settings</a>
+</nav>
+
+<div id="container">
+  <h2>🛑 Scam & Phishing Detector</h2>
+  <p style="opacity:.7;font-size:.85rem;">Paste a suspicious message or link — I’ll analyze it.</p>
+
+  <textarea id="text" placeholder="Example: someone asked for OTP / weird Instagram link / message asking for money"></textarea>
+  <button class="check" id="check">Analyze message</button>
+  <button class="speak" id="speak">🔊 Read Result</button>
+
+  <div class="output" id="output"></div>
+</div>
 
 <script>
-check.onclick=async()=>{
-  let t=txt.value.trim(); if(!t)return alert("paste first");
-  let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({message:t,mode:"scam"})});
-  let j=await r.json();
-  out.style.display="block"; out.textContent=j.reply+"\n\n⚠️ UAE: report at ecrime.ae";
-  let low=j.reply.toLowerCase();
-  out.className=""; 
-  if(low.includes("danger"))out.classList.add("danger");
-  else if(low.includes("suspicious")||low.includes("warning"))out.classList.add("warn");
-  else out.classList.add("safe");
-}
-speak.onclick=()=>{let s=new SpeechSynthesisUtterance(out.textContent);speechSynthesis.speak(s)}
-</script>
+let lang="en";
 
-<a href="chat.html" style="position:fixed;bottom:22px;right:22px;background:#00c48c;padding:14px;border-radius:50%;color:white;">💬</a>
+// RUN ANALYSIS
+document.getElementById("check").onclick = async()=>{
+  const t=document.getElementById("text").value.trim();
+  if(!t) return alert("Paste the suspicious message first");
+  const r = await fetch("/api/chat",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json"},
+    body:JSON.stringify({message:t,mode:"scam",language:lang})
+  });
+  const data=await r.json();
+  const out=document.getElementById("output");
+  out.style.display="block";
+  out.textContent = data.reply + "\n\n⚠️ Report UAE scams: ecrime.ae";
+};
+
+// 🔊 SPEAK RESPONSE
+document.getElementById("speak").onclick = ()=>{
+  const text=document.getElementById("output").textContent;
+  if(!text)return;
+  let s=new SpeechSynthesisUtterance(text);
+  s.lang=lang==="ar"?"ar":"en-US";
+  speechSynthesis.speak(s);
+};
+</script>
 </body>
 </html>
-
-body.light textarea{background:white;color:var(--text);}
-button{
-  padding:14px 20px; border-radius:12px; border:none;
-  background:var(--accent); color
