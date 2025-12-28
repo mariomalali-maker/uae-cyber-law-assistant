@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8">
+<link rel="stylesheet" href="styles/style.css">
+<title>History</title>
+</head>
+<body class="chat-body">
+
+<nav class="top-nav">
+  <a href="chat.html">💬 Chat</a>
+  <a href="history.html">📁 History</a>
+  <a href="quiz.html">🎯 Quiz</a>
+</nav>
+
+<h2>📁 Previous Chats</h2>
+
+<div id="history"></div>
+
+<button onclick="clearHistory()">Delete All</button>
+
+<script>
+function loadHistory(){
+  const div = document.getElementById("history");
+  Object.keys(localStorage).forEach(key=>{
+    if(!isNaN(key)) div.innerHTML += `<p>${localStorage[key]}</p>`;
+  });
+}
+function clearHistory(){
+  Object.keys(localStorage).forEach(key=>{ if(!isNaN(key)) localStorage.removeItem(key); });
+  alert("Deleted");
+  location.reload();
+}
+loadHistory();
+</script>
+
+</body>
+</html>
