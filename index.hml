@@ -4,215 +4,138 @@
 <meta charset="UTF-8">
 <title>UAE Cyber Law Assistant</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
   body {
     font-family: Arial, sans-serif;
     background: #0f172a;
     color: white;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    margin: 0; padding: 0;
+    text-align: center;
   }
-
-  /* Login / Name Popup */
-  #loginPopup, #namePopup {
-    position: fixed;
-    top: 50%; left: 50%;
+  /* Popup Windows */
+  .popup {
+    position: fixed; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     background: #1e293b;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    width: 350px;
+    padding: 30px; border-radius: 10px;
+    width: 300px;
     display: none;
   }
-
-  /* Chat Container */
-  #chatContainer {
-    width: 420px;
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 15px;
-    animation: float 3s ease-in-out infinite;
-    display: none;
-  }
-
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  input, button {
-    padding: 10px;
-    border-radius: 6px;
-    border: none;
-    margin: 5px 0;
-    width: 90%;
-  }
-
+  input { padding: 10px; width: 90%; margin: 7px 0; border-radius: 5px; }
   button {
-    background: #34d399;
-    cursor: pointer;
-    font-weight: bold;
+    background:#38bdf8; border:none;
+    padding: 10px; margin-top: 10px;
+    width:95%; border-radius: 8px;
+    cursor:pointer; font-weight:bold;
   }
 
-  .message {
-    background: #0f172a;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 10px 0;
+  /* Floating chat box */
+  #chatBox {
+    margin: 80px auto;
+    width: 90%; max-width: 450px;
+    background:#1e293b; padding:20px;
+    border-radius:15px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(-5px); }
+    50% { transform: translateY(5px); }
+    100% { transform: translateY(-5px); }
   }
 
-  #signature {
-    position: fixed;
-    bottom: 10px;
-    right: 20px;
-    font-family: cursive;
-    opacity: 0.7;
+  /* Thinking dots */
+  #thinking { display:none; font-size:14px; margin-top:5px; color:#93c5fd; }
+
+  .signature {
+    margin-top: 80px;
+    opacity: 0.6;
+    font-family: "Brush Script MT", cursive;
+    font-size: 22px;
   }
 
-  #thinking {
-    display: none;
-    margin: 10px 0;
-    text-align: center;
-  }
 </style>
 </head>
-
 <body>
 
+<h2 style="margin-top:40px;">🇦🇪 UAE Cyber Law Assistant</h2>
+<p>Smart AI guide for online UAE cases & cyber safety</p>
+
 <!-- LOGIN POPUP -->
-<div id="loginPopup">
+<div id="loginPopup" class="popup">
   <h3>Login</h3>
   <input id="email" type="email" placeholder="Email (optional)">
   <input id="password" type="password" placeholder="Password (optional)">
-  <button onclick="continueToName()">Continue</button>
-  <button onclick="skipLogin()">Continue without login</button>
+  <button onclick="login()">Login</button>
+  <button onclick="skipLogin()" style="background:#64748b">Continue without login</button>
 </div>
 
 <!-- NAME POPUP -->
-<div id="namePopup">
-  <h3>Enter your name</h3>
-  <input id="username" type="text" placeholder="Your name">
-  <button onclick="startChat()">Start</button>
+<div id="namePopup" class="popup">
+  <h3>Your Name?</h3>
+  <input id="username" placeholder="Enter your name">
+  <button onclick="saveName()">Continue</button>
 </div>
 
-<!-- CHAT UI -->
-<div id="chatContainer">
-  <h2>🇦🇪 UAE Cyber Law Assistant</h2>
-  <p>Ask anything related to cybersecurity in the UAE:</p>
-  
-  <input id="userMessage" type="text" placeholder="Type your question here...">
+<!-- CHAT -->
+<div id="chatBox" style="display:none;">
+  <input id="question" placeholder="Ask your cyber law question..." style="padding:10px;width:90%;border-radius:8px;">
   <button onclick="sendMessage()">Send</button>
+  
+  <p id="thinking">Typing...</p>
 
-  <div id="thinking">💭 typing...</div>
-
-  <div id="chatMessages"></div>
+  <h3>Response:</h3>
+  <div id="answer" style="min-height:100px;padding:15px;background:#0d1b2a;border-radius:10px;"></div>
 </div>
 
-<div id="signature">created by Mariam - 2025</div>
+<div class="signature">
+  Created by Mariam - 2025
+</div>
 
 <script>
+/* ----- LOGIN FLOW ----- */
+window.onload = () => {
+  document.getElementById("loginPopup").style.display = "block";
+};
 
-const OPENAI_API_KEY = "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";
-
-
-document.getElementById("loginPopup").style.display = "block";
-let userName = "";
-
-function continueToName(){ document.getElementById("loginPopup").style.display="none"; document.getElementById("namePopup").style.display="block"; }
-function skipLogin(){ document.getElementById("loginPopup").style.display="none"; document.getElementById("namePopup").style.display="block"; }
-
-function startChat(){
-  userName = document.getElementById("username").value || "visitor";
-  document.getElementById("namePopup").style.display="none";
-  document.getElementById("chatContainer").style.display="block";
+function login() {
+  document.getElementById("loginPopup").style.display = "none";
+  document.getElementById("namePopup").style.display = "block";
 }
 
-/* CHAT SYSTEM RULES */
-const systemPrompt = `
-You are "UAE Cyber Law Helper", created by Mariam.
-Goal: help people in the UAE understand cyber security & online laws.
-If asked "who created you" → say "I was created by Mariam."
-If asked "what is your goal" → say "My goal is to increase cyber security awareness in the UAE."
+function skipLogin() {
+  document.getElementById("loginPopup").style.display = "none";
+  document.getElementById("namePopup").style.display = "block";
+}
 
-Allowed topics:
-- UAE cybercrime law (Federal Decree-Law No. 34 of 2021)
-- reporting cybercrime (ecrime.ae, 800-CYBER, 999)
-- hacking, blackmail, threats, online safety
-- snapchat/instagram/whatsapp issues
-- anything related to security in general
-- saftey for person
-- how to protect your self and data 
+function saveName() {
+  const name = document.getElementById("username").value;
+  if(!name) return alert("Please enter your name!");
+  localStorage.setItem("username", name);
+  document.getElementById("namePopup").style.display = "none";
+  document.getElementById("chatBox").style.display = "block";
+}
 
-Do NOT answer:
-- celebrity gossip
-- personal info about people
-- hacking or illegal help
-- medical, political or religious questions
-- identity of others
-
-If off-topic, respond:
-"I can only help with UAE cyber security or online law topics."
-
-Always add references:
-- ecrime.ae
-- moi.gov.ae
-- Dubai Police App
-- publicprosecution.gov.ae
-
-Always end with:
-"This is general information only, not official legal advice."
-`;
-
-/* SEND MESSAGE */
+/* ----- SEND MESSAGE ----- */
 async function sendMessage(){
-  const msg = document.getElementById("userMessage").value;
-  if(!msg) return;
+  const q = document.getElementById("question").value;
+  const username = localStorage.getItem("username") || "Guest";
 
-  showMessage(`🟦 ${msg}`);
-  document.getElementById("userMessage").value = "";
   document.getElementById("thinking").style.display = "block";
 
-  const reply = await askGPT(msg);
-  showMessage(`🟥 ${reply}`);
+  const res = await fetch("/api/chat", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ message: q, username })
+  });
+
+  const data = await res.json();
   document.getElementById("thinking").style.display = "none";
-}
 
-function showMessage(text){
-  const box = document.createElement("div");
-  box.classList.add("message");
-  box.innerText = text;
-  document.getElementById("chatMessages").appendChild(box);
-}
-
-/* CALL OPENAI */
-async function askGPT(question){
-  try{
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer " + OPENAI_API_KEY
-      },
-      body:JSON.stringify({
-        model:"gpt-3.5-turbo",
-        messages:[
-          {role:"system", content:systemPrompt},
-          {role:"user", content:question}
-        ]
-      })
-    });
-
-    const data = await res.json();
-    return data.choices[0].message.content;
-  } catch(err){
-    return "❌ Error. Check API key.";
-  }
+  document.getElementById("answer").innerText = data.answer || "⚠️ Error, try again.";
 }
 </script>
+
 </body>
 </html>
+
