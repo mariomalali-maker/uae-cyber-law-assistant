@@ -1,186 +1,1422 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Saeed's Game</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Saeed's Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Your global styles (nav, fonts, etc.) -->
+  <link rel="stylesheet" href="styles/style.css" />
 
-<style>
-body{
- background:#02040A;
- margin:0;
- font-family:Arial, sans-serif;
- color:white;
- overflow:hidden;
-}
-nav{
- background:rgba(0,0,0,0.35);
- padding:12px 20px;
- display:flex;justify-content:space-between;align-items:center;
- backdrop-filter:blur(10px);
-}
-nav .lang-switch button{
- background:none;border:none;font-weight:bold;color:white;font-size:16px;cursor:pointer;
+  <style>
+    /* ---------- GENERAL PAGE ---------- */
+    body.page-body {
+      background: #020617;
+      color: #f9fafb;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+    }
+
+    main.game-page {
+      max-width: 1100px;
+      margin: 40px auto 60px;
+      padding: 0 16px 40px;
+    }
+
+    .game-shell {
+      background: radial-gradient(circle at top, #172937, #020617 55%);
+      border-radius: 24px;
+      padding: 28px 28px 36px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ---------- HEADER BAR (CITY, HEARTS, LEVEL, LANG) ---------- */
+    .game-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .badge {
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge.city {
+      font-weight: 500;
+    }
+
+    .badge.level {
+      font-size: 12px;
+    }
+
+    .hearts {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .hearts span {
+      font-size: 20px;
+    }
+
+    .lang-toggle {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      padding: 4px 10px;
+      font-size: 12px;
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lang-toggle span {
+      opacity: 0.7;
+    }
+
+    .lang-toggle .active {
+      opacity: 1;
+      font-weight: 600;
+      color: #22c55e;
+    }
+
+    
+    .scene {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #020617 0%, #020617 40%, #020617 40%, #020617 100%);
+      min-height: 380px;
+    }
+
+    
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(248,250,252,0.2) 0, transparent 55%),
+        radial-gradient(circle at 80% 10%, rgba(96,165,250,0.5) 0, transparent 55%),
+        linear-gradient(to bottom, #020617 0%, #020617 40%, #020617 40%, #000 100%);
+      opacity: 0.9;
+      z-index: 0;
+    }
+
+   
+    .street {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 60px;
+      height: 120px;
+      background: linear-gradient(to bottom, #020617 0%, #020617 25%, #020617 26%, #000 100%);
+      box-shadow: 0 -20px 50px rgba(0,0,0,0.8);
+      z-index: 1;
+    }
+
+   
+    .street::before {
+      content: "";
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 50%;
+      height: 3px;
+      background-image: linear-gradient(to right, #e5e7eb 0 24px, transparent 24px 40px);
+      background-size: 40px 3px;
+      opacity: 0.65;
+    }
+
+    
+    .ground {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 80px;
+      background: radial-gradient(circle at top, #020617, #020617 40%, #000 100%);
+      z-index: 1;
+    }
+
+    
+    .palm {
+      position: absolute;
+      bottom: 120px;
+      width: 18px;
+      height: 80px;
+      background: linear-gradient(to bottom, #0f172a, #022c22);
+      border-radius: 10px;
+      opacity: 0.7;
+      z-index: 1;
+    }
+
+    .palm::before,
+    .palm::after {
+      content: "";
+      position: absolute;
+      width: 52px;
+      height: 28px;
+      background: radial-gradient(circle at center, #22c55e 0, #15803d 55%, transparent 70%);
+      top: -18px;
+      border-radius: 999px;
+    }
+
+    .palm::before { left: -36px; transform: rotate(-10deg); }
+    .palm::after  { right: -36px; transform: rotate(8deg); }
+
+    .palm.p1 { left: 18%; animation: palmFloat 5s ease-in-out infinite; }
+    .palm.p2 { left: 48%; animation: palmFloat 6s ease-in-out infinite 0.8s; }
+    .palm.p3 { left: 75%; animation: palmFloat 7s ease-in-out infinite 0.4s; }
+
+    @keyframes palmFloat {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-4px); }
+    }
+
+   
+    .saeed-wrapper {
+      position: absolute;
+      left: 18%;
+      bottom: 80px;
+      z-index: 3;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .saeed {
+      width: 80px;
+      height: 150px;
+      background: #f9fafb;
+      border-radius: 40px 40px 26px 26px;
+      box-shadow:
+        0 12px 24px rgba(15,23,42,0.7),
+        0 0 0 1px rgba(148,163,184,0.6);
+      position: relative;
+      overflow: visible;
+      animation: saeedIdle 1.4s ease-in-out infinite;
+    }
+
+    .saeed::before {
+      /* ghutra band */
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      border-radius: 40px 40px 24px 24px;
+      background:
+        linear-gradient(to bottom, #020617 0 8px, transparent 8px 100%),
+        linear-gradient(to bottom, #e5e7eb, #f9fafb);
+      box-shadow: 0 6px 10px rgba(15,23,42,0.4);
+    }
+
+    .saeed-face {
+      position: absolute;
+      top: 32px;
+      left: 0;
+      right: 0;
+      height: 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .saeed-eyes {
+      display: flex;
+      gap: 12px;
+    }
+
+    .saeed-eye {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #020617;
+    }
+
+    .saeed-mouth {
+      width: 26px;
+      height: 10px;
+      border-radius: 20px;
+      border: 2px solid #16a34a;
+      border-top: none;
+      transform-origin: center;
+    }
+
+    .saeed-arm {
+      position: absolute;
+      right: 2px;
+      bottom: 40px;
+      width: 18px;
+      height: 46px;
+      border-radius: 18px;
+      background: #f9fafb;
+      box-shadow: inset -3px 0 0 rgba(15,23,42,0.1);
+    }
+
+    .saeed-arm::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      bottom: 4px;
+      width: 16px;
+      height: 22px;
+      border-radius: 6px;
+      background: #020617;
+    }
+
+    .saeed-feet {
+      position: absolute;
+      bottom: -12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .saeed-foot {
+      width: 18px;
+      height: 12px;
+      background: #020617;
+      border-radius: 10px 10px 4px 4px;
+    }
+
+    @keyframes saeedIdle {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-4px); }
+    }
+
+    @keyframes saeedStep {
+      0%   { transform: translateX(0) translateY(0); }
+      30%  { transform: translateX(10px) translateY(-6px); }
+      60%  { transform: translateX(20px) translateY(0); }
+      100% { transform: translateX(26px) translateY(-4px); }
+    }
+
+    .saeed-walk {
+      animation: saeedStep 0.9s ease-out forwards;
+    }
+
+    
+    .mood-happy .saeed-mouth {
+      border-color: #16a34a;
+      border-top: none;
+      transform: scale(1.05);
+    }
+
+    .mood-worried .saeed-mouth {
+      border-color: #f97316;
+      border-bottom: none;
+      border-top: 2px solid #f97316;
+      transform: translateY(2px);
+    }
+
+    .mood-sad .saeed-mouth {
+      border-color: #ef4444;
+      border-top: none;
+      transform: scaleX(0.8) translateY(2px);
+    }
+
+    .mood-surprised .saeed-mouth {
+      border-radius: 999px;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #facc15;
+    }
+
+    
+    .phone {
+      position: absolute;
+      right: 16%;
+      bottom: 96px;
+      width: 280px;
+      border-radius: 28px;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #020617 100%);
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow:
+        0 18px 40px rgba(15,23,42,0.9),
+        inset 0 0 0 1px rgba(15,23,42,0.6);
+      padding: 14px 14px 16px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .phone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .phone-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .phone-app {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .phone-app-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #0891b2, #22c55e);
+    }
+
+    .phone-header-sub {
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    .phone-chip {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.75);
+      border: 1px solid rgba(148,163,184,0.7);
+    }
+
+    .phone-body {
+  background: rgba(2, 6, 23, 0.8);
+  border-radius: 18px;
+  padding: 14px 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #ffffff; /* Make text visible */
+  min-height: 90px;
+  display: flex;
+  align-items: center;
 }
 
-/* INTRO */
-#introScreen{
- position:fixed;inset:0;background:rgba(0,0,0,0.85);
- backdrop-filter:blur(8px);
- display:flex;flex-direction:column;align-items:center;justify-content:center;
- z-index:1000;text-align:center;
-}
-#introScreen img{width:120px;margin-bottom:20px;}
-.intro-btn{
- background:#1ea33f;color:white;border:none;padding:10px 20px;
- border-radius:8px;margin:10px auto;font-weight:bold;cursor:pointer;
-}
-#startBtn{background:#3b82f6;display:none;}
 
-/* GAME AREA */
-#gameContainer{
- width:90%;margin:auto;margin-top:100px;
- background:linear-gradient(#0B1A2A,#08121C);
- border-radius:20px;padding:20px;position:relative;display:none;
-}
-#hearts{text-align:center;font-size:28px;margin-bottom:10px;}
+    .phone-body p {
+      margin: 0;
+    }
 
-/* Saeed */
-#saeed{
- width:80px;height:160px;background:white;
- border-radius:25px;
- position:absolute;left:120px;bottom:140px;
- transition:0.3s ease;
-}
-#saeed::before{
- content:"";background:black;width:50px;height:20px;border-radius:10px;
- position:absolute;top:-10px;left:15px;
-}
+    .phone-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-/* Phone */
-#phone{
- width:320px;background:rgba(0,0,0,0.7);
- border:2px solid #222;padding:18px;border-radius:16px;
- position:absolute;right:120px;bottom:110px;
-}
-#messageText{font-size:15px;margin-bottom:15px;line-height:20px;}
-.answer-btn{width:100%;padding:10px;margin-top:10px;border:none;font-weight:bold;border-radius:8px;cursor:pointer;}
-.safe{background:#16a34a;color:white;}
-.danger{background:#EF4444;color:white;}
+    .answer-btn {
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+      white-space: normal;
+      text-align: center;
+    }
 
-</style>
+    .answer-primary {
+      background: #22c55e;
+      color: #022c22;
+      box-shadow: 0 8px 18px rgba(34,197,94,0.4);
+    }
+
+    .answer-secondary {
+      background: #f97316;
+      color: #111827;
+      box-shadow: 0 6px 14px rgba(249,115,22,0.35);
+    }
+
+    .answer-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: none;
+      filter: brightness(0.98);
+    }
+
+    .answer-btn.disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
+      backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    .intro-card {
+      width: min(420px, 92vw);
+      background: linear-gradient(to bottom, #020617, #020617 60%, #020617);
+      border-radius: 26px;
+      padding: 26px 24px 20px;
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.85);
+      text-align: center;
+      color: #e5e7eb;
+      position: relative;
+    }
+
+    .intro-character {
+      width: 80px;
+      height: 130px;
+      margin: 0 auto 12px;
+      background: #f9fafb;
+      border-radius: 40px 40px 26px 26px;
+      position: relative;
+      box-shadow: 0 12px 24px rgba(15,23,42,0.7);
+      animation: introFloat 1.6s ease-in-out infinite;
+    }
+
+    .intro-character::before {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: 0;
+      right: 0;
+      height: 38px;
+      border-radius: 40px 40px 22px 22px;
+      background:
+        linear-gradient(to bottom, #020617 0 8px, transparent 8px 100%),
+        linear-gradient(to bottom, #e5e7eb, #f9fafb);
+      box-shadow: 0 4px 10px rgba(15,23,42,0.4);
+    }
+
+    .intro-face {
+      position: absolute;
+      top: 34px;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .intro-eyes {
+      display: flex;
+      gap: 14px;
+    }
+
+    .intro-eye {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #020617;
+    }
+
+    .intro-mouth {
+      width: 22px;
+      height: 9px;
+      border-radius: 20px;
+      border: 2px solid #16a34a;
+      border-top: none;
+    }
+
+    @keyframes introFloat {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-6px); }
+    }
+
+    .intro-title {
+      margin-top: 4px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .intro-text {
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #cbd5f5;
+    }
+
+    .intro-actions {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .primary-btn,
+    .ghost-btn {
+      border-radius: 999px;
+      padding: 9px 14px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+    }
+
+    .primary-btn {
+      background: #22c55e;
+      color: #022c22;
+      box-shadow: 0 10px 25px rgba(34,197,94,0.6);
+    }
+
+    .primary-btn:active,
+    .ghost-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: none;
+    }
+
+    .ghost-btn {
+      background: transparent;
+      color: #e5e7eb;
+      border: 1px solid rgba(148,163,184,0.8);
+    }
+
+    .ghost-btn[disabled],
+    .primary-btn[disabled] {
+      opacity: 0.55;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .intro-hint {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .intro-lang-toggle {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+    }
+
+    /* ---------- TOAST / OVERLAYS ---------- */
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(15,23,42,0.95);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(148,163,184,0.7);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.9);
+      z-index: 5;
+    }
+
+    .toast.hidden {
+      display: none;
+    }
+
+    .toast.good {
+      border-color: #22c55e;
+      color: #bbf7d0;
+    }
+
+    .toast.bad {
+      border-color: #ef4444;
+      color: #fecaca;
+    }
+
+    .end-overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
+      z-index: 30;
+    }
+
+    .end-overlay.visible {
+      display: flex;
+    }
+
+    .end-card {
+      width: min(400px, 92vw);
+      background: #020617;
+      border-radius: 24px;
+      padding: 24px 22px 20px;
+      border: 1px solid rgba(148,163,184,0.7);
+      text-align: center;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+      color: #e5e7eb;
+    }
+
+    .end-title {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .end-text {
+      font-size: 13px;
+      color: #cbd5f5;
+      margin-bottom: 16px;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 800px) {
+      .scene {
+        min-height: 420px;
+      }
+
+      .saeed-wrapper {
+        left: 12%;
+      }
+
+      .phone {
+        right: 8%;
+        bottom: 100px;
+        width: 260px;
+      }
+
+      .game-shell {
+        padding: 20px 16px 28px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      main.game-page {
+        margin-top: 20px;
+      }
+
+      .game-shell {
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .scene {
+        border-radius: 18px;
+      }
+
+      .phone {
+        right: 50%;
+        transform: translateX(50%);
+        bottom: 110px;
+      }
+
+      .saeed-wrapper {
+        left: 14%;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="page-body">
+  <!-- Top navigation (same structure as your other pages) -->
+  <nav class="top-nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="chat.html">💬 Chat</a>
+    <a href="history.html">📄 History</a>
+    <a href="quiz.html">🎯 Cyber Quiz</a>
+    <a href="scam.html">⚠️ Scam Detector</a>
+    <a href="saeed.game.html" class="active">🎮 Saeed's Game</a>
+  </nav>
 
-<nav>
- <span style="font-size:18px;font-weight:bold;">💚 Saeed’s Game</span>
- <div class="lang-switch"><button id="langEN">EN</button> | <button id="langAR">AR</button></div>
-</nav>
+  <main class="game-page">
+    <div class="game-shell">
+      <!-- GAME HEADER -->
+      <div class="game-header">
+        <span class="badge city" id="cityLabel">Abu Dhabi →</span>
 
-<!-- INTRO -->
-<div id="introScreen">
- <img src="https://i.imgur.com/Al7jo8o.png">
- <h2 id="introTitle">Meet Saeed</h2>
- <p id="introText">He doesn’t know much about online safety yet. Listen to the intro then help him!</p>
- <button class="intro-btn" onclick="playIntro()">▶ Play Introduction</button>
- <button class="intro-btn" id="startBtn" onclick="startGame()">✔ Start Game</button>
- <audio id="introAudio" src="intro-voice.mp3"></audio>
-</div>
+        <div class="hearts" id="hearts">
+          <span>❤️</span><span>❤️</span><span>❤️</span>
+        </div>
 
-<!-- GAME -->
-<div id="gameContainer">
- <div id="hearts">❤️❤️❤️</div>
+        <span class="badge level" id="levelLabel">Level 1 · DMs</span>
 
- <div id="saeed"></div>
+        <button class="lang-toggle" id="langToggle">
+          <span id="langEn" class="active">EN</span> | <span id="langAr">AR</span>
+        </button>
+      </div>
 
- <div id="phone">
-   <div id="messageText"></div>
-   <button class="answer-btn safe" onclick="chooseAnswer(true)"></button>
-   <button class="answer-btn danger" onclick="chooseAnswer(false)"></button>
- </div>
-</div>
+      <!-- SCENE -->
+      <section class="scene" id="scene">
+        <div class="street"></div>
+        <div class="ground"></div>
+        <div class="palm p1"></div>
+        <div class="palm p2"></div>
+        <div class="palm p3"></div>
 
-<script>
-// INTRO
-function playIntro(){
- document.getElementById("introAudio").play();
- document.getElementById("startBtn").style.display="block";
-}
-function startGame(){
- document.getElementById("introScreen").style.display="none";
- document.getElementById("gameContainer").style.display="block";
-}
+        <!-- Saeed -->
+        <div class="saeed-wrapper">
+          <div id="saeed" class="saeed mood-happy">
+            <div class="saeed-face">
+              <div class="saeed-eyes">
+                <span class="saeed-eye"></span>
+                <span class="saeed-eye"></span>
+              </div>
+              <div class="saeed-mouth"></div>
+            </div>
+            <div class="saeed-arm"></div>
+            <div class="saeed-feet">
+              <div class="saeed-foot"></div>
+              <div class="saeed-foot"></div>
+            </div>
+          </div>
+        </div>
 
-// QUESTIONS
-let lang="en";
-let current=0;
-let hearts=3;
+        <!-- Phone card -->
+        <article class="phone" id="phoneCard">
+          <header class="phone-header">
+            <div class="phone-header-left">
+              <div class="phone-app">
+                <span class="phone-app-icon"></span>
+                <span id="phoneAppLabel">Instagram DM</span>
+              </div>
+              <span class="phone-header-sub" id="phoneSubLabel">@saeed</span>
+            </div>
+            <span class="phone-chip" id="phoneStatusLabel">online</span>
+          </header>
 
-const questions={
- en:[
-  {q:"Someone asked for a private picture.",safe:"Block & report",danger:"Send photo",correct:true},
-  {q:"You won iPhone, send Emirates ID.",safe:"Report scam",danger:"Send ID",correct:true},
-  {q:"Fix bank account? Click link.",safe:"Ignore & report",danger:"Click link",correct:true},
-  {q:"Give your OTP code?",safe:"Never share OTP",danger:"Give it",correct:true},
-  {q:"Double money crypto plan!",safe:"Avoid & block",danger:"Send money",correct:true},
-  {q:"Your Instagram will be deleted, send pass!",safe:"Official help only",danger:"Send password",correct:true},
-  {q:"We send gift, need your address.",safe:"Don't share info",danger:"Share info",correct:true},
-  {q:"WhatsApp agent wants code.",safe:"Never share verification code",danger:"Share code",correct:true},
-  {q:"Police fine, pay now!",safe:"Check official app",danger:"Pay quickly",correct:true},
-  {q:"Open file, it’s your photo!",safe:"Don't download",danger:"Download",correct:true}
- ],
- ar:[
-  {q:"شخص طلب صورة خاصة.",safe:"الحظر و الإبلاغ",danger:"إرسال الصورة",correct:true},
-  {q:"ربحت ايفون، ارسل الهوية.",safe:"ابلاغ عن احتيال",danger:"إرسال الهوية",correct:true},
-  {q:"رابط غريب للبنك.",safe:"تجاهل و ابلاغ",danger:"اضغط الرابط",correct:true},
-  {q:"اعطني رمز OTP.",safe:"عدم مشاركة الرموز",danger:"إعطاء الرمز",correct:true},
-  {q:"خطة مضاعفة المال!",safe:"تجنب و حظر",danger:"ارسل المال",correct:true},
-  {q:"سنحذف حسابك! ارسل كلمة السر!",safe:"المساعدة الرسمية فقط",danger:"إرسال كلمة السر",correct:true},
-  {q:"نحتاج عنوانك لهدية.",safe:"لا ترسل معلوماتك",danger:"ارسال العنوان",correct:true},
-  {q:"وكيل واتساب يريد رمز.",safe:"لا تشارك رمز التحقق",danger:"ارسال الرمز",correct:true},
-  {q:"غرامة شرطة ادفع الآن!",safe:"تحقق من تطبيق رسمي",danger:"الدفع فورًا",correct:true},
-  {q:"افتح الملف صورتك!",safe:"لا تحمل شيء غريب",danger:"حمله",correct:true}
- ]
-};
+          <div class="phone-body">
+            <p id="questionText">
+              <!-- filled by JS -->
+            </p>
+          </div>
 
-// SHOW QUESTION
-function showQ(){
- let q = questions[lang][current];
- document.getElementById("messageText").innerText = q.q;
- document.querySelector(".safe").innerText = q.safe;
- document.querySelector(".danger").innerText = q.danger;
-}
-showQ();
+          <div class="phone-actions">
+            <button class="answer-btn answer-primary" id="answerBtn1" data-choice="0"></button>
+            <button class="answer-btn answer-secondary" id="answerBtn2" data-choice="1"></button>
+          </div>
+        </article>
 
-// MOVEMENT ONLY
-function chooseAnswer(isSafe){
- let correct = questions[lang][current].correct;
+        <!-- Toast -->
+        <div class="toast hidden" id="toast"></div>
 
- if(isSafe == correct){
-   // MOVE FORWARD
-   document.getElementById("saeed").style.left = "150px";
-   setTimeout(()=>{document.getElementById("saeed").style.left="120px"},200);
-   current++;
- } else {
-   // SHAKE
-   document.getElementById("saeed").style.left = "110px";
-   setTimeout(()=>{document.getElementById("saeed").style.left="120px"},150);
-   hearts--;
-   document.getElementById("hearts").innerText = "❤️".repeat(hearts);
-   if(hearts <= 0){ alert(lang=="en"?"Game Over":"انتهت اللعبة"); location.reload();}
- }
+        <!-- Win / Lose overlays -->
+        <div class="end-overlay" id="winOverlay">
+          <div class="end-card">
+            <div class="end-title" id="winTitle">Nice! You kept Saeed safe 🎉</div>
+            <p class="end-text" id="winText">
+              You made good choices and avoided scams and risky messages.
+            </p>
+            <button class="primary-btn" id="playAgainWin">
+              🔁 Play again
+            </button>
+          </div>
+        </div>
 
- if(current>=questions[lang].length){
-   alert(lang=="en"?"🎉 You finished!":"🎉 أنهيت اللعبة!");
-   return;
- }
- setTimeout(()=>{showQ()},250);
-}
+        <div class="end-overlay" id="loseOverlay">
+          <div class="end-card">
+            <div class="end-title" id="loseTitle">Oh no, Saeed lost all hearts 💔</div>
+            <p class="end-text" id="loseText">
+              Some choices were risky. Try again and see if you can keep him safe.
+            </p>
+            <button class="primary-btn" id="playAgainLose">
+              🔁 Try again
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
 
-// LANGUAGE SWITCH
-document.getElementById("langEN").onclick=()=>{lang="en";showQ()};
-document.getElementById("langAR").onclick=()=>{lang="ar";showQ()};
+  <!-- INTRO OVERLAY -->
+  <section class="intro-overlay" id="introOverlay">
+    <div class="intro-card">
+      <button class="lang-toggle intro-lang-toggle" id="introLangToggle">
+        <span id="introLangEn" class="active">EN</span> | <span id="introLangAr">AR</span>
+      </button>
 
-</script>
+      <div class="intro-character">
+        <div class="intro-face">
+          <div class="intro-eyes">
+            <span class="intro-eye"></span>
+            <span class="intro-eye"></span>
+          </div>
+          <div class="intro-mouth"></div>
+        </div>
+      </div>
+
+      <h2 class="intro-title" id="introTitle">Meet Saeed 👦🏼</h2>
+      <p class="intro-text" id="introText">
+        He doesn’t know much about online safety yet. Listen to the short intro,
+        then help him stay safe from scams and bad messages.
+      </p>
+
+      <div class="intro-actions">
+        <button class="primary-btn" id="playIntroBtn">
+          ▶️ <span id="playIntroLabel">Play introduction</span>
+        </button>
+        <button class="ghost-btn" id="startGameBtn" disabled>
+          ✅ <span id="startGameLabel">Yes, let’s start the game</span>
+        </button>
+      </div>
+
+      <p class="intro-hint" id="introHint">
+        On phones, tap “Play introduction” so the sound can start. The game unlocks after it finishes.
+      </p>
+    </div>
+  </section>
+
+  <!-- Hidden audio element -->
+  <audio id="introAudio" src="intro-voice.mp3" preload="auto"></audio>
+
+  <script>
+    // -------------- TRANSLATION DATA --------------
+    const translations = {
+      en: {
+        city: "Abu Dhabi →",
+        levelLabel: lvl => `Level ${lvl} · DMs`,
+        introTitle: "Meet Saeed 👦🏼",
+        introText:
+          "He doesn’t know much about online safety yet. Listen to the short intro, then help him stay safe from scams and bad messages.",
+        playIntro: "Play introduction",
+        startGame: "Yes, let’s start the game",
+        introHint:
+          "On phones, tap “Play introduction” once so the sound can start. The game unlocks after it finishes.",
+        phoneStatusOnline: "online",
+        toastCorrect: "Nice choice! This keeps Saeed safe ✅",
+        toastWrongHeart: hearts => `Careful! That was risky. Hearts left: ${hearts}`,
+        toastNoHearts: "Saeed lost all hearts 💔",
+        winTitle: "Nice! You kept Saeed safe 🎉",
+        winText:
+          "You made good choices and avoided scams, blackmail, and phishing attempts.",
+        loseTitle: "Oh no, Saeed lost all hearts 💔",
+        loseText:
+          "Some choices were risky. Try again and see if you can protect him.",
+        playAgain: "Play again",
+        tryAgain: "Try again",
+
+        levels: [
+          {
+            appLabel: "Instagram DM",
+            subLabel: "@random_account",
+            chip: "online",
+            question: "Hey, I found your account. Can you send me a private picture? 😏",
+            options: [
+              { text: "Block & report this account", correct: true },
+              { text: "Send them a photo", correct: false }
+            ],
+          },
+          {
+            appLabel: "Instagram DM",
+            subLabel: "Giveaway?",
+            chip: "New message",
+            question: "Congrats! You won an iPhone 16 Pro. Send your Emirates ID front & back to claim.",
+            options: [
+              { text: "Send my Emirates ID photos", correct: false },
+              { text: "Refuse & report the account as a scam", correct: true }
+            ],
+          },
+          {
+            appLabel: "WhatsApp",
+            subLabel: "Unknown number",
+            chip: "Forwarded",
+            question: "Your bank account will be frozen! Click this link now and login to fix it.",
+            options: [
+              { text: "Ignore & contact the bank using the official app/number", correct: true },
+              { text: "Click the link & login quickly", correct: false }
+            ],
+          },
+          {
+            appLabel: "Snapchat",
+            subLabel: "Story reply",
+            chip: "online",
+            question: "Send me your location, I just want to meet you alone for a bit 👀",
+            options: [
+              { text: "Keep chatting & share my live location", correct: false },
+              { text: "Stop replying & block the account", correct: true }
+            ],
+          },
+          {
+            appLabel: "Email",
+            subLabel: "“Support Team”",
+            chip: "Suspicious",
+            question: "We detected a problem in your university account. Send us your password to verify.",
+            options: [
+              { text: "Reply with my password", correct: false },
+              { text: "Never share password & report as phishing", correct: true }
+            ],
+          },
+          {
+            appLabel: "Instagram DM",
+            subLabel: "Fake friend?",
+            chip: "online",
+            question: "If you don’t send me money, I will post your pictures everywhere.",
+            options: [
+              { text: "Pay them so they stop", correct: false },
+              { text: "Keep the evidence & report to family / UAE cybercrime channels", correct: true }
+            ],
+          },
+          {
+            appLabel: "Game chat",
+            subLabel: "New friend",
+            chip: "Lobby",
+            question: "Let’s move to another app and talk in secret. Don’t tell your parents.",
+            options: [
+              { text: "Agree and move to a private chat", correct: false },
+              { text: "Say no, leave the chat & block", correct: true }
+            ],
+          },
+          {
+            appLabel: "SMS",
+            subLabel: "Unknown sender",
+            chip: "Link",
+            question: "Your package is waiting. Pay 7 AED delivery fee using this link.",
+            options: [
+              { text: "Pay from the link in SMS", correct: false },
+              { text: "Ignore & use the official delivery app/website", correct: true }
+            ],
+          },
+          {
+            appLabel: "Instagram DM",
+            subLabel: "Fake support",
+            chip: "“Support”",
+            question: "Your account will be deleted today. Send us your OTP code to secure it.",
+            options: [
+              { text: "Send the OTP code", correct: false },
+              { text: "Never share OTP & report as fake support", correct: true }
+            ],
+          },
+          {
+            appLabel: "Class group",
+            subLabel: "School chat",
+            chip: "Group",
+            question: "Someone is being bullied in the group. What should Saeed do?",
+            options: [
+              { text: "Join the bullying so people laugh", correct: false },
+              { text: "Support the victim & tell a trusted adult/teacher", correct: true }
+            ],
+          },
+        ],
+      },
+
+      ar: {
+        city: "أبوظبي →",
+        levelLabel: lvl => `المستوى ${lvl} · رسائل خاصة`,
+        introTitle: "تعرف على سعيد 👦🏼",
+        introText:
+          "سعيد ما يعرف وايد عن السلامة الإلكترونية. اسمع المقدمة القصيرة، وبعدين ساعده يحمي نفسه من الاحتيال والرسائل السيئة.",
+        playIntro: "تشغيل المقدمة",
+        startGame: "نعم، خل نبدأ اللعبة",
+        introHint:
+          "في الهاتف، اضغط «تشغيل المقدمة» عشان يشتغل الصوت. اللعبة تبدأ بعد ما انتهاء المقدمة.",
+        phoneStatusOnline: "متصل",
+        toastCorrect: "إجابة ممتازة! هاكذا تحمي سعيد ✅",
+        toastWrongHeart: hearts => `انتبه! هالاختيار كان خطر. القلوب المتبقية: ${hearts}`,
+        toastNoHearts: "سعيد خسر كل القلوب 💔",
+        winTitle: "شاطر! حميت سعيد من الخطر 🎉",
+        winText:
+          "اختياراتك كانت صحيحة وتجنبت الابتزاز والاحتيال والروابط المشبوهة.",
+        loseTitle: "أوه لا، سعيد خسر كل القلوب 💔",
+        loseText:
+          "بعض الاختيارات كانت خطرة. جرب مرة ثانية وشف إذا تقدر تحميه.",
+        playAgain: "العب مرة ثانية",
+        tryAgain: "حاول من جديد",
+
+        levels: [
+          {
+            appLabel: "رسالة إنستغرام",
+            subLabel: "حساب عشوائي",
+            chip: "متصل",
+            question: "هلا، حصلت حسابك. تقدر ترسل لي صورتك؟ 😏",
+            options: [
+              { text: "حظر الحساب والإبلاغ عنه", correct: true },
+              { text: "أرسل له صورة", correct: false }
+            ],
+          },
+          {
+            appLabel: "رسالة إنستغرام",
+            subLabel: "مسابقة وهمية",
+            chip: "رسالة جديدة",
+            question: "مبروك! ربحت آيفون 16 برو. أرسل صورة الهوية من الأمام والخلف عشان تستلم الجائزة.",
+            options: [
+              { text: "أرسل لهم صور الهوية", correct: false },
+              { text: "أرفض وأبلغ عن الحساب كاحتيال", correct: true }
+            ],
+          },
+          {
+            appLabel: "واتساب",
+            subLabel: "رقم غير معروف",
+            chip: "مُعاد توجيهه",
+            question: "حسابك البنكي بيتقفل! اضغط على الرابط الحين وسجّل دخولك عشان نصلحه.",
+            options: [
+              { text: "أتجاهل الرسالة وأتواصل مع البنك من التطبيق أو الرقم الرسمي", correct: true },
+              { text: "أضغط الرابط وأدخل بياناتي بسرعة", correct: false }
+            ],
+          },
+          {
+            appLabel: "سناب شات",
+            subLabel: "رد على الستوري",
+            chip: "متصل",
+            question: "أرسل لي موقعك، بس أبى أقابلك شوي  👀",
+            options: [
+              { text: "أكمل الكلام وأرسل موقعي المباشر", correct: false },
+              { text: "أوقف الرد وأحظر الحساب", correct: true }
+            ],
+          },
+          {
+            appLabel: "إيميل",
+            subLabel: "“فريق الدعم”",
+            chip: "مريب",
+            question: "لاحظنا مشكلة في حسابك المدرسي . أرسل لنا كلمة السر عشان نتحقق.",
+            options: [
+              { text: "أرد عليهم بكلمة السر", correct: false },
+              { text: "أبدًا ما أشارك كلمة السر وأبلغ عن الرسالة كتصيد", correct: true }
+            ],
+          },
+          {
+            appLabel: "رسالة إنستغرام",
+            subLabel: "شخص يبتز",
+            chip: "متصل",
+            question: "إذا ما حولت لي فلوس، راح أنشر صورك في كل مكان.",
+            options: [
+              { text: "أحول له فلوس عشان يسكت", correct: false },
+              { text: "أحفظ الأدلة وأبلغ الأهل أو قنوات الجرائم الإلكترونية في الإمارات", correct: true }
+            ],
+          },
+          {
+            appLabel: "شات لعبة",
+            subLabel: "صديق جديد",
+            chip: "الغرفة",
+            question: "خل نطلع لتطبيق ثاني ونتكلم بسرية، لا تخبر أهلك.",
+            options: [
+              { text: "أوافق وأروح معه لتطبيق ثاني", correct: false },
+              { text: "أرفض وأطلع من الشات وأحظره", correct: true }
+            ],
+          },
+          {
+            appLabel: "رسالة نصية",
+            subLabel: "مرسل غير معروف",
+            chip: "رابط",
+            question: "شحنّتك جاهزة. ادفع 7 درهم من هذا الرابط عشان نوصلها.",
+            options: [
+              { text: "أدفع من الرابط في الرسالة", correct: false },
+              { text: "أتجاهل الرسالة وأستخدم تطبيق أو موقع الشركة الرسمي", correct: true }
+            ],
+          },
+          {
+            appLabel: "رسالة إنستغرام",
+            subLabel: "دعم مزيف",
+            chip: "“دعم فني”",
+            question: "حسابك بينحذف اليوم. أرسل لنا كود الـ OTP عشان نحميه.",
+            options: [
+              { text: "أرسل لهم كود الـ OTP", correct: false },
+              { text: "مستحيل أشارك كود الـ OTP وأبلغ عن الحساب كدعم مزيف", correct: true }
+            ],
+          },
+          {
+            appLabel: "قروب الصف",
+            subLabel: "شات المدرسة",
+            chip: "قروب",
+            question: "في واحد من الطلاب يتعرض للتنمر في القروب. وش يسوي سعيد؟",
+            options: [
+              { text: "أشارك في التنمر عشان يضحكون", correct: false },
+              { text: "أوقف التنمر وأدعم الطالب وأخبر شخص بالغ أو المعلمة", correct: true }
+            ],
+          },
+        ]
+      }
+    };
+
+    // -------------- GAME STATE --------------
+    let currentLang = "en";
+    let currentLevel = 0;
+    let hearts = 3;
+    let canAnswer = true;
+
+    let introHasPlayedOnce = false;
+    let introFinishedOnce = false;
+
+    const langToggle = document.getElementById("langToggle");
+    const langEn = document.getElementById("langEn");
+    const langAr = document.getElementById("langAr");
+
+    const cityLabel = document.getElementById("cityLabel");
+    const levelLabel = document.getElementById("levelLabel");
+
+    const phoneAppLabel = document.getElementById("phoneAppLabel");
+    const phoneSubLabel = document.getElementById("phoneSubLabel");
+    const phoneStatusLabel = document.getElementById("phoneStatusLabel");
+    const questionText = document.getElementById("questionText");
+    const answerBtn1 = document.getElementById("answerBtn1");
+    const answerBtn2 = document.getElementById("answerBtn2");
+
+    const heartsContainer = document.getElementById("hearts");
+    const toast = document.getElementById("toast");
+    const saeedEl = document.getElementById("saeed");
+    const sceneEl = document.getElementById("scene");
+
+    const winOverlay = document.getElementById("winOverlay");
+    const loseOverlay = document.getElementById("loseOverlay");
+    const winTitle = document.getElementById("winTitle");
+    const winText = document.getElementById("winText");
+    const loseTitle = document.getElementById("loseTitle");
+    const loseText = document.getElementById("loseText");
+
+    const playAgainWin = document.getElementById("playAgainWin");
+    const playAgainLose = document.getElementById("playAgainLose");
+
+    // Intro elements
+    const introOverlay = document.getElementById("introOverlay");
+    const introLangToggle = document.getElementById("introLangToggle");
+    const introLangEn = document.getElementById("introLangEn");
+    const introLangAr = document.getElementById("introLangAr");
+    const introTitle = document.getElementById("introTitle");
+    const introText = document.getElementById("introText");
+    const playIntroBtn = document.getElementById("playIntroBtn");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const playIntroLabel = document.getElementById("playIntroLabel");
+    const startGameLabel = document.getElementById("startGameLabel");
+    const introHint = document.getElementById("introHint");
+    const introAudio = document.getElementById("introAudio");
+
+    const levelsEn = translations.en.levels;
+    const levelsAr = translations.ar.levels;
+
+    // -------------- HELPERS --------------
+    function currentLevels() {
+      return currentLang === "en" ? levelsEn : levelsAr;
+    }
+
+    function t(key, ...args) {
+      const pack = translations[currentLang];
+      const value = pack[key];
+      if (typeof value === "function") return value(...args);
+      return value;
+    }
+
+    function setSaeedMood(moodClass) {
+      saeedEl.classList.remove("mood-happy", "mood-worried", "mood-sad", "mood-surprised");
+      if (moodClass) saeedEl.classList.add(moodClass);
+    }
+
+    function showToast(kind, message) {
+      toast.textContent = message;
+      toast.classList.remove("hidden", "good", "bad");
+      toast.classList.add(kind === "good" ? "good" : "bad");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 1700);
+    }
+
+    function updateHeartsUI() {
+      heartsContainer.innerHTML = "";
+      for (let i = 0; i < hearts; i++) {
+        const span = document.createElement("span");
+        span.textContent = "❤️";
+        heartsContainer.appendChild(span);
+      }
+    }
+
+    function vibrate(ms) {
+      if (navigator.vibrate) {
+        navigator.vibrate(ms);
+      }
+    }
+
+    // Move Saeed a little to the right each level
+    function stepSaeed() {
+      saeedEl.classList.remove("saeed-walk");
+      void saeedEl.offsetWidth; // force reflow
+      saeedEl.classList.add("saeed-walk");
+    }
+
+    function resetSaeedPosition() {
+      saeedEl.style.transform = "";
+    }
+
+    // -------------- RENDER LEVEL --------------
+    function renderLevel() {
+      const levels = currentLevels();
+      const level = levels[currentLevel];
+      if (!level) return;
+
+      cityLabel.textContent = t("city");
+      levelLabel.textContent = t("levelLabel")(currentLevel + 1);
+
+      phoneAppLabel.textContent = level.appLabel;
+      phoneSubLabel.textContent = level.subLabel;
+      phoneStatusLabel.textContent = level.chip || t("phoneStatusOnline");
+      questionText.textContent = level.question;
+
+      answerBtn1.textContent = level.options[0].text;
+      answerBtn2.textContent = level.options[1].text;
+
+      answerBtn1.classList.remove("disabled");
+      answerBtn2.classList.remove("disabled");
+
+      setSaeedMood("mood-happy");
+    }
+
+    // -------------- ANSWER HANDLING --------------
+    function handleAnswer(choiceIndex) {
+      if (!canAnswer) return;
+      const levels = currentLevels();
+      const level = levels[currentLevel];
+      if (!level) return;
+
+      canAnswer = false;
+      const chosen = level.options[choiceIndex];
+      const correct = !!chosen.correct;
+
+      if (correct) {
+        setSaeedMood("mood-happy");
+        showToast("good", t("toastCorrect"));
+        stepSaeed();
+        setTimeout(() => {
+          currentLevel++;
+          if (currentLevel >= levels.length) {
+            // Win
+            winTitle.textContent = t("winTitle");
+            winText.textContent = t("winText");
+            winOverlay.classList.add("visible");
+          } else {
+            renderLevel();
+          }
+          canAnswer = true;
+        }, 900);
+      } else {
+        hearts--;
+        vibrate(160);
+        if (hearts <= 0) {
+          hearts = 0;
+          updateHeartsUI();
+          setSaeedMood("mood-sad");
+          showToast("bad", t("toastNoHearts"));
+          setTimeout(() => {
+            loseTitle.textContent = t("loseTitle");
+            loseText.textContent = t("loseText");
+            loseOverlay.classList.add("visible");
+            canAnswer = true;
+          }, 900);
+        } else {
+          updateHeartsUI();
+          setSaeedMood("mood-worried");
+          showToast("bad", t("toastWrongHeart")(hearts));
+          setTimeout(() => {
+            setSaeedMood("mood-happy");
+            canAnswer = true;
+          }, 900);
+        }
+      }
+    }
+
+    // -------------- LANGUAGE SWITCH --------------
+    function applyLanguage() {
+      // main header
+      cityLabel.textContent = t("city");
+      levelLabel.textContent = t("levelLabel")(currentLevel + 1);
+
+      // win/lose buttons text
+      playAgainWin.textContent = "🔁 " + t("playAgain");
+      playAgainLose.textContent = "🔁 " + t("tryAgain");
+
+      // Intro overlay texts
+      introTitle.textContent = t("introTitle");
+      introText.textContent = t("introText");
+      playIntroLabel.textContent = t("playIntro");
+      startGameLabel.textContent = t("startGame");
+      introHint.textContent = t("introHint");
+
+      renderLevel();
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      if (lang === "en") {
+        langEn.classList.add("active");
+        langAr.classList.remove("active");
+        introLangEn.classList.add("active");
+        introLangAr.classList.remove("active");
+      } else {
+        langEn.classList.remove("active");
+        langAr.classList.add("active");
+        introLangEn.classList.remove("active");
+        introLangAr.classList.add("active");
+      }
+      applyLanguage();
+    }
+
+    // -------------- INTRO AUDIO LOGIC --------------
+    playIntroBtn.addEventListener("click", () => {
+      introAudio.currentTime = 0;
+      introAudio
+        .play()
+        .then(() => {
+          introHasPlayedOnce = true;
+          startGameBtn.disabled = true;
+        })
+        .catch(err => {
+          console.error("Audio play blocked:", err);
+        });
+    });
+
+    introAudio.addEventListener("ended", () => {
+      introFinishedOnce = true;
+      startGameBtn.disabled = false;
+    });
+
+    startGameBtn.addEventListener("click", () => {
+      if (!introFinishedOnce) return;
+      introOverlay.style.display = "none";
+    });
+
+   introLangToggle.addEventListener("click", () => {
+  const nextLang = currentLang === "en" ? "ar" : "en";
+  setLang(nextLang);
+  applyLanguage();
+});
+
+
+    // main header language toggle
+    langToggle.addEventListener("click", () => {
+      const nextLang = currentLang === "en" ? "ar" : "en";
+      setLang(nextLang);
+    });
+
+    // -------------- BUTTON EVENTS --------------
+    answerBtn1.addEventListener("click", () => handleAnswer(0));
+    answerBtn2.addEventListener("click", () => handleAnswer(1));
+
+    playAgainWin.addEventListener("click", resetGame);
+    playAgainLose.addEventListener("click", resetGame);
+
+    function resetGame() {
+      winOverlay.classList.remove("visible");
+      loseOverlay.classList.remove("visible");
+      hearts = 3;
+      currentLevel = 0;
+      updateHeartsUI();
+      resetSaeedPosition();
+      setSaeedMood("mood-happy");
+      renderLevel();
+    }
+
+    // -------------- INIT --------------
+    updateHeartsUI();
+    setLang("en");
+    renderLevel();
+  </script>
 </body>
 </html>
