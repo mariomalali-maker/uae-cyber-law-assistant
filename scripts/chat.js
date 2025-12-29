@@ -165,3 +165,25 @@ document.getElementById("clear-chat").addEventListener("click", () => {
     location.reload();
   }
 });
+function speakText(text) {
+  let voice;
+  const synth = window.speechSynthesis;
+  const voices = synth.getVoices();
+  voice = voices.find(v => v.lang === (currentLang === "ar" ? "ar-AE" : "en-US"));
+  
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.voice = voice;
+  utter.rate = 1;
+  synth.speak(utter);
+}
+
+// ADD LISTEN BUTTON TO AI MESSAGES
+function addAiBubble(text) {
+  addBubble(text, "ai");
+  const btn = document.createElement("button");
+  btn.textContent = "🔊 Listen";
+  btn.style = "background:#0ea5e9;color:white;border:none;padding:4px 8px;margin-top:4px;border-radius:6px;cursor:pointer;";
+  btn.onclick = () => speakText(text);
+  messagesBox.lastChild.appendChild(btn);
+}
+
