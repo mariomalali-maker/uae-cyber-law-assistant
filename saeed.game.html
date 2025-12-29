@@ -5,57 +5,216 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Saeed's Cyber Safety Game</title>
 <style>
-/* YOUR ORIGINAL CODE (UNCHANGED) */
-*{box-sizing:border-box;}
-:root{--bg:#020617;--accent:#22c55e;--accent-soft:rgba(34,197,94,0.12);--danger:#ef4444;--text:#e5e7eb;--muted:#9ca3af;}
-body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#020617 0,#020617 55%,#000 100%);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-nav{display:flex;align-items:center;gap:12px;padding:12px 18px;background:#020617;border-bottom:1px solid rgba(15,23,42,0.9);position:sticky;top:0;z-index:10;}
-nav a{color:var(--text);text-decoration:none;font-size:.9rem;padding:6px 10px;border-radius:999px;background:transparent;border:1px solid transparent;display:inline-flex;align-items:center;gap:4px;}
-nav a:hover{background:#0b1120;border-color:#111827;}
-nav a.active{background:var(--accent);color:#022c22;}
+* { box-sizing: border-box; }
+:root { --bg: #020617; --accent: #22c55e; --accent-soft: rgba(34, 197, 94, 0.12); --danger: #ef4444; --text: #e5e7eb; --muted: #9ca3af; }
 
-main{flex:1;display:flex;justify-content:center;padding:14px 8px 18px;}
-#game-shell{width:100%;max-width:960px;background:rgba(15,23,42,0.95);border-radius:24px;border:1px solid rgba(31,41,55,0.9);box-shadow:0 25px 80px rgba(0,0,0,0.7);position:relative;overflow:hidden;}
+body {
+margin: 0;
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+background: radial-gradient(circle at top, #020617 0, #020617 55%, #000 100%);
+color: var(--text);
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
 
-.hud{position:absolute;top:10px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:4;font-size:.85rem;}
-.hearts{font-size:1.1rem;}
-.level-label{padding:4px 10px;border-radius:999px;background:rgba(15,118,110,0.9);color:#ecfdf5;}
+nav {
+display: flex;
+align-items: center;
+gap: 12px;
+padding: 12px 18px;
+background: #020617;
+border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+position: sticky;
+top: 0;
+z-index: 10;
+}
 
-#scene{position:relative;width:100%;height:min(70vh,520px);min-height:380px;overflow:hidden;background:linear-gradient(#0f172a 0,#020617 60%,#020617 100%);}
-/* SKY + TOWERS + SEA + PALMS (UNCHANGED) */
-.sky{position:absolute;inset:0;}
-.tower{position:absolute;bottom:140px;width:70px;border-radius:18px 18px 0 0;background:linear-gradient(#1f2937,#020617);box-shadow:0 0 24px rgba(15,23,42,0.8);}
-.tower::after{content:"";position:absolute;top:12px;left:14px;right:14px;height:3px;border-radius:999px;background:rgba(148,163,184,0.6);}
-.sea{position:absolute;left:0;right:0;bottom:110px;height:60px;background:linear-gradient(90deg,#0ea5e9,#22c55e,#0ea5e9);opacity:0.35;}
-.palm{position:absolute;bottom:108px;width:18px;height:80px;background:#0f172a;border-radius:10px;}
-.palm::after{content:"";position:absolute;top:-10px;left:-18px;right:-18px;height:30px;border-radius:999px;background:radial-gradient(circle at 50% 100%,#22c55e 0,#166534 70%,transparent 75%);}
+nav a {
+color: var(--text);
+text-decoration: none;
+font-size: 0.9rem;
+padding: 6px 10px;
+border-radius: 999px;
+background: transparent;
+border: 1px solid transparent;
+display: inline-flex;
+align-items: center;
+gap: 4px;
+}
 
-.road{position:absolute;left:0;right:0;bottom:40px;height:80px;background:#020617;box-shadow:0 -14px 40px rgba(0,0,0,0.85) inset;}
-.lane{position:absolute;left:0;right:0;top:50%;height:4px;transform:translateY(-50%);background-image:repeating-linear-gradient(to right,rgba(248,250,252,0.9),rgba(248,250,252,0.9) 28px,transparent 28px,transparent 56px);opacity:0.7;}
+nav a:hover { background: #0b1120; border-color: #111827; }
+nav a.active { background: var(--accent); color: #022c22; }
 
-/* ---- SAEED ---- */
-#saeed-wrapper{position:absolute;bottom:82px;left:18%;width:180px;height:240px;transform-origin:center bottom;animation:saeed-bounce 1.4s infinite;z-index:3;}
-@keyframes saeed-bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-#saeed svg{width:100%;height:100%;}
-.eye{animation:blink 4s infinite;}
-@keyframes blink{0%,92%,100%{transform:scaleY(1);}95%{transform:scaleY(0.1);}}
-.mouth{transition:.25s;}
+main { flex: 1; display: flex; justify-content: center; padding: 14px 8px 18px; }
 
-/* PHONE (UNCHANGED) */
-#phone{position:absolute;right:10%;bottom:110px;width:min(280px,80vw);background:#020617;border-radius:28px;padding:10px;border:3px solid #111827;box-shadow:0 20px 50px rgba(0,0,0,0.9);transform:scale(0.3) translate(40px,80px);opacity:0;pointer-events:none;z-index:4;}
-#phone.show{animation:phone-pop .4s forwards;}
-@keyframes phone-pop{0%{opacity:0;transform:scale(.3) translate(40px,80px);}100%{opacity:1;transform:scale(1) translate(0,0);}}
+#game-shell {
+width: 100%;
+max-width: 960px;
+background: rgba(15, 23, 42, 0.95);
+border-radius: 24px;
+border: 1px solid rgba(31, 41, 55, 0.9);
+box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
+position: relative;
+overflow: hidden;
+}
 
-/* CHOICES */
-.choice-safe{background:#22c55e;color:#022c22;}
-.choice-risk{background:#fee2e2;color:#7f1d1d;}
-.phone-tip{font-size:.72rem;color:var(--muted);margin-top:4px;}
+/* HUD */
+.hud {
+position: absolute;
+top: 10px;
+left: 14px;
+right: 14px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+z-index: 4;
+font-size: 0.85rem;
+}
 
-/* OVERLAYS */
-.overlay{position:absolute;inset:0;background:rgba(15,23,42,0.92);display:flex;align-items:center;justify-content:center;z-index:6;}
-.panel{background:#020617;border-radius:18px;padding:20px;text-align:center;width:min(420px,90vw);color:white;}
+.hearts { font-size: 1.1rem; }
+.level-label {
+padding: 4px 10px;
+border-radius: 999px;
+background: rgba(15, 118, 110, 0.9);
+color: #ecfdf5;
+}
+
+/* BACKGROUND */
+#scene {
+position: relative;
+width: 100%;
+height: min(70vh, 520px);
+min-height: 380px;
+overflow: hidden;
+background: linear-gradient(#0f172a 0, #020617 60%, #020617 100%);
+}
+
+.sky { position: absolute; inset: 0; }
+
+.tower {
+position: absolute;
+bottom: 140px;
+width: 70px;
+border-radius: 18px 18px 0 0;
+background: linear-gradient(#1f2937, #020617);
+box-shadow: 0 0 24px rgba(15, 23, 42, 0.8);
+}
+
+.tower::after {
+content: "";
+position: absolute;
+top: 12px;
+left: 14px;
+right: 14px;
+height: 3px;
+border-radius: 999px;
+background: rgba(148, 163, 184, 0.6);
+}
+
+.sea {
+position: absolute;
+left: 0;
+right: 0;
+bottom: 110px;
+height: 60px;
+background: linear-gradient(90deg,#0ea5e9,#22c55e,#0ea5e9);
+opacity: 0.35;
+}
+
+.palm {
+position: absolute;
+bottom: 108px;
+width: 18px;
+height: 80px;
+background: #0f172a;
+border-radius: 10px;
+}
+
+.palm::after {
+content: "";
+position: absolute;
+top: -10px;
+left: -18px;
+right: -18px;
+height: 30px;
+border-radius: 999px;
+background: radial-gradient(circle at 50% 100%, #22c55e 0, #166534 70%, transparent 75%);
+}
+
+.road {
+position: absolute;
+left: 0;
+right: 0;
+bottom: 40px;
+height: 80px;
+background: #020617;
+box-shadow: 0 -14px 40px rgba(0,0,0,0.85) inset;
+}
+
+.lane {
+position: absolute;
+left: 0;
+right: 0;
+top: 50%;
+height: 4px;
+transform: translateY(-50%);
+background-image: repeating-linear-gradient(to right,rgba(248,250,252,0.9),rgba(248,250,252,0.9) 28px,transparent 28px,transparent 56px);
+opacity: .7;
+}
+
+/* SAEED CHARACTER (SVG) */
+#saeed-wrapper {
+position: absolute;
+bottom: 82px;
+left: 18%;
+width: 180px;
+height: 240px;
+transform-origin: center bottom;
+animation: saeed-bounce 1.4s ease-in-out infinite;
+z-index: 3;
+}
+
+@keyframes saeed-bounce {
+0%,100% { transform: translateY(0); }
+50% { transform: translateY(-6px); }
+}
+
+#saeed svg { width: 100%; height: 100%; }
+.eye { animation: blink 4s infinite; }
+
+@keyframes blink {
+0%,92%,100% { transform: scaleY(1); }
+95% { transform: scaleY(0.15); }
+}
+
+.mouth-happy { transform: translateY(0); }
+.mouth-worried { transform: translateY(2px); }
+
+/* PHONE */
+.choice-safe { background: #22c55e; color: #022c22; }
+.choice-risk { background: #fee2e2; color: #7f1d1d; }
+
+.overlay {
+position:absolute;
+inset:0;
+background:rgba(15,23,42,0.9);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:6;
+}
+
+.panel {
+width:min(420px,92vw);
+background:#020617;
+border-radius:20px;
+padding:18px;
+text-align:center;
+}
 </style>
 </head>
+
 <body>
 
 <nav>
@@ -69,148 +228,203 @@ main{flex:1;display:flex;justify-content:center;padding:14px 8px 18px;}
 <main>
 <div id="game-shell">
 
-<!-- ⭐️ NEW INTRO OVERLAY ⭐️ -->
-<div class="overlay" id="introOverlay">
-  <div class="panel">
-    <h2 id="introTitle">Meet Saeed 👦🏼</h2>
-    <p id="introDesc">Listen first, then start the game.</p>
-    <audio id="introAudio" src="intro-voice.mp3" preload="auto"></audio>
-    <button id="playIntroBtn" class="primary">▶️ Play Intro</button>
-    <button id="startBtn" class="ghost" disabled>Start Game</button>
-    <hr style="margin:14px 0;border-color:#1e293b;">
-    <button id="langSwap">🌐 العربية</button>
-  </div>
-</div>
-
-<!-- ❗️ ORIGINAL LANGUAGE SCREEN REMOVED (Replaced by intro) -->
-
-<!-- HUD -->
 <div class="hud">
-  <div class="hearts" id="hearts">❤️❤️❤️</div>
-  <div class="level-label" id="level-label">Level 1 · DMs</div>
+<div class="hearts" id="hearts">❤️❤️❤️</div>
+<div class="level-label" id="level-label">Level 1 · DMs</div>
 </div>
 
-<!-- ⭐️ REST OF YOUR GAME CODE BELOW (UNCHANGED) ⭐️ -->
 <section id="scene">
-<!-- (YOUR BACKGROUND + SAEED SVG + PHONE EXACTLY AS ORIGINAL) -->
-<!-- ... -->
-<!-- I am not removing anything -->
-<!-- ... -->
+<div class="sky">
+<div class="tower" style="left:8%;height:170px;"></div>
+<div class="tower" style="left:22%;height:220px;"></div>
+<div class="tower" style="left:42%;height:200px;"></div>
+<div class="tower" style="left:62%;height:240px;border-radius:40px 40px 0 0;"></div>
+<div class="tower" style="left:80%;height:190px;"></div>
+<div class="sea"></div>
+<div class="palm" style="left:18%;"></div>
+<div class="palm" style="left:48%;"></div>
+<div class="palm" style="left:74%;"></div>
+</div>
+
+<div class="road"><div class="lane"></div></div>
+
+<div id="saeed-wrapper">
+<div id="saeed">
+<svg viewBox="0 0 120 220">
+<ellipse cx="60" cy="208" rx="26" ry="7" fill="#020617" opacity="0.7"></ellipse>
+<rect x="40" y="94" width="40" height="90" rx="18" fill="#f9fafb"></rect>
+<rect x="28" y="102" width="16" height="52" rx="8" fill="#f9fafb"></rect>
+<rect x="76" y="102" width="16" height="52" rx="8" fill="#f9fafb"></rect>
+<rect x="44" y="182" width="10" height="16" rx="3" fill="#f9fafb"></rect>
+<rect x="66" y="182" width="10" height="16" rx="3" fill="#f9fafb"></rect>
+<rect x="42" y="196" width="14" height="7" rx="3" fill="#111827"></rect>
+<rect x="64" y="196" width="14" height="7" rx="3" fill="#111827"></rect>
+<circle cx="60" cy="64" r="24" fill="#fde68a"></circle>
+<path d="M36 58 Q60 34 84 58 L84 96 Q72 104 60 104 Q48 104 36 96Z" fill="#f9fafb"></path>
+<ellipse cx="60" cy="47" rx="22" ry="7" fill="#020617"></ellipse>
+<ellipse cx="60" cy="46" rx="18" ry="4" fill="#020617"></ellipse>
+<circle class="eye" cx="50" cy="66" r="3" fill="#020617"></circle>
+<circle class="eye" cx="70" cy="66" r="3" fill="#020617"></circle>
+<path d="M44 60 Q50 58 56 60" stroke="#020617"></path>
+<path d="M64 60 Q70 58 76 60" stroke="#020617"></path>
+<path id="mouth" class="mouth mouth-happy" d="M50 76 Q60 82 70 76" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+<rect x="78" y="122" width="10" height="18" rx="2" fill="#0f172a"></rect>
+</svg>
+</div>
+</div>
+
+<div id="phone">
+<div class="phone-inner">
+<div class="phone-top">
+<div class="phone-name">
+<div class="phone-circle" id="phone-icon">📱</div>
+<span id="phone-title">DM</span>
+</div>
+<span style="font-size:0.7rem;">online</span>
+</div>
+
+<div class="phone-screen">
+<div class="msg-bubble msg-in" id="phone-msg"> ... </div>
+</div>
+
+<div class="choice-row">
+<button class="choice-btn choice-safe" id="btn-safe"></button>
+<button class="choice-btn choice-risk" id="btn-risk"></button>
+</div>
+
+<div class="phone-tip" id="phone-tip"></div>
+</div>
+</div>
 </section>
 
-<!-- END SCREENS -->
-<div class="overlay" id="endOverlay" style="display:none;">
-  <div class="panel" id="endPanel"></div>
+
+<!-- LANGUAGE OVERLAY -->
+<div class="overlay" id="lang-overlay">
+<div class="panel">
+<h2>Choose language</h2>
+<p>Select how you want to help Saeed stay safe online.</p>
+<div class="lang-row">
+<button class="primary" id="lang-en">English</button>
+<button class="ghost" id="lang-ar">العربية</button>
+</div>
+</div>
+</div>
+
+<div class="overlay" id="end-overlay" style="display:none;">
+<div class="panel" id="end-panel"></div>
 </div>
 
 </div>
 </main>
 
 <script>
-/* 🔥🔊 INTRO LOGIC (NEW) */
-const introOverlay = document.getElementById("introOverlay");
-const introAudio = document.getElementById("introAudio");
-const playIntroBtn = document.getElementById("playIntroBtn");
-const startBtn = document.getElementById("startBtn");
-const langSwap = document.getElementById("langSwap");
-let currentLang = "en";
-
-playIntroBtn.onclick = () => {
-  introAudio.currentTime=0;
-  introAudio.play();
-  playIntroBtn.disabled=true;
-};
-
-introAudio.onended = () => {
-  startBtn.disabled=false;
-};
-
-startBtn.onclick = () => {
-  introOverlay.style.display="none";
-  startGame();
-};
-
-/* 🌐 LANGUAGE TOGGLE */
-langSwap.onclick = () => {
-  currentLang = currentLang==="en"?"ar":"en";
-  langSwap.textContent = currentLang==="en"?"🌐 العربية":"🌐 English";
-  applyLanguage();
-  /* switch intro text too */
-  document.getElementById("introTitle").textContent =
-    currentLang==="en"?"Meet Saeed 👦🏼":"تعرف على سعيد 👦🏼";
-  document.getElementById("introDesc").textContent =
-    currentLang==="en"?"Listen first, then start the game.":"استمع أولاً، ثم ابدأ اللعبة.";
-};
-
-/* 🧠 GAME DATA — now 10 Qs, age 6–12 */
+/* GAME DATA */
 const scenarios = [
- {icon:"📱",title:{en:"Instagram DM",ar:"رسالة خاصة"},msg:{en:"Someone asked for your picture. What now?",ar:"شخص طلب صورتك الخاصة. شو تسوي؟"},safe:{en:"Block and report",ar:"حظر وإبلاغ"},risky:{en:"Send it",ar:"أرسل"},tip:{en:"Never send pictures to strangers.",ar:"لا ترسل صورك."}},
- {icon:"📩",title:{en:"Email",ar:"إيميل"},msg:{en:"You won! Click link for prize!",ar:"ربحت! اضغط الرابط للجائزة!"},safe:{en:"Delete & ignore",ar:"احذف وتجاهل"},risky:{en:"Click the link",ar:"اضغط الرابط"},tip:{en:"Scam! Never click random links.",ar:"احتيال! لا تضغط."}},
- {icon:"🎮",title:{en:"Game Chat",ar:"شات لعبة"},msg:{en:"Which school do you go to?",ar:"أي مدرسة تدرس فيها؟"},safe:{en:"Don't tell them",ar:"لا تخبرهم"},risky:{en:"Tell them",ar:"أخبرهم"},tip:{en:"Keep info private.",ar:"حافظ على خصوصيتك."}},
- {icon:"📱",title:{en:"DM",ar:"رسالة"},msg:{en:"Send your location pls?",ar:"أرسل موقعك؟"},safe:{en:"No & Block",ar:"لا + حظر"},risky:{en:"Yes here",ar:"أرسل"},tip:{en:"Don't share location.",ar:"لا تشارك موقعك."}},
- {icon:"🏦",title:{en:"Bank SMS",ar:"رسالة بنك"},msg:{en:"Your account frozen!",ar:"تم تجميد حسابك!"},safe:{en:"Call bank official app",ar:"اتصل بالبنك رسمي"},risky:{en:"Reply here",ar:"رد هنا"},tip:{en:"Use official contacts only.",ar:"اتصل رسمي فقط."}},
- {icon:"📸",title:{en:"Gallery",ar:"الصور"},msg:{en:"Post friend's pic w/o asking?",ar:"تنزل صورة صديق بدون إذن؟"},safe:{en:"Ask first",ar:"استأذن"},risky:{en:"Post now",ar:"انشر"},tip:{en:"Respect privacy.",ar:"احترم الخصوصية."}},
- {icon:"🤝",title:{en:"New friend",ar:"صديق جديد"},msg:{en:"Let's meet alone?",ar:"خل نتقابل بروحنا؟"},safe:{en:"No + tell adult",ar:"لا وأخبر بالغ"},risky:{en:"Yes let's go",ar:"يلا"},tip:{en:"Stay safe.",ar:"سلامتك أولاً."}},
- {icon:"🐟",title:{en:"Phishing",ar:"تصيد"},msg:{en:"School needs your password",ar:"المدرسة تبي كلمة السر"},safe:{en:"Never share",ar:"لا تشارك"},risky:{en:"Give password",ar:"أعطهم"},tip:{en:"Never share passwords.",ar:"لا تشارك كلمات السر."}},
- {icon:"⚠️",title:{en:"Threat",ar:"تهديد"},msg:{en:"Pay me or pics go viral",ar:"حول وإلا أنشر صورك"},safe:{en:"Tell police/family",ar:"أبلغ الشرطة/الأهل"},risky:{en:"Pay them",ar:"ادفع"},tip:{en:"Report blackmail.",ar:"بلغ عن الابتزاز."}},
- {icon:"📚",title:{en:"School group",ar:"قروب المدرسة"},msg:{en:"Someone is bullied",ar:"في شخص يتعرض للتنمر"},safe:{en:"Defend & tell teacher",ar:"ادافع وأبلغ"},risky:{en:"Join bullying",ar:"شارك التنمر"},tip:{en:"Support others.",ar:"ادعم الغير."}}
+{
+type:"dm", icon:"📱",
+title:{en:"Instagram DM",ar:"رسالة خاصة"},
+msg:{en:"Hey, I found your account. Can you send me a private picture? 😉",ar:"هاي، شفت حسابك. تقدرين ترسلين لي صورة خاصة؟ 😉"},
+safe:{en:"Block & report this account",ar:"حظر و إبلاغ عن الحساب"},
+risky:{en:"Send them a photo",ar:"أرسل لهم صورة"},
+tipBad:{en:"Never send personal photos to strangers. Block & report instead.",ar:"لا ترسل صور شخصية للغرباء. الأفضل الحظر و الإبلاغ."},
+levelLabel:{en:"Level 1 · DMs",ar:"المستوى ١ · الرسائل الخاصة"}
+},
+
+{
+type:"email", icon:"✉️",
+title:{en:"Suspicious Email",ar:"إيميل مشبوه"},
+msg:{en:"URGENT: Your bank account is frozen! Click this link now to unlock it.",ar:"مهم: تم تجميد حسابك البنكي! اضغط على هذا الرابط فوراً لفك التجميد."},
+safe:{en:"Ignore & check using the official bank app",ar:"تجاهل وافتح تطبيق البنك الرسمي فقط"},
+risky:{en:"Click the link in the email",ar:"اضغط على الرابط الموجود في الإيميل"},
+tipBad:{en:"Banks do not ask you to click random links by email. Use the official app or call the bank.",ar:"البنوك ما تطلب منك تضغط روابط غريبة من الإيميل. استخدم التطبيق الرسمي أو اتصل بالبنك."},
+levelLabel:{en:"Level 2 · Emails",ar:"المستوى ٢ · الإيميلات"}
+},
+
+{
+type:"game", icon:"🎮",
+title:{en:"Game Chat",ar:"شات اللعبة"},
+msg:{en:"Which school do you go to and which city in the UAE do you live in?",ar:"أي مدرسة تدرس فيها؟ وفي أي مدينة في الإمارات ساكن؟"},
+safe:{en:"Keep it private and don’t answer",ar:"خلك خاص ولا تجاوب"},
+risky:{en:"Tell them your school and city",ar:"قل لهم اسم المدرسة والمدينة"},
+tipBad:{en:"Never share your school, city, or age with strangers online.",ar:"لا تشارك اسم مدرستك أو مدينتك أو عمرك مع غرباء أونلاين."},
+levelLabel:{en:"Level 3 · Game Chats",ar:"المستوى ٣ · شات الألعاب"}
+}
 ];
 
-let hearts=3,index=0;
 
-/* START ORIGINAL GAME FUNCTIONS — kept as is */
-function updateHearts(){document.getElementById("hearts").textContent="❤️".repeat(hearts)+"🖤".repeat(3-hearts);}
-function setMouth(happy){document.getElementById("mouth").setAttribute("d",happy?"M50 76 Q60 82 70 76":"M50 78 Q60 72 70 78");}
-function showPhone(){document.getElementById("phone").classList.add("show");}
-function startGame(){index=0;hearts=3;load();setTimeout(showPhone,600);}
-function load(){
- const s=scenarios[index];
- document.getElementById("level-label").textContent = currentLang==="en"?`Level ${index+1}`:`المستوى ${index+1}`;
- document.getElementById("phone-icon").textContent=s.icon;
- document.getElementById("phone-title").textContent=s.title[currentLang];
- document.getElementById("phone-msg").textContent=s.msg[currentLang];
- btnSafe.textContent=s.safe[currentLang];
- btnRisk.textContent=s.risky[currentLang];
- document.getElementById("phone-tip").textContent="";
- setMouth(true);
- updateHearts();
-}
-btnSafe.onclick=()=>play(true);
-btnRisk.onclick=()=>play(false);
-function play(safe){
- const s=scenarios[index];
- if(safe){setMouth(true);index++;if(index>=scenarios.length){win();}else load();}
- else{setMouth(false);hearts--;updateHearts();document.getElementById("phone-tip").textContent="❌ "+s.tip[currentLang];if(hearts<=0)lose();}
-}
+/* GAME LOGIC */
+let currentScenarioIndex = 0;
+let hearts = 3;
+let currentLang = "en";
+let gameActive = false;
 
-/* 🏆 CERTIFICATE (NEW) */
-function win(){
- document.getElementById("endOverlay").style.display="flex";
- document.getElementById("endPanel").innerHTML=`
- <h2>${currentLang==="en"?"You kept Saeed safe 🎉":"حميت سعيد 🎉"}</h2>
- <p>${currentLang==="en"?"Enter your name for certificate":"اكتب اسمك للشهادة"}</p>
- <input id="certName" placeholder="${currentLang==="en"?"Your name":"اسمك"}" style="padding:8px;border-radius:8px;">
- <button onclick="makeCert()" class="primary again">Generate Certificate</button>`;
+const heartsEl = document.getElementById("hearts");
+const levelLabelEl = document.getElementById("level-label");
+const phoneEl = document.getElementById("phone");
+const phoneIconEl = document.getElementById("phone-icon");
+const phoneTitleEl = document.getElementById("phone-title");
+const phoneMsgEl = document.getElementById("phone-msg");
+const phoneTipEl = document.getElementById("phone-tip");
+const btnSafe = document.getElementById("btn-safe");
+const btnRisk = document.getElementById("btn-risk");
+const mouthEl = document.getElementById("mouth");
+
+function updateHearts(){ heartsEl.textContent="❤️".repeat(hearts)+"🖤".repeat(3-hearts); }
+function setMouthHappy(){ mouthEl.setAttribute("d","M50 76 Q60 82 70 76");}
+function setMouthWorried(){ mouthEl.setAttribute("d","M50 78 Q60 72 70 78");}
+
+function loadScenario(i){
+const sc = scenarios[i];
+phoneIconEl.textContent=sc.icon;
+phoneTitleEl.textContent=sc.title[currentLang];
+phoneMsgEl.textContent=sc.msg[currentLang];
+btnSafe.textContent=sc.safe[currentLang];
+btnRisk.textContent=sc.risky[currentLang];
+phoneTipEl.textContent="";
+levelLabelEl.textContent=sc.levelLabel[currentLang];
+setMouthHappy();
 }
 
-/* 🎓 GENERATE CERT */
-function makeCert(){
- const name=document.getElementById("certName").value||"Student";
- const w=window.open("","cert");
- w.document.write(`
- <h1>🎓 Certificate of Cyber Safety 🎓</h1>
- <h2>${name}</h2>
- <p>Successfully helped Saeed stay safe online!</p>
- <button onclick="window.print()">Print</button>`);
+function showPhone(){ phoneEl.classList.add("show"); }
+
+function startGame(){
+gameActive=true;
+hearts=3;
+currentScenarioIndex=0;
+updateHearts();
+loadScenario(0);
+showPhone();
 }
 
-function lose(){
- document.getElementById("endOverlay").style.display="flex";
- document.getElementById("endPanel").innerHTML=`<h2>${currentLang==="en"?"Game Over ⚠️":"انتهت اللعبة ⚠️"}</h2><button onclick="location.reload()" class="primary">Restart</button>`;
+/* END / GAME OVER */
+function handleWin(){
+alert("You win!");
+}
+function handleGameOver(){
+alert("Game Over");
 }
 
-/* LANGUAGE LIVE SWITCH IN-GAME */
-function applyLanguage(){load();}
+function handleChoice(isSafe){
+const sc = scenarios[currentScenarioIndex];
+if(isSafe){
+setMouthHappy();
+currentScenarioIndex++;
+if(currentScenarioIndex >= scenarios.length){ handleWin(); }
+else{ loadScenario(currentScenarioIndex); }
+} else {
+hearts--;
+updateHearts();
+setMouthWorried();
+phoneTipEl.textContent="❌ "+sc.tipBad[currentLang];
+if(hearts <= 0){ handleGameOver(); }
+}
+}
+
+btnSafe.onclick=()=>handleChoice(true);
+btnRisk.onclick=()=>handleChoice(false);
+
+document.getElementById("lang-en").onclick=()=>{currentLang="en";document.getElementById("lang-overlay").style.display="none";startGame();};
+document.getElementById("lang-ar").onclick=()=>{currentLang="ar";document.getElementById("lang-overlay").style.display="none";startGame();};
 </script>
 
 </body>
