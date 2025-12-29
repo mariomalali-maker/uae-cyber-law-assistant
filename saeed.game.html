@@ -596,12 +596,23 @@
         <div id="introHint">
           On phones, tap “Play introduction” once so the sound can start.
         </div>
-        <!-- OPTIONAL: small test sound button while building -->
-        <!-- <button id="testAudio" class="introBtn" style="background:#1f2937;color:#e5e7eb;">🔊 Test sound</button> -->
       </div>
 
-      <!-- your voice file -->
-      <audio id="introAudio" src="intro-voice.mp3" preload="auto"></audio>
+      <!-- voice file with visible controls for testing -->
+      <audio
+        id="introAudio"
+        src="/intro-voice.mp3"
+        preload="auto"
+        controls
+        style="
+          position: fixed;
+          bottom: 12px;
+          right: 12px;
+          z-index: 9999;
+          background: #0f172a;
+          border-radius: 10px;
+        "
+      ></audio>
     </div>
   </div>
 
@@ -739,12 +750,18 @@
           : "✅ نعم، لنبدأ اللعبة";
     }
 
-    // play intro voice
+    // play intro voice with error alert
     playIntroBtn.addEventListener("click", () => {
       introAudio.currentTime = 0;
-      introAudio.play().catch((err) => {
-        console.log("Audio play error:", err);
-      });
+      introAudio
+        .play()
+        .then(() => {
+          console.log("Intro audio started");
+        })
+        .catch((err) => {
+          console.log("Audio play error:", err);
+          alert("Audio error: " + err.message);
+        });
 
       introPlayed = true;
       playIntroBtn.disabled = true;
@@ -766,19 +783,6 @@
       gameShell.classList.remove("blurred");
       showQuestion();
     });
-
-    // OPTIONAL test button (uncomment in HTML if needed)
-    /*
-    const testBtn = document.getElementById("testAudio");
-    if (testBtn) {
-      testBtn.addEventListener("click", () => {
-        introAudio.currentTime = 0;
-        introAudio.play().catch(err => {
-          alert("Audio error: " + err.message);
-        });
-      });
-    }
-    */
 
     /* ---------- QUESTIONS ---------- */
     const questions = [
