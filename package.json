@@ -5,6 +5,6 @@
   "scripts": {
     "dev": "vercel dev",
     "start": "vercel start",
-    "build": "echo 'No build step required'"
+    "build": "echo 'Static site - no build'"
   }
 }
