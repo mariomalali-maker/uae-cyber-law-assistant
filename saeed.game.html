@@ -2,179 +2,185 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Saeed’s Game</title>
+<title>Saeed's Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
- background:#0a0f1f;
- font-family: Arial, sans-serif;
- margin:0; overflow:hidden; color:white;
+ background:#02040A;
+ margin:0;
+ font-family:Arial, sans-serif;
+ color:white;
+ overflow:hidden;
 }
-.game-area{
- width:100vw; height:100vh;
- background:url("https://i.imgur.com/4ioxTql.png") center/cover no-repeat;
- display:flex; justify-content:center; align-items:center;
- position:relative;
+nav{
+ background:rgba(0,0,0,0.35);
+ padding:12px 20px;
+ display:flex;justify-content:space-between;align-items:center;
+ backdrop-filter:blur(10px);
 }
-.saeed{
- width:85px; height:180px; background:white;
- border-radius:40px; position:absolute; left:25%; bottom:16%;
- animation:bounce 1s infinite alternate;
+nav .lang-switch button{
+ background:none;border:none;font-weight:bold;color:white;font-size:16px;cursor:pointer;
 }
-.saeed::before{
- content:""; width:100%; height:50px;
- position:absolute; top:-12px; background:white;
- border-radius:50%; border-top:10px solid black;
-}
-@keyframes bounce{0%{transform:translateY(0);}100%{transform:translateY(-4px);}}
 
-.phone{
- width:330px; background:#101522; padding:20px;
- border-radius:20px; position:absolute; right:18%; bottom:20%;
- box-shadow:0 0 20px rgba(0,0,0,.6);
+/* INTRO */
+#introScreen{
+ position:fixed;inset:0;background:rgba(0,0,0,0.85);
+ backdrop-filter:blur(8px);
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ z-index:1000;text-align:center;
 }
-.qtext{
- background:#0c1227; padding:12px; margin-bottom:15px;
- border-radius:10px; font-size:15px;
+#introScreen img{width:120px;margin-bottom:20px;}
+.intro-btn{
+ background:#1ea33f;color:white;border:none;padding:10px 20px;
+ border-radius:8px;margin:10px auto;font-weight:bold;cursor:pointer;
 }
-.btn{width:100%;padding:12px;border-radius:10px;border:none;font-weight:bold;margin-top:8px;cursor:pointer;}
-.safe{background:#11c776;color:white;}
-.danger{background:#ff9f6c;color:black;}
+#startBtn{background:#3b82f6;display:none;}
 
-.hearts{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:32px;}
-.level{position:absolute;top:20px;right:40px;background:#001d2c;padding:8px 14px;border-radius:20px;}
-
-#intro{
- position:fixed;inset:0;background:#0009;
- display:flex;flex-direction:column;justify-content:center;align-items:center;
- backdrop-filter:blur(7px);z-index:200;
+/* GAME AREA */
+#gameContainer{
+ width:90%;margin:auto;margin-top:100px;
+ background:linear-gradient(#0B1A2A,#08121C);
+ border-radius:20px;padding:20px;position:relative;display:none;
 }
-.intro-box{background:#0b1222;padding:30px;border-radius:20px;text-align:center;width:300px;}
-.lang{position:absolute;top:15px;right:15px;background:#002;padding:8px;border-radius:12px;cursor:pointer;}
+#hearts{text-align:center;font-size:28px;margin-bottom:10px;}
+
+/* Saeed */
+#saeed{
+ width:80px;height:160px;background:white;
+ border-radius:25px;
+ position:absolute;left:120px;bottom:140px;
+ transition:0.3s ease;
+}
+#saeed::before{
+ content:"";background:black;width:50px;height:20px;border-radius:10px;
+ position:absolute;top:-10px;left:15px;
+}
+
+/* Phone */
+#phone{
+ width:320px;background:rgba(0,0,0,0.7);
+ border:2px solid #222;padding:18px;border-radius:16px;
+ position:absolute;right:120px;bottom:110px;
+}
+#messageText{font-size:15px;margin-bottom:15px;line-height:20px;}
+.answer-btn{width:100%;padding:10px;margin-top:10px;border:none;font-weight:bold;border-radius:8px;cursor:pointer;}
+.safe{background:#16a34a;color:white;}
+.danger{background:#EF4444;color:white;}
 
 </style>
 </head>
 <body>
 
-<!-- 🔊 INTRO SCREEN -->
-<div id="intro">
-<div class="lang" onclick="toggleLang()">EN | AR</div>
-<div class="intro-box">
-<h2 id="intro-title">Meet Saeed 🧑🏻‍🦱</h2>
-<p id="intro-text">He doesn’t know much about online safety yet. Play the intro then help him!</p>
-<button id="playIntro" class="btn safe" onclick="playIntro()">▶ Play Introduction</button>
-<button id="startGame" class="btn danger" disabled onclick="startGame()">Start Game ✔</button>
-<audio id="voice" src="intro-voice.mp3"></audio>
-</div>
+<nav>
+ <span style="font-size:18px;font-weight:bold;">💚 Saeed’s Game</span>
+ <div class="lang-switch"><button id="langEN">EN</button> | <button id="langAR">AR</button></div>
+</nav>
+
+<!-- INTRO -->
+<div id="introScreen">
+ <img src="https://i.imgur.com/Al7jo8o.png">
+ <h2 id="introTitle">Meet Saeed</h2>
+ <p id="introText">He doesn’t know much about online safety yet. Listen to the intro then help him!</p>
+ <button class="intro-btn" onclick="playIntro()">▶ Play Introduction</button>
+ <button class="intro-btn" id="startBtn" onclick="startGame()">✔ Start Game</button>
+ <audio id="introAudio" src="intro-voice.mp3"></audio>
 </div>
 
-<!-- 🎮 GAME -->
-<div class="game-area">
-<div class="hearts" id="hearts">❤️❤️❤️</div>
-<div class="level" id="levelBox">Level 1 - DMs</div>
+<!-- GAME -->
+<div id="gameContainer">
+ <div id="hearts">❤️❤️❤️</div>
 
-<div class="saeed"></div>
+ <div id="saeed"></div>
 
-<div class="phone">
-<div class="qtext" id="qtext"></div>
-<button class="btn safe" id="safeBtn" onclick="answer(true)"></button>
-<button class="btn danger" id="dangerBtn" onclick="answer(false)"></button>
-</div>
+ <div id="phone">
+   <div id="messageText"></div>
+   <button class="answer-btn safe" onclick="chooseAnswer(true)"></button>
+   <button class="answer-btn danger" onclick="chooseAnswer(false)"></button>
+ </div>
 </div>
 
 <script>
-/* 🌍 LANGUAGE */
-let lang = "en";
-function toggleLang(){
- lang = lang === "en" ? "ar" : "en";
- updateText();
-}
-
-/* 🎧 INTRO */
+// INTRO
 function playIntro(){
- const audio=document.getElementById("voice");
- audio.play();
- audio.onended=()=>{document.getElementById("startGame").disabled=false;}
+ document.getElementById("introAudio").play();
+ document.getElementById("startBtn").style.display="block";
 }
 function startGame(){
- document.getElementById("intro").style.display="none";
+ document.getElementById("introScreen").style.display="none";
+ document.getElementById("gameContainer").style.display="block";
 }
 
-/* ❤️ GAME DATA */
-let hearts = 3;
-let current = 0;
+// QUESTIONS
+let lang="en";
+let current=0;
+let hearts=3;
 
-/* 📌 10 QUESTIONS */
-const questions = {
+const questions={
  en:[
-  {q:"Hey, I found your account. Can you send me a private picture? 🫣", safe:"Block & report this account", danger:"Send them a photo", correct:"safe"},
-  {q:"Congrats! You won a prize! Send your Emirates ID to claim.", safe:"Refuse & report", danger:"Send ID", correct:"safe"},
-  {q:"Can I log into your account to fix something?", safe:"No, never", danger:"Yes here is my password", correct:"safe"},
-  {q:"This bank link looks weird, open it?", safe:"Don't click suspicious links", danger:"Open link", correct:"safe"},
-  {q:"Your friend: I forgot my password send me the code I got?", safe:"Don't share verification codes", danger:"Send code", correct:"safe"},
-  {q:"Stranger: Share your location now!", safe:"Decline, Block", danger:"Send location", correct:"safe"},
-  {q:"Download this app to get free followers.", safe:"Don't download unknown apps", danger:"Download it!", correct:"safe"},
-  {q:"Police: Pay a fine now by transfer or go to jail!", safe:"Check official channel first", danger:"Pay immediately", correct:"safe"},
-  {q:"Employer: Send personal documents to my WhatsApp", safe:"No, use official email only", danger:"Send directly", correct:"safe"},
-  {q:"Free WiFi: Enter phone & ID to connect", safe:"Don't share ID just for WiFi", danger:"Enter info", correct:"safe"}
+  {q:"Someone asked for a private picture.",safe:"Block & report",danger:"Send photo",correct:true},
+  {q:"You won iPhone, send Emirates ID.",safe:"Report scam",danger:"Send ID",correct:true},
+  {q:"Fix bank account? Click link.",safe:"Ignore & report",danger:"Click link",correct:true},
+  {q:"Give your OTP code?",safe:"Never share OTP",danger:"Give it",correct:true},
+  {q:"Double money crypto plan!",safe:"Avoid & block",danger:"Send money",correct:true},
+  {q:"Your Instagram will be deleted, send pass!",safe:"Official help only",danger:"Send password",correct:true},
+  {q:"We send gift, need your address.",safe:"Don't share info",danger:"Share info",correct:true},
+  {q:"WhatsApp agent wants code.",safe:"Never share verification code",danger:"Share code",correct:true},
+  {q:"Police fine, pay now!",safe:"Check official app",danger:"Pay quickly",correct:true},
+  {q:"Open file, it’s your photo!",safe:"Don't download",danger:"Download",correct:true}
  ],
  ar:[
-  {q:"مرحبا، هل ترسل لي صورة خاصة؟", safe:"الحظر و الإبلاغ", danger:"إرسال الصورة", correct:"safe"},
-  {q:"ربحت جائزة! ارسل الهوية الإماراتية الآن", safe:"الرفض و الإبلاغ", danger:"إرسال الهوية", correct:"safe"},
-  {q:"اعطني كلمة المرور لإصلح حسابك", safe:"لا, هذا خطير", danger:"حسنًا تفضل", correct:"safe"},
-  {q:"افتح هذا الرابط البنكي الغريب", safe:"لا اضغط على الروابط المشبوهة", danger:"افتح الرابط", correct:"safe"},
-  {q:"أرسل لي رمز التحقق من فضلك", safe:"عدم مشاركة الرموز", danger:"إرساله", correct:"safe"},
-  {q:"شارك موقعك الآن!", safe:"رفض و حظر", danger:"موافق", correct:"safe"},
-  {q:"حمّل هذا التطبيق لزيادة المتابعين", safe:"عدم تحميل تطبيقات مجهولة", danger:"تحميل", correct:"safe"},
-  {q:"ادفع غرامة الآن عبر التحويل أو الجبس!", safe:"التأكد من القنوات الرسمية", danger:"الدفع فورًا", correct:"safe"},
-  {q:"أرسل أوراقك لواتسابي للوظيفة", safe:"الإرسال عبر البريد الرسمي فقط", danger:"إرساله", correct:"safe"},
-  {q:"للوصول للوايفاي أدخل الهاتف والهوية", safe:"لا ترسل هويتك للوايفاي", danger:"إدخال البيانات", correct:"safe"}
+  {q:"شخص طلب صورة خاصة.",safe:"الحظر و الإبلاغ",danger:"إرسال الصورة",correct:true},
+  {q:"ربحت ايفون، ارسل الهوية.",safe:"ابلاغ عن احتيال",danger:"إرسال الهوية",correct:true},
+  {q:"رابط غريب للبنك.",safe:"تجاهل و ابلاغ",danger:"اضغط الرابط",correct:true},
+  {q:"اعطني رمز OTP.",safe:"عدم مشاركة الرموز",danger:"إعطاء الرمز",correct:true},
+  {q:"خطة مضاعفة المال!",safe:"تجنب و حظر",danger:"ارسل المال",correct:true},
+  {q:"سنحذف حسابك! ارسل كلمة السر!",safe:"المساعدة الرسمية فقط",danger:"إرسال كلمة السر",correct:true},
+  {q:"نحتاج عنوانك لهدية.",safe:"لا ترسل معلوماتك",danger:"ارسال العنوان",correct:true},
+  {q:"وكيل واتساب يريد رمز.",safe:"لا تشارك رمز التحقق",danger:"ارسال الرمز",correct:true},
+  {q:"غرامة شرطة ادفع الآن!",safe:"تحقق من تطبيق رسمي",danger:"الدفع فورًا",correct:true},
+  {q:"افتح الملف صورتك!",safe:"لا تحمل شيء غريب",danger:"حمله",correct:true}
  ]
 };
 
-/* 🧠 UPDATE UI */
-function updateText(){
- const q = questions[lang][current];
- document.getElementById("qtext").innerText = q.q;
- document.getElementById("safeBtn").innerText = q.safe;
- document.getElementById("dangerBtn").innerText = q.danger;
-
- document.getElementById("intro-title").innerText = lang==="en"?"Meet Saeed 🧑🏻‍🦱":"تعرف على سعيد 🧑🏻";
- document.getElementById("intro-text").innerText = lang==="en"?
- "He doesn’t know much about online safety yet. Play the intro then help him!":
- "سعيد لا يعرف الكثير عن الأمان الرقمي، استمع للمقدمة ثم ساعده!";
- document.getElementById("playIntro").innerText = lang==="en"?"▶ Play Introduction":"▶ تشغيل المقدمة";
- document.getElementById("startGame").innerText = lang==="en"?"Start Game ✔":"ابدأ ✔";
- document.getElementById("levelBox").innerText = lang==="en"?"Level 1 - DMs":"المستوى 1 - الرسائل";
+// SHOW QUESTION
+function showQ(){
+ let q = questions[lang][current];
+ document.getElementById("messageText").innerText = q.q;
+ document.querySelector(".safe").innerText = q.safe;
+ document.querySelector(".danger").innerText = q.danger;
 }
-updateText();
+showQ();
 
-/* 🎯 ANSWERS */
-function answer(safeSelected){
- const q = questions[lang][current];
- const correct = (safeSelected && q.correct==="safe");
+// MOVEMENT ONLY
+function chooseAnswer(isSafe){
+ let correct = questions[lang][current].correct;
 
- if(!correct){
-  hearts--;
-  document.getElementById("hearts").innerText = "❤️".repeat(hearts);
-  if(hearts===0){
-   alert(lang==="en"?"Game Over":"انتهت اللعبة");
-   location.reload();
+ if(isSafe == correct){
+   // MOVE FORWARD
+   document.getElementById("saeed").style.left = "150px";
+   setTimeout(()=>{document.getElementById("saeed").style.left="120px"},200);
+   current++;
+ } else {
+   // SHAKE
+   document.getElementById("saeed").style.left = "110px";
+   setTimeout(()=>{document.getElementById("saeed").style.left="120px"},150);
+   hearts--;
+   document.getElementById("hearts").innerText = "❤️".repeat(hearts);
+   if(hearts <= 0){ alert(lang=="en"?"Game Over":"انتهت اللعبة"); location.reload();}
+ }
+
+ if(current>=questions[lang].length){
+   alert(lang=="en"?"🎉 You finished!":"🎉 أنهيت اللعبة!");
    return;
-  }
  }
-
- current++;
- if(current >= questions[lang].length){
-  alert(lang==="en"?"🎉 You finished all questions!":"🎉 لقد أنهيت جميع الأسئلة!");
-  return;
- }
-
- updateText();
+ setTimeout(()=>{showQ()},250);
 }
-</script>
 
+// LANGUAGE SWITCH
+document.getElementById("langEN").onclick=()=>{lang="en";showQ()};
+document.getElementById("langAR").onclick=()=>{lang="ar";showQ()};
+
+</script>
 </body>
 </html>
-
