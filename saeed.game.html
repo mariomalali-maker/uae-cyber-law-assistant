@@ -14,6 +14,7 @@
       --accent-red: #b91c1c;
       --border-subtle: #1e293b;
       --text-muted: #9ca3af;
+      --skin: #fde7c6;
     }
 
     body {
@@ -120,15 +121,9 @@
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
     }
 
-    .b1 {
-      left: 200px;
-    }
-    .b2 {
-      left: 360px;
-    }
-    .b3 {
-      left: 520px;
-    }
+    .b1 { left: 200px; }
+    .b2 { left: 360px; }
+    .b3 { left: 520px; }
 
     .sidewalk {
       position: absolute;
@@ -160,15 +155,9 @@
       margin: -6px auto 0;
       box-shadow: 0 0 10px rgba(22, 163, 74, 0.6);
     }
-    .t1 {
-      left: 120px;
-    }
-    .t2 {
-      left: 310px;
-    }
-    .t3 {
-      left: 500px;
-    }
+    .t1 { left: 120px; }
+    .t2 { left: 310px; }
+    .t3 { left: 500px; }
 
     .road {
       position: absolute;
@@ -224,83 +213,76 @@
       user-select: none;
     }
 
+    /* ---------- Saeed (cuter, rounder) ---------- */
     #saeed {
       position: absolute;
       left: 180px;
       bottom: 110px;
-      width: 80px;
-      height: 160px;
-      background: #f9fafb;
-      border-radius: 14px;
+      width: 90px;
+      height: 190px;
+      background: transparent;
       display: flex;
-      justify-content: flex-start;
-      align-items: center;
       flex-direction: column;
-      padding-top: 16px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+      align-items: center;
+      gap: 0;
       z-index: 4;
       animation: saeed-bob 2.4s ease-in-out infinite;
     }
 
     @keyframes saeed-bob {
-      0%,
-      100% {
-        transform: translateX(-3px);
-      }
-      50% {
-        transform: translateX(3px);
-      }
+      0%,100% { transform: translateX(-3px); }
+      50%     { transform: translateX(3px); }
     }
 
     .head {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      background: #f9fafb;
-      box-shadow: 0 0 0 4px #e5e7eb;
-      margin-bottom: 8px;
+      width: 80px;
+      height: 82px;
+      border-radius: 26px;
+      background: var(--skin);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      margin-bottom: 6px;
       position: relative;
       overflow: hidden;
     }
 
     .ghutra {
       position: absolute;
-      left: -2px;
-      right: -2px;
-      top: -8px;
-      height: 26px;
+      left: -4px;
+      right: -4px;
+      top: -10px;
+      height: 32px;
       background: #f9fafb;
-      border-radius: 18px 18px 10px 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
+      border-radius: 28px 28px 16px 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.22);
     }
 
     .igal {
       position: absolute;
-      left: 6px;
-      right: 6px;
-      top: 0;
-      height: 8px;
-      border-radius: 99px;
+      left: 7px;
+      right: 7px;
+      top: 2px;
+      height: 10px;
+      border-radius: 999px;
       border: 3px solid #020617;
     }
 
     .face-inner {
       position: absolute;
-      left: 10px;
-      right: 10px;
-      top: 16px;
-      bottom: 8px;
+      left: 12px;
+      right: 12px;
+      top: 20px;
+      bottom: 10px;
     }
 
     .eyes {
       display: flex;
       justify-content: space-between;
-      padding: 0 3px;
+      padding: 0 4px;
     }
 
     .eye {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: #020617;
       transform-origin: center;
@@ -309,34 +291,58 @@
 
     .mouth {
       position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 4px;
-      height: 5px;
-      border-radius: 0 0 10px 10px;
+      left: 18px;
+      right: 18px;
+      bottom: 6px;
+      height: 6px;
+      border-radius: 0 0 999px 999px;
       background: #111827;
       transition: transform 0.2s, background 0.2s;
     }
 
     .body {
-      width: 40px;
-      height: 70px;
-      border-radius: 10px;
+      width: 46px;
+      height: 90px;
+      border-radius: 22px;
       background: #f9fafb;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+      position: relative;
+    }
+
+    /* sleeves hint */
+    .body::before {
+      content:'';
+      position:absolute;
+      left:-10px; right:-10px; top:24px;
+      height:18px;
+      border-radius: 999px;
+      border-top:2px solid #e5e7eb;
+      opacity:0.8;
     }
 
     .feet {
       display: flex;
-      gap: 10px;
-      margin-top: 4px;
+      gap: 12px;
+      margin-top: 6px;
     }
 
     .foot {
-      width: 24px;
-      height: 8px;
-      border-radius: 10px;
+      width: 26px;
+      height: 10px;
+      border-radius: 999px;
       background: #020617;
+      position: relative;
     }
+
+    .foot::after {
+      content:'';
+      position:absolute;
+      left:4px; right:4px; top:3px; bottom:1px;
+      border-radius:999px;
+      background:#f1f5f9;
+    }
+
+    /* ---------- Phone ---------- */
 
     .phone {
       position: absolute;
@@ -455,13 +461,14 @@
       padding: 22px 22px 18px;
       border: 1px solid rgba(148, 163, 184, 0.35);
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+      position: relative;
     }
 
     #introSaeed {
       width: 110px;
       height: 180px;
       background: #f9fafb;
-      border-radius: 18px;
+      border-radius: 26px;
       margin: 0 auto 12px;
       display: flex;
       flex-direction: column;
@@ -575,8 +582,8 @@
       </div>
 
       <div id="introText">
-        Meet Saeed 👦🏻  
-        He doesn’t know much about online safety yet.  
+        Meet Saeed 👦🏻<br>
+        He doesn’t know much about online safety yet.<br>
         Listen to the short intro, then help him stay safe from scams and bad messages.
       </div>
 
@@ -716,30 +723,39 @@
     const introScreen = document.getElementById("introScreen");
 
     let introPlayed = false;
+    let startReady = false;
 
-    playIntroBtn.addEventListener("click", () => {
-      introAudio.currentTime = 0;
-      introAudio
-        .play()
-        .then(() => {
-          introPlayed = true;
-          playIntroBtn.disabled = true;
-          playIntroBtn.textContent =
-            lang === "EN" ? "▶️ Playing..." : "▶️ يتم التشغيل...";
-        })
-        .catch(() => {});
-    });
-
-    introAudio.addEventListener("ended", () => {
+    function makeStartReady() {
+      if (startReady) return;
+      startReady = true;
       startGameBtn.classList.add("ready");
       startGameBtn.textContent =
         lang === "EN"
           ? "✅ Yes, let's start the game"
           : "✅ نعم، لنبدأ اللعبة";
+    }
+
+    playIntroBtn.addEventListener("click", () => {
+      introAudio.currentTime = 0;
+
+      // try to play audio (if it fails, we still allow start after 21s)
+      introAudio.play().catch(() => {});
+
+      introPlayed = true;
+      playIntroBtn.disabled = true;
+      playIntroBtn.textContent =
+        lang === "EN" ? "▶️ Playing..." : "▶️ يتم التشغيل...";
+
+      // safety: unlock start after ~21 seconds even if onended doesn't fire
+      setTimeout(makeStartReady, 21000);
+    });
+
+    introAudio.addEventListener("ended", () => {
+      makeStartReady();
     });
 
     startGameBtn.addEventListener("click", () => {
-      if (!introPlayed) return;
+      if (!introPlayed || !startReady) return;
       introScreen.style.display = "none";
       gameShell.classList.remove("blurred");
       showQuestion();
@@ -750,152 +766,83 @@
         type: "dm",
         en: "A stranger says: “I found your account, send me a private picture, I won’t show anyone 😉”",
         ar: "شخص غريب يقول: «لقيت حسابك، ارسل لي صورة خاصة، ما بوريها لأحد 😉»",
-        o1: {
-          en: "Block & report this account",
-          ar: "حظر + إبلاغ عن الحساب",
-          correct: true,
-        },
-        o2: {
-          en: "Send them a photo",
-          ar: "أرسل له الصورة",
-          correct: false,
-        },
+        o1: { en: "Block & report this account", ar: "حظر + إبلاغ عن الحساب", correct: true },
+        o2: { en: "Send them a photo",          ar: "أرسل له الصورة",          correct: false }
       },
       {
         type: "link",
         en: "You get a DM with a link: “Free iPhone for the first 100 people, just login with Instagram!”",
         ar: "تجيك رسالة مع رابط: «آيفون مجاني لأول ١٠٠ شخص، بس سجل دخول بحسابك في إنستغرام!»",
-        o1: {
-          en: "Delete the message and ignore it",
-          ar: "أحذف الرسالة وأتجاهلها",
-          correct: true,
-        },
-        o2: {
-          en: "Login using the link quickly",
-          ar: "أسجل دخول من الرابط بسرعة",
-          correct: false,
-        },
+        o1: { en: "Delete the message and ignore it", ar: "أحذف الرسالة وأتجاهلها", correct: true },
+        o2: { en: "Login using the link quickly",     ar: "أسجل دخول من الرابط بسرعة", correct: false }
       },
       {
         type: "email",
         en: "Email: “Your bank account will be closed today. Click here and enter your card number to keep it active.”",
         ar: "إيميل: «راح نقفل حسابك البنكي اليوم، اضغط هنا واكتب رقم بطاقتك عشان يظل شغال.»",
-        o1: {
-          en: "Ignore email & check from the bank app or official number",
-          ar: "أتجاهل الإيميل وأتأكد من تطبيق البنك أو الرقم الرسمي",
-          correct: true,
-        },
-        o2: {
-          en: "Click the link and type full card details",
-          ar: "أضغط الرابط وأحط بيانات البطاقة كاملة",
-          correct: false,
-        },
+        o1: { en: "Ignore email & check from the bank app or official number",
+              ar: "أتجاهل الإيميل وأتأكد من تطبيق البنك أو الرقم الرسمي", correct: true },
+        o2: { en: "Click the link and type full card details",
+              ar: "أضغط الرابط وأحط بيانات البطاقة كاملة", correct: false }
       },
       {
         type: "qr",
         en: "Someone at the mall shows you a QR code: “Scan it to get a free gift, no need to ask your parents.”",
         ar: "واحد في المول يوريك QR ويقول: «أمسح الكود وخذ هدية مجانية، ما تحتاج تخبر أهلك.»",
-        o1: {
-          en: "Don’t scan and walk away",
-          ar: "ما أمسح الكود وأمشي",
-          correct: true,
-        },
-        o2: {
-          en: "Scan it and follow the instructions",
-          ar: "أمسح الكود وأتبع التعليمات",
-          correct: false,
-        },
+        o1: { en: "Don’t scan and walk away", ar: "ما أمسح الكود وأمشي", correct: true },
+        o2: { en: "Scan it and follow the instructions", ar: "أمسح الكود وأتبع التعليمات", correct: false }
       },
       {
         type: "threat",
         en: "Message: “I have your pictures, if you don’t send money I will post them.”",
         ar: "رسالة: «عندي صورك، لو ما حولت فلوس رح أنشرها.»",
-        o1: {
-          en: "Keep evidence & tell family / police (don’t pay)",
-          ar: "أحفظ الأدلة وأخبر أهلي / الشرطة (وما أدفع)",
-          correct: true,
-        },
-        o2: {
-          en: "Send money so they stop",
-          ar: "أحول له فلوس عشان يوقف",
-          correct: false,
-        },
+        o1: { en: "Keep evidence & tell family / police (don’t pay)",
+              ar: "أحفظ الأدلة وأخبر أهلي / الشرطة (وما أدفع)", correct: true },
+        o2: { en: "Send money so they stop", ar: "أحول له فلوس عشان يوقف", correct: false }
       },
       {
         type: "friend-link",
         en: "Your close friend sends a strange link with no text.",
         ar: "صديقك المقرب يرسل لك رابط غريب بدون أي كلام.",
-        o1: {
-          en: "Ask them on another app if they really sent it",
-          ar: "أسأل صديقي في تطبيق ثاني إذا فعلًا أرسل الرابط",
-          correct: true,
-        },
-        o2: {
-          en: "Click it immediately because you trust them",
-          ar: "أضغط الرابط فورًا لأني أثق فيه",
-          correct: false,
-        },
+        o1: { en: "Ask them on another app if they really sent it",
+              ar: "أسأل صديقي في تطبيق ثاني إذا فعلًا أرسل الرابط", correct: true },
+        o2: { en: "Click it immediately because you trust them",
+              ar: "أضغط الرابط فورًا لأني أثق فيه", correct: false }
       },
       {
         type: "hack",
         en: "Someone says: “I hacked your account. If you pay me, I’ll give it back.”",
         ar: "شخص يقول: «اخترقت حسابك، لو دفعت لي أرجعه لك.»",
-        o1: {
-          en: "Report to the platform & enable 2FA, don’t pay",
-          ar: "أبلغ المنصة وأفعل التحقق بخطوتين، وما أدفع",
-          correct: true,
-        },
-        o2: {
-          en: "Pay them and hope they are honest",
-          ar: "أدفع له وأتمنى يكون صادق",
-          correct: false,
-        },
+        o1: { en: "Report to the platform & enable 2FA, don’t pay",
+              ar: "أبلغ المنصة وأفعل التحقق بخطوتين، وما أدفع", correct: true },
+        o2: { en: "Pay them and hope they are honest",
+              ar: "أدفع له وأتمنى يكون صادق", correct: false }
       },
       {
         type: "extension",
         en: "Pop-up on your browser: “Install this free extension to get crypto rewards every day.”",
         ar: "نافذة في المتصفح: «ثبت هذه الإضافة المجانية وخذ عملات رقمية كل يوم.»",
-        o1: {
-          en: "Close the pop-up, don’t install anything",
-          ar: "أغلق النافذة وما أثبت أي شيء",
-          correct: true,
-        },
-        o2: {
-          en: "Install it because it sounds cool",
-          ar: "أثبتها لأنها شكلها حلو",
-          correct: false,
-        },
+        o1: { en: "Close the pop-up, don’t install anything",
+              ar: "أغلق النافذة وما أثبت أي شيء", correct: true },
+        o2: { en: "Install it because it sounds cool",
+              ar: "أثبتها لأنها شكلها حلو", correct: false }
       },
       {
         type: "otp",
         en: "Someone calls: “I’m from Etisalat, tell me the OTP we sent to your phone.”",
         ar: "اتصال: «معك من الاتصالات، عطيني رمز التحقق اللي وصلك.»",
-        o1: {
-          en: "Never share OTP with anyone",
-          ar: "ما أعطي الرمز لأي أحد",
-          correct: true,
-        },
-        o2: {
-          en: "Tell them the OTP to be helpful",
-          ar: "أعطيه الرمز عشان أساعد",
-          correct: false,
-        },
+        o1: { en: "Never share OTP with anyone", ar: "ما أعطي الرمز لأي أحد", correct: true },
+        o2: { en: "Tell them the OTP to be helpful", ar: "أعطيه الرمز عشان أساعد", correct: false }
       },
       {
         type: "wifi",
         en: "You see public Wi-Fi: “FREE_Internet_No_Password” in a café.",
         ar: "تشوف واي فاي عام اسمه: «FREE_Internet_No_Password» في كافيه.",
-        o1: {
-          en: "Avoid connecting or use VPN only for simple browsing",
-          ar: "ما أتصل، أو أستخدم VPN فقط لأشياء بسيطة",
-          correct: true,
-        },
-        o2: {
-          en: "Use it for banking and passwords",
-          ar: "أستخدمه للبنك وكلمات السر",
-          correct: false,
-        },
-      },
+        o1: { en: "Avoid connecting or use VPN only for simple browsing",
+              ar: "ما أتصل، أو أستخدم VPN فقط لأشياء بسيطة", correct: true },
+        o2: { en: "Use it for banking and passwords",
+              ar: "أستخدمه للبنك وكلمات السر", correct: false }
+      }
     ];
 
     let current = 0;
@@ -962,9 +909,8 @@
       } else {
         if (navigator.vibrate) navigator.vibrate([80, 70, 80]);
         hearts--;
-        document.getElementById("hearts").textContent = "❤️".repeat(
-          Math.max(0, hearts)
-        );
+        document.getElementById("hearts").textContent =
+          "❤️".repeat(Math.max(0, hearts));
         if (hearts <= 0) {
           lose();
         }
@@ -975,7 +921,7 @@
       alert(
         lang === "EN"
           ? "✨ You helped Saeed stay safe online! \nNice job, security expert 😎"
-          : "✨ أحسنت! ساعدت سعيد يكون آمن على الإنترنت 😎"
+          : "✨ أحسنت! ساعدت سعيد يكون آمنًا على الإنترنت 😎"
       );
     }
 
@@ -988,6 +934,7 @@
       location.reload();
     }
 
+    // blink animation
     setInterval(() => {
       const eyeL = document.getElementById("eyeL");
       const eyeR = document.getElementById("eyeR");
