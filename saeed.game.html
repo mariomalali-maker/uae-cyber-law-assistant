@@ -6,9 +6,9 @@
 <title>Saeed's Cyber Safety Game</title>
 <style>
 
-  /* --- MOBILE FIXES (iPhone etc.) --- */
 
-/* make scene a bit shorter so it fits on small screens */
+
+
 @media (max-width: 768px) {
 
   main {
@@ -21,11 +21,11 @@
   }
 
   #scene {
-    height: 360px;      /* was min(70vh, 520px) with min-height:380, too tall */
+    height: 360px;     
     min-height: 320px;
   }
 
-  /* move Saeed slightly and make him smaller on phone */
+  
   #saeed-wrapper {
     left: 12%;
     bottom: 70px;
@@ -33,20 +33,20 @@
     height: 190px;
   }
 
-  /* make sure phone fits inside the screen on the right */
+ 
   #phone {
     right: 4%;
     bottom: 80px;
-    width: 55vw;        /* use % of screen width */
+    width: 55vw;        
     max-width: 260px;
   }
 }
 
-/* FIX PHONE POSITION */
+
 #phone {
   position: absolute;
-  right: 8%;       /* move closer or further from Saeed */
-  bottom: 90px;    /* adjust height */
+  right: 8%;       
+  bottom: 90px;   
   width: 260px;    
   background: #00000050;
   border-radius: 18px;
@@ -61,7 +61,7 @@
   border: 1px solid #1e293b;
 }
 
-/* make text snaps properly */
+
 .phone-screen {
   margin-top: 8px;
   font-size: 0.88rem;
@@ -121,7 +121,7 @@ position: relative;
 overflow: hidden;
 }
 
-/* HUD */
+
 .hud {
 position: absolute;
 top: 10px;
@@ -225,7 +225,7 @@ background-image: repeating-linear-gradient(to right,rgba(248,250,252,0.9),rgba(
 opacity: .7;
 }
 
-/* SAEED CHARACTER */
+
 #saeed-wrapper {
 position: absolute;
 bottom: 82px;
@@ -254,7 +254,7 @@ z-index: 3;
 .choice-safe { background: #22c55e; color: #022c22; }
 .choice-risk { background: #fee2e2; color: #7f1d1d; }
 
-/* OVERLAYS */
+
 .overlay {
 position:absolute;
 inset:0;
@@ -272,7 +272,7 @@ padding:18px;
 text-align:center;
 }
 
-/* ➕ FIXED: PHONE SHOW CLASS */
+
 #phone { display:none; }
 #phone.show { display:block; }
 </style>
@@ -292,17 +292,17 @@ text-align:center;
 <main>
 <div id="game-shell">
 
-<!-- 🟩🟩🟩 INTRO ADDED HERE -->
+
 <div class="overlay" id="intro-overlay">
 <div class="panel">
 <h2>🎧 Welcome to Saeed's Story</h2>
 <p>Press Play to listen before starting the game.</p>
-<audio id="intro-audio" src="intro-voice.mp3"></audio>
+<audio id="intro-audio" src="intro-voice.mp3" preload="auto" playsinline></audio>
 <button id="intro-btn">▶️ Play Audio</button>
 <p id="intro-status" style="margin-top:10px; display:none;">🎙️ Playing now... listen carefully</p>
 </div>
 </div>
-<!-- 🟩 END INTRO -->
+
 
 <div class="hud">
 <div class="hearts" id="hearts">❤️❤️❤️</div>
@@ -367,7 +367,7 @@ text-align:center;
 </div>
 </section>
 
-<!-- LANGUAGE AFTER INTRO -->
+
 <div class="overlay" id="lang-overlay" style="display:none;">
 <div class="panel">
 <h2>Choose language</h2>
@@ -386,7 +386,7 @@ text-align:center;
 </main>
 
 <script>
-/* 🎧 INTRO LOGIC */
+
 const introOverlay = document.getElementById("intro-overlay");
 const introAudio = document.getElementById("intro-audio");
 const introBtn = document.getElementById("intro-btn");
@@ -394,16 +394,22 @@ const introStatus = document.getElementById("intro-status");
 introBtn.onclick = ()=>{
 introBtn.style.display="none";
 introStatus.style.display="block";
-introAudio.play();
+introAudio.play().then(() => {
+    console.log("Audio started");
+}).catch(() => {
+    introStatus.textContent = "🔈 Tap again to enable audio";
+    introBtn.style.display = "block";
+});
+
 introAudio.onended = ()=>{
 introOverlay.style.display="none";
 document.getElementById("lang-overlay").style.display="flex";
 };
 };
 
-/* GAME DATA — ORIGINAL + 5 NEW */
+
 const scenarios = [
-/* ---------- OLD 3 ---------- */
+
 {
 type:"dm", icon:"📱",
 title:{en:"Instagram DM",ar:"رسالة خاصة"},
@@ -432,7 +438,7 @@ tipBad:{en:"Never share your school or location.",ar:"لا تشارك مدرست
 levelLabel:{en:"Level 3 · Game Chats",ar:"المستوى ٣ · شات الألعاب"}
 },
 
-/* ---------- NEW 5 ---------- */
+
 {
 type:"wifi", icon:"📶",
 title:{en:"Public WiFi",ar:"واي فاي عام"},
@@ -484,7 +490,7 @@ levelLabel:{en:"Level 8 · Links",ar:"المستوى ٨ · الروابط"}
 }
 ];
 
-/* GAME LOGIC */
+
 let currentScenarioIndex = 0;
 let hearts = 3;
 let currentLang = "en";
@@ -524,7 +530,7 @@ loadScenario(0);
 phoneEl.classList.add("show");
 }
 
-/* END / GAME OVER */
+
 function handleWin(){
 document.getElementById("end-overlay").style.display="flex";
 document.getElementById("end-panel").innerHTML = `<h2>${currentLang==="en"?"🎉 You kept Saeed safe!":"🎉 حميت سعيد!"}</h2><button onclick="location.reload()">Restart</button>`;
