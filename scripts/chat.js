@@ -158,3 +158,10 @@ micBtn.onclick = () => {
   rec.onresult = e => input.value = e.results[0][0].transcript;
   rec.start();
 };
+document.getElementById("clear-chat").addEventListener("click", () => {
+  if(confirm("Clear the chat?")) {
+    localStorage.removeItem("cyber_chat_history_v2");
+    messagesBox.innerHTML = "";
+    location.reload();
+  }
+});
