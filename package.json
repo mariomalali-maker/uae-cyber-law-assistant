@@ -1,9 +1,7 @@
 {
   "name": "mariomalali-maker",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "vercel start",
+    "dev": "vercel dev"
   }
 }
