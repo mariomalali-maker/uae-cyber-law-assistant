@@ -1,440 +1,982 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Saeed's Game</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Saeed's Cyber Safety Game</title>
 
 <style>
-body {
-  background: #020617;
-  color: #fff;
-  margin: 0;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ---------- INTRO SCREEN ---------- */
-#introScreen{
-  position:fixed; inset:0;
-  background:radial-gradient(circle at top,#1f2937,#020617);
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  z-index:10;
-}
-#introSaeed{
-  width:140px;height:220px;
-  background:white;border-radius:18px;
-  display:flex;flex-direction:column;
-  justify-content:center;align-items:center;
-  box-shadow:0 0 30px rgba(0,0,0,0.6);
-}
-#introEyes{display:flex;gap:10px;margin-bottom:6px;margin-top:20px;}
-.introEye{width:12px;height:12px;border-radius:50%;background:black;}
-#introMouth{width:30px;height:6px;border-radius:4px;background:black;margin-bottom:20px;}
-#introText{max-width:360px;text-align:center;margin-top:20px;font-size:15px;line-height:1.6;}
-#introButtons{margin-top:20px;display:flex;flex-direction:column;gap:10px;align-items:center;}
-.introBtn{
-  padding:10px 22px;border-radius:999px;border:none;
-  cursor:pointer;font-weight:bold;font-size:15px;
-}
-#playIntroBtn{background:#22c55e;color:white;}
-#startGameBtn{background:#0f172a;color:white;display:none;}
-#introHint{font-size:11px;opacity:.7;margin-top:8px;}
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    background: #020617;
+    color: #e5e7eb;
+  }
 
-/* ---------- GAME AREA ---------- */
-.container {
-  width: 100vw; height: 100vh;
-  display: flex; justify-content: center; align-items: center;
-}
-.game-area {
-  width: 880px; height: 480px;
-  background: #020617;
-  border-radius: 16px; padding: 20px; position: relative;
-  overflow: hidden;
-  box-shadow:0 18px 40px rgba(0,0,0,0.7);
-}
+  /* NAV */
+  nav {
+    display: flex;
+    gap: 12px;
+    padding: 10px 16px;
+    background: #020617;
+    border-bottom: 1px solid #0f172a;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  nav a {
+    text-decoration: none;
+    color: #e5e7eb;
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    border-radius: 999px;
+  }
+  nav a:hover { background: #0b1120; }
+  nav .active { background: #22c55e; color: #022c22; }
 
-/* sky + city */
-.game-bg-sky{
-  position:absolute;left:0;top:60px;right:0;height:200px;
-  background:linear-gradient(#020617,#020617,#020617);
-}
-.building{
-  position:absolute;bottom:210px;width:70px;height:140px;
-  background:#111827;border-radius:10px;
-  box-shadow:0 0 15px rgba(0,0,0,0.4);
-}
-.b1{left:200px;}
-.b2{left:360px;}
-.b3{left:520px;}
+  /* GAME SHELL */
+  #game-shell {
+    max-width: 1000px;
+    margin: 16px auto;
+    padding: 20px;
+  }
 
-/* road */
-.road{
-  position:absolute;left:0;right:0;bottom:90px;height:120px;
-  background:linear-gradient(#020617,#020617 40%,#020617 41%,#020617);
-}
-.road-line{
-  position:absolute;left:60px;right:60px;top:55px;height:4px;
-  background:repeating-linear-gradient(to right, #e5e7eb 0 40px, transparent 40px 70px);
-}
+  #game-card {
+    position: relative;
+    background: #020617;
+    border-radius: 24px;
+    border: 1px solid #1f2937;
+    padding: 16px 20px 20px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.8);
+    overflow: hidden;
+  }
 
-/* sidewalk */
-.sidewalk{
-  position:absolute;left:0;right:0;bottom:210px;height:30px;
-  background:#020617;
-}
+  /* HUD */
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+  }
 
-/* trees */
-.tree{
-  position:absolute;bottom:210px;width:30px;height:80px;
-}
-.tree-trunk{
-  width:8px;height:26px;margin:0 auto;background:#6b3f1f;border-radius:4px;
-}
-.tree-top{
-  width:34px;height:34px;background:#16a34a;border-radius:999px;
-  margin:-6px auto 0;box-shadow:0 0 10px rgba(22,163,74,0.6);
-}
-.t1{left:120px;}
-.t2{left:310px;}
-.t3{left:500px;}
+  #hearts {
+    font-size: 1.3rem;
+  }
 
-/* HUD */
-.hearts { position:absolute; top:10px; left:10px; font-size:22px; }
-.level-label{
-  position:absolute;top:10px;right:10px;background:#065f46;
-  padding:6px 12px;border-radius:12px;font-size:13px;
-}
+  #level-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #064e3b;
+    color: #bbf7d0;
+  }
 
-/* Saeed */
-#saeed {
-  position:absolute; left:180px; bottom:110px;
-  width:80px; height:160px;
-  background:white; border-radius:14px;
-  display:flex; justify-content:flex-start; align-items:center;
-  flex-direction:column;
-  padding-top:16px;
-  box-shadow:0 8px 16px rgba(0,0,0,0.6);
-}
-.head{
-  width:60px;height:60px;border-radius:16px;background:white;
-  box-shadow:0 0 0 4px #e5e7eb;margin-bottom:8px;position:relative;
-}
-.ghutra{
-  position:absolute;left:-2px;right:-2px;top:-8px;height:26px;
-  background:white;border-radius:18px 18px 10px 10px;
-  box-shadow:0 4px 8px rgba(0,0,0,0.18);
-}
-.igal{
-  position:absolute;left:6px;right:6px;top:0;height:8px;border-radius:99px;
-  border:3px solid #020617;
-}
-.face-inner{position:absolute;left:10px;right:10px;top:16px;bottom:8px;}
-.eyes{display:flex;justify-content:space-between;}
-.eye{
-  width:8px;height:8px;border-radius:50%;background:#020617;
-}
-.mouth{
-  position:absolute;left:16px;right:16px;bottom:4px;
-  height:5px;border-radius:0 0 10px 10px;background:#111827;
-  transition:transform .2s, background .2s;
-}
-.body{
-  width:40px;height:70px;border-radius:10px;background:white;
-}
-.feet{
-  display:flex;gap:10px;margin-top:4px;
-}
-.foot{
-  width:24px;height:8px;border-radius:10px;background:#020617;
-}
+  /* SCENE */
+  #scene {
+    position: relative;
+    height: 420px;
+    background: radial-gradient(circle at top, #020617 0, #020617 58%, #000 100%);
+    border-radius: 18px;
+    overflow: hidden;
+  }
 
-.phone {
-  position:absolute; right:150px; bottom:95px;
-  width:270px; background:#020617;
-  border-radius:26px; padding:10px;
-  box-shadow:0 12px 28px rgba(0,0,0,0.7);
-  border:1px solid #1e293b;
-}
-.phone-inner{
-  border-radius:22px;background:#020617;padding:10px;border:1px solid #1f2937;
-}
-.app-header {
-  font-size:13px; background:#020617;
-  padding:6px 10px; border-radius:14px;
-  margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;
-  border:1px solid #1f2937;
-}
-.app-header-left{display:flex;align-items:center;gap:6px;}
-.app-avatar{
-  width:18px;height:18px;border-radius:6px;
-  background:radial-gradient(circle at 30% 30%,#22d3ee,#4f46e5);
-}
-.app-name{font-weight:bold;}
-.app-status{font-size:11px;opacity:.7;}
-.question-box {
-  font-size:13px;padding:10px 10px 12px;
-  background:#020617;border-radius:16px;min-height:60px;
-  border:1px solid #1f2937;margin-bottom:6px;
-}
-.btn {
-  margin-top:6px;padding:9px;border-radius:14px;text-align:center;
-  cursor:pointer;font-size:13px;font-weight:600;
-}
-.btn.correct { background:#16a34a; }
-.btn.wrong { background:#b91c1c; }
-.btn:hover { filter:brightness(1.1); }
+  .city-tower {
+    position: absolute;
+    bottom: 130px;
+    width: 70px;
+    border-radius: 24px 24px 0 0;
+    background: linear-gradient(#1f2937, #020617);
+    box-shadow: 0 0 40px rgba(15,23,42,0.9);
+  }
 
-.language-toggle {
-  position:absolute; top:15px; right:15px; background:#1f2937;
-  padding:6px 10px;border-radius:10px;cursor:pointer;font-size:12px;
-}
+  .city-tower::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    right: 14px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(148,163,184,0.7);
+  }
+
+  .sea-strip {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 110px;
+    height: 60px;
+    background: linear-gradient(90deg, #0ea5e9, #22c55e, #0ea5e9);
+    opacity: 0.35;
+  }
+
+  .palm-trunk {
+    position: absolute;
+    bottom: 108px;
+    width: 18px;
+    height: 80px;
+    background: #020617;
+    border-radius: 10px;
+  }
+  .palm-trunk::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -18px;
+    right: -18px;
+    height: 30px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 50% 100%, #22c55e 0, #166534 70%, transparent 75%);
+  }
+
+  .road {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 40px;
+    height: 80px;
+    background: #020617;
+    box-shadow: 0 -14px 40px rgba(0,0,0,1) inset;
+  }
+
+  .lane {
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 4px;
+    transform: translateY(-50%);
+    background-image: repeating-linear-gradient(
+      to right,
+      rgba(248,250,252,0.9),
+      rgba(248,250,252,0.9) 32px,
+      transparent 32px,
+      transparent 64px
+    );
+    opacity: 0.8;
+  }
+
+  /* SAeed */
+  #saeed {
+    position: absolute;
+    left: 14%;
+    bottom: 80px;
+    width: 150px;
+    height: 240px;
+    animation: saeed-bounce 1.4s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+
+  #saeed-inner {
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes saeed-bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .eye {
+    transform-origin: center;
+    animation: blink 4s infinite;
+  }
+
+  @keyframes blink {
+    0%,92%,100% { transform: scaleY(1); }
+    95% { transform: scaleY(0.15); }
+  }
+
+  .mouth {
+    transition: d 0.25s ease;
+  }
+
+  /* reaction animations */
+  .happy-jump {
+    animation: happyJump 0.4s ease;
+  }
+  @keyframes happyJump {
+    0% { transform: translateY(0); }
+    30% { transform: translateY(-12px); }
+    60% { transform: translateY(0); }
+    100% { transform: translateY(-4px); }
+  }
+
+  .sad-shake {
+    animation: sadShake 0.45s ease;
+  }
+  @keyframes sadShake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+  }
+
+  /* PHONE */
+  #phone {
+    position: absolute;
+    right: 10%;
+    bottom: 90px;
+    width: 300px;
+    max-width: 88vw;
+    background: #020617;
+    border: 2px solid #020617;
+    border-radius: 26px;
+    padding: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+    opacity: 0;
+    transform: scale(0.3);
+    pointer-events: none;
+  }
+
+  #phone.show {
+    animation: phone-pop 0.35s ease-out forwards;
+  }
+
+  @keyframes phone-pop {
+    0% { opacity: 0; transform: scale(0.3) translate(30px,40px); }
+    100% { opacity: 1; transform: scale(1) translate(0,0); }
+  }
+
+  .phone-inner {
+    background: #020617;
+    border-radius: 20px;
+    border: 1px solid #1f2937;
+    padding: 8px 8px 10px;
+  }
+
+  .phone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin-bottom: 6px;
+  }
+
+  .phone-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .phone-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    background: #0ea5e9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+
+  .phone-screen {
+    background: #020617;
+    border-radius: 14px;
+    border: 1px solid #111827;
+    padding: 8px;
+    min-height: 90px;
+    margin-bottom: 8px;
+  }
+
+  .chat-area {
+    max-height: 110px;
+    overflow-y: auto;
+  }
+
+  .bubble-in {
+    display: inline-block;
+    padding: 7px 9px;
+    border-radius: 12px 12px 12px 4px;
+    background: #111827;
+    color: #f9fafb;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  .bubble-system {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-bottom: 4px;
+  }
+
+  /* email style box */
+  .email-box {
+    background: #020617;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+    padding: 7px 8px;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  .email-sub {
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .email-from {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-bottom: 4px;
+  }
+
+  .choice-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .opt-btn {
+    border-radius: 999px;
+    border: none;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .opt-safe { background: #22c55e; color: #022c22; }
+  .opt-mid { background: #facc15; color: #1f2937; }
+  .opt-risk { background: #fee2e2; color: #7f1d1d; }
+
+  .phone-tip {
+    margin-top: 4px;
+    font-size: 0.72rem;
+    color: #9ca3af;
+  }
+
+  /* OVERLAYS */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 30;
+  }
+
+  .panel {
+    background: #020617;
+    border-radius: 20px;
+    padding: 18px 18px 16px;
+    border: 1px solid #1f2937;
+    width: min(420px, 92vw);
+    text-align: center;
+  }
+
+  .panel h2 {
+    margin-bottom: 6px;
+    font-size: 1.25rem;
+  }
+
+  .panel p {
+    margin: 4px 0;
+    font-size: 0.88rem;
+    color: #9ca3af;
+  }
+
+  .panel button {
+    width: 100%;
+    border-radius: 999px;
+    border: none;
+    padding: 9px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .btn-en { background: #22c55e; color: #022c22; }
+  .btn-ar { background: #f3f4f6; color: #020617; }
+
+  #end-overlay { display: none; }
+
+  @media (max-width: 700px) {
+    #saeed {
+      left: 8%;
+      width: 130px;
+    }
+    #phone {
+      right: 4%;
+      width: 260px;
+    }
+  }
 </style>
 </head>
 <body>
 
-<!-- INTRO with audio -->
-<div id="introScreen">
-  <div id="introSaeed">
-    <div id="introEyes">
-      <div class="introEye"></div>
-      <div class="introEye"></div>
+<nav>
+  <a href="index.html">🏠 Home</a>
+  <a href="chat.html">💬 Chat</a>
+  <a href="quiz.html">🎯 Cyber Quiz</a>
+  <a href="scam.html">⚠️ Scam Detector</a>
+  <a href="saeed.game.html" class="active">🎮 Saeed's Game</a>
+</nav>
+
+<div id="game-shell">
+  <div id="game-card">
+    <div class="hud">
+      <div id="hearts">❤️❤️❤️</div>
+      <div id="level-pill">Level 1 · DMs</div>
     </div>
-    <div id="introMouth"></div>
-  </div>
 
-  <div id="introText">
-    🎧 Listen to the short introduction, then help Saeed stay safe online.
-  </div>
+    <section id="scene">
+      <!-- background -->
+      <div class="city-tower" style="left:10%;height:170px;"></div>
+      <div class="city-tower" style="left:30%;height:220px;"></div>
+      <div class="city-tower" style="left:55%;height:200px;"></div>
+      <div class="city-tower" style="left:78%;height:240px;border-radius:36px 36px 0 0;"></div>
+      <div class="sea-strip"></div>
+      <div class="palm-trunk" style="left:20%;"></div>
+      <div class="palm-trunk" style="left:48%;"></div>
+      <div class="palm-trunk" style="left:72%;"></div>
+      <div class="road"><div class="lane"></div></div>
 
-  <div id="introButtons">
-    <button id="playIntroBtn" class="introBtn">▶️ Play introduction</button>
-    <button id="startGameBtn" class="introBtn">✅ Yes, let's start the game</button>
-    <div id="introHint">On phones, tap “Play introduction” once so the sound can start.</div>
-  </div>
+      <!-- Saeed -->
+      <div id="saeed">
+        <div id="saeed-inner">
+          <svg viewBox="0 0 120 220">
+            <ellipse cx="60" cy="208" rx="26" ry="7" fill="#020617" opacity="0.6"></ellipse>
+            <!-- body -->
+            <rect x="40" y="94" width="40" height="90" rx="18" fill="#f9fafb"></rect>
+            <rect x="28" y="102" width="16" height="52" rx="8" fill="#f9fafb"></rect>
+            <rect x="76" y="102" width="16" height="52" rx="8" fill="#f9fafb"></rect>
+            <!-- legs -->
+            <rect x="44" y="182" width="10" height="16" rx="3" fill="#f9fafb"></rect>
+            <rect x="66" y="182" width="10" height="16" rx="3" fill="#f9fafb"></rect>
+            <!-- sandals -->
+            <rect x="42" y="196" width="14" height="7" rx="3" fill="#111827"></rect>
+            <rect x="64" y="196" width="14" height="7" rx="3" fill="#111827"></rect>
 
-  <!-- audio file (same folder) -->
-  <audio id="introAudio" src="intro-voice.mp3"></audio>
+            <!-- head -->
+            <circle cx="60" cy="64" r="24" fill="#fde68a"></circle>
+            <!-- ghutra -->
+            <path d="M36 58 Q60 34 84 58 L84 96 Q72 104 60 104 Q48 104 36 96Z" fill="#f9fafb"></path>
+            <!-- agal -->
+            <ellipse cx="60" cy="47" rx="22" ry="7" fill="#020617"></ellipse>
+
+            <!-- eyes -->
+            <circle class="eye" cx="50" cy="66" r="3" fill="#020617"></circle>
+            <circle class="eye" cx="70" cy="66" r="3" fill="#020617"></circle>
+
+            <!-- brows -->
+            <path d="M44 60 Q50 58 56 60" stroke="#020617" stroke-width="1.3" fill="none"></path>
+            <path d="M64 60 Q70 58 76 60" stroke="#020617" stroke-width="1.3" fill="none"></path>
+
+            <!-- mouth -->
+            <path id="mouth" class="mouth" d="M50 76 Q60 82 70 76"
+              stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+
+            <!-- phone in hand -->
+            <rect x="78" y="122" width="10" height="18" rx="2" fill="#0f172a"></rect>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Phone -->
+      <div id="phone">
+        <div class="phone-inner">
+          <div class="phone-header">
+            <div class="phone-left">
+              <div class="phone-avatar" id="phone-avatar">📱</div>
+              <span id="phone-title">Instagram DM</span>
+            </div>
+            <span style="font-size:0.7rem;">online</span>
+          </div>
+          <div class="phone-screen">
+            <div class="chat-area" id="chat-area"></div>
+          </div>
+          <div class="choice-row">
+            <button id="btn-safe" class="opt-btn opt-safe"></button>
+            <button id="btn-mid" class="opt-btn opt-mid" style="display:none;"></button>
+            <button id="btn-risk" class="opt-btn opt-risk"></button>
+          </div>
+          <div class="phone-tip" id="phone-tip"></div>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
 
-<div class="container" id="gameWrapper" style="display:none;">
-  <div class="game-area">
+<!-- Intro overlay -->
+<div class="overlay" id="intro-overlay">
+  <div class="panel">
+    <h2>Help Saeed stay safe online</h2>
+    <p>Choose your language, then click start when you’re ready.</p>
+    <button class="btn-en" onclick="startGame('en')">Yes, let’s start! (English)</button>
+    <button class="btn-ar" onclick="startGame('ar')">هيا نبدأ اللعبة! (بالعربية)</button>
+  </div>
+</div>
 
-    <!-- background -->
-    <div class="game-bg-sky"></div>
-    <div class="building b1"></div>
-    <div class="building b2"></div>
-    <div class="building b3"></div>
-    <div class="sidewalk"></div>
-    <div class="tree t1">
-      <div class="tree-trunk"></div><div class="tree-top"></div>
-    </div>
-    <div class="tree t2">
-      <div class="tree-trunk"></div><div class="tree-top"></div>
-    </div>
-    <div class="tree t3">
-      <div class="tree-trunk"></div><div class="tree-top"></div>
-    </div>
-    <div class="road">
-      <div class="road-line"></div>
-    </div>
-
-    <div class="language-toggle" onclick="toggleLanguage()">EN</div>
-    <div class="hearts" id="hearts">❤️❤️❤️</div>
-    <div class="level-label" id="levelLabel">Level 1 • DMs</div>
-
-    <!-- Saeed -->
-    <div id="saeed">
-      <div class="head">
-        <div class="ghutra"></div>
-        <div class="igal"></div>
-        <div class="face-inner">
-          <div class="eyes">
-            <div class="eye" id="eyeL"></div>
-            <div class="eye" id="eyeR"></div>
-          </div>
-          <div class="mouth" id="mouth"></div>
-        </div>
-      </div>
-      <div class="body"></div>
-      <div class="feet">
-        <div class="foot"></div>
-        <div class="foot"></div>
-      </div>
-    </div>
-
-    <!-- Phone / DM -->
-    <div class="phone">
-      <div class="phone-inner">
-        <div class="app-header">
-          <div class="app-header-left">
-            <div class="app-avatar"></div>
-            <div class="app-name">Instagram DM</div>
-          </div>
-          <div class="app-status" id="appStatus">online</div>
-        </div>
-
-        <div class="question-box" id="questionText">Loading...</div>
-
-        <div class="btn correct" id="opt1"></div>
-        <div class="btn wrong" id="opt2"></div>
-      </div>
-    </div>
-
+<!-- End overlay -->
+<div class="overlay" id="end-overlay">
+  <div class="panel">
+    <h2 id="end-title"></h2>
+    <p id="end-text"></p>
+    <button class="btn-en" onclick="window.location.reload()">Play again</button>
   </div>
 </div>
 
 <script>
-let lang = "EN"; // EN or AR
-function toggleLanguage(){
-  lang = lang === "EN" ? "AR" : "EN";
-  document.querySelector(".language-toggle").innerText = lang;
-  showQuestion();
-}
+  const levels = [
+    {
+      type: "dm",
+      icon: "📱",
+      title: { en: "Instagram DM", ar: "رسالة إنستغرام خاصة" },
+      msg: {
+        en: "A new account with no profile picture sends you: \"Hey, I found your account. Can you send me a private picture? I promise I won’t show anyone 👀\"",
+        ar: "حساب جديد بدون صورة يرسل لك: \"هلا، شفت حسابك. تقدرين ترسلين لي صورة خاصة؟ أوعدك ما أوريها لأحد 👀\""
+      },
+      system: {
+        en: "Saeed feels uncomfortable. What should he do?",
+        ar: "سعيد حاس بعدم راحة. شو يسوي؟"
+      },
+      safe: {
+        en: "Block and report the account immediately",
+        ar: "يحظر الحساب فوراً و يبلّغ عنه"
+      },
+      mid: {
+        en: "Ignore the message and never reply",
+        ar: "يتجاهل الرسالة و لا يرد أبداً"
+      },
+      risky: {
+        en: "Send one picture but cover his face",
+        ar: "يرسل صورة بس بدون وجهه"
+      },
+      levelLabel: { en: "Level 1 · DMs", ar: "المستوى ١ · الرسائل الخاصة" },
+      badTip: {
+        en: "Even if your face is covered, personal photos can be saved and shared. For safety, block and report strangers who ask for private pictures.",
+        ar: "حتى لو الوجه مو باين، الصور ممكن تنحفظ و تنرسل للناس. الأفضل تحظر و تبلّغ عن أي شخص يطلب صور خاصة."
+      }
+    },
+    {
+      type: "dm",
+      icon: "🎮",
+      title: { en: "Game Chat", ar: "شات لعبة أونلاين" },
+      msg: {
+        en: "In an online game, a player you don’t know says: \"Add me on Snapchat and send me your real photo so I know you’re not a kid.\"",
+        ar: "في لعبة أونلاين، لاعب ما تعرفه يقول: \"ضفني سناب و أرسل صورتك الحقيقية عشان أتأكد إنك مو طفل.\""
+      },
+      system: {
+        en: "Saeed is only 11. What is the safest option?",
+        ar: "سعيد عمره ١١ سنة. شو الخيار الأكثر أمانًا؟"
+      },
+      safe: {
+        en: "Don’t add them, keep chat inside the game only",
+        ar: "ما يضيفه، ويخلي الكلام داخل اللعبة بس"
+      },
+      mid: {
+        en: "Mute the player and continue playing with other people",
+        ar: "يكتم اللاعب و يكمل اللعب مع ناس ثانية"
+      },
+      risky: {
+        en: "Add them on Snapchat but block if they act weird later",
+        ar: "يضيفه سناب و إذا صار غريب يحظره بعدين"
+      },
+      levelLabel: { en: "Level 2 · Game Chats", ar: "المستوى ٢ · شات الألعاب" },
+      badTip: {
+        en: "Moving conversations to private apps makes it harder for adults to help you. Keep chats inside the game and avoid adding strangers to personal accounts.",
+        ar: "نقل الكلام لتطبيقات خاصة يصعّب على الأهل أو المدرسة يساعدونك. خلك داخل اللعبة ولا تضيف الغرباء على حساباتك."
+      }
+    },
+    {
+      type: "email",
+      icon: "✉️",
+      title: { en: "Bank Email", ar: "إيميل من البنك" },
+      msg: {
+        en: "Subject: URGENT – Your account is frozen\nA message says: \"Click this link in the next 10 minutes or your bank account will be permanently closed.\"",
+        ar: "العنوان: مهم – تم تجميد حسابك\nالرسالة تقول: \"اضغط هذا الرابط خلال ١٠ دقائق وإلا بنغلق حسابك البنكي نهائيًا.\""
+      },
+      system: {
+        en: "The email looks scary. What should Saeed do?",
+        ar: "الإيميل شكله يخوف. شو يسوي سعيد؟"
+      },
+      safe: {
+        en: "Ignore the email and check using the official bank app or number",
+        ar: "يتجاهل الإيميل و يتأكد من تطبيق البنك الرسمي أو الاتصال على الرقم الرسمي"
+      },
+      mid: {
+        en: "Ask a parent to call the bank using the number on the back of the card",
+        ar: "يطلب من أحد والديه يتصل بالبنك عن طريق الرقم المكتوب على البطاقة"
+      },
+      risky: {
+        en: "Click the link quickly before the time runs out",
+        ar: "يضغط على الرابط بسرعة قبل ما يخلص الوقت"
+      },
+      levelLabel: { en: "Level 3 · Emails", ar: "المستوى ٣ · الإيميلات" },
+      badTip: {
+        en: "Real banks don’t threaten to close your account through random links. Always use the official app or numbers printed on the card.",
+        ar: "البنوك الحقيقية ما تهدد بإغلاق الحساب عن طريق روابط عشوائية. استخدم التطبيق الرسمي أو الأرقام الموجودة على البطاقة."
+      }
+    },
+    {
+      type: "dm",
+      icon: "📱",
+      title: { en: "Stranger Offering Money", ar: "غريب يعرض فلوس" },
+      msg: {
+        en: "A stranger DMs Saeed: \"I’ll give you 500 AED if you meet me at the mall alone. Don’t tell your parents, it’s our secret.\"",
+        ar: "شخص غريب يرسل لسعيد: \"بعطيك ٥٠٠ درهم لو تجي تقابلني في المول لحالك. لا تقول لأهلك، خله سر بيننا.\""
+      },
+      system: {
+        en: "This feels very wrong. What is the best move?",
+        ar: "الوضع جدًا غلط. شو أحسن تصرف؟"
+      },
+      safe: {
+        en: "Block, report, and tell a trusted adult immediately",
+        ar: "يحظر و يبلّغ عن الحساب و يخبر شخص كبير يثق فيه فورًا"
+      },
+      mid: {
+        en: "Don’t reply and show the message later to a parent or teacher",
+        ar: "ما يرد و يوري الرسالة لولي أمره أو المعلم بعدين"
+      },
+      risky: {
+        en: "Ask a friend to come with him to be safer",
+        ar: "يطلب من صديقه يجي معاه عشان يكون أكثر أمانًا"
+      },
+      levelLabel: { en: "Level 4 · Dangerous Plans", ar: "المستوى ٤ · خطط خطيرة" },
+      badTip: {
+        en: "Never meet strangers from the internet, even with friends. Always involve a trusted adult if someone asks to meet secretly.",
+        ar: "أبدًا لا تقابل غرباء من الإنترنت، حتى لو معك أصحابك. لازم دايمًا تخبر شخص كبير إذا أحد طلب لقاء سري."
+      }
+    },
+    {
+      type: "game",
+      icon: "🎧",
+      title: { en: "Private Voice Chat", ar: "مكالمات صوتية خاصة" },
+      msg: {
+        en: "In a game lobby, an older player says: \"Leave this public chat, I’ll invite you to a private voice call where adults talk freely.\"",
+        ar: "في لوبي اللعبة، لاعب كبير بالعمر يقول: \"اطلع من الشات العام، بدعوك لمكالمة صوتية خاصة للكبار.\""
+      },
+      system: {
+        en: "Saeed feels a bit curious but also unsure.",
+        ar: "سعيد شوي متحمس لكن حاس بشك."
+      },
+      safe: {
+        en: "Stay in the public chat and avoid any private calls",
+        ar: "يبقى في الشات العام و يتجنب المكالمات الخاصة"
+      },
+      mid: {
+        en: "Leave the lobby and join a different game with random players",
+        ar: "يطلع من اللوبي تمامًا و يدخل لعبة ثانية مع ناس مختلفين"
+      },
+      risky: {
+        en: "Join the private call but leave if it becomes uncomfortable",
+        ar: "يدخل المكالمة الخاصة و يطلع فقط إذا حس بعدم راحة"
+      },
+      levelLabel: { en: "Level 5 · Voice Chats", ar: "المستوى ٥ · مكالمات صوتية" },
+      badTip: {
+        en: "Private calls make it easier for people to pressure you. It’s safer to stay where chats are public or play with people you know in real life.",
+        ar: "المكالمات الخاصة تسهّل على الناس يضغطون عليك. الأفضل تبقى في الأماكن العامة أو تلعب مع ناس تعرفهم في الحقيقة."
+      }
+    },
+    {
+      type: "email",
+      icon: "🎁",
+      title: { en: "Free Gift Email", ar: "هدايا مجانية مزيفة" },
+      msg: {
+        en: "An email says: \"Congratulations! You won a new gaming console. To claim your prize, send us your full name, home address, and your parent’s phone number.\"",
+        ar: "إيميل يقول: \"مبروك! ربحت جهاز ألعاب جديد. عشان تستلم الجائزة، أرسل اسمك الكامل، عنوان البيت، ورقم هاتف أحد والديك.\""
+      },
+      system: {
+        en: "It looks exciting, but Saeed doesn’t remember entering any competition.",
+        ar: "الرسالة شكلها مغري، لكن سعيد ما يذكر إنه شارك في مسابقة."
+      },
+      safe: {
+        en: "Delete the email and do not share any personal details",
+        ar: "يحذف الإيميل و ما يشارك أي معلومات شخصية"
+      },
+      mid: {
+        en: "Show the email to a parent and ask if this can be real",
+        ar: "يوري الإيميل لأحد والديه و يسأل إذا ممكن يكون حقيقي"
+      },
+      risky: {
+        en: "Send his information because a free console is worth the risk",
+        ar: "يرسل معلوماته لأنه يشعر أن جهاز الألعاب يستاهل المغامرة"
+      },
+      levelLabel: { en: "Level 6 · Fake Gifts", ar: "المستوى ٦ · هدايا مزيفة" },
+      badTip: {
+        en: "Scammers use fake prizes to collect personal information. Real companies usually don’t ask children directly for addresses and phone numbers.",
+        ar: "المحتالين يستخدمون جوائز وهمية لجمع معلومات شخصية. الشركات الحقيقية نادرًا تطلب من الأطفال عناوينهم و أرقام هواتف أهاليهم مباشرة."
+      }
+    },
+    {
+      type: "dm",
+      icon: "📍",
+      title: { en: "Location Sharing", ar: "مشاركة الموقع" },
+      msg: {
+        en: "A new online friend says: \"Send me your live location so I can see how far you are from my house, just for fun 🤣\"",
+        ar: "صديق جديد أونلاين يقول: \"أرسل موقعك الحي عشان أشوف بيتك بعيد عن بيتي ولا لا 😂\""
+      },
+      system: {
+        en: "Saeed thinks it’s just a map, not a big deal.",
+        ar: "سعيد يفكر أنها بس خريطة و الموضوع بسيط."
+      },
+      safe: {
+        en: "Never share live location with online friends",
+        ar: "ما يشارك موقعه الحي نهائيًا مع أصدقاء من الإنترنت"
+      },
+      mid: {
+        en: "Say he lives somewhere in the UAE but no exact area",
+        ar: "يقول إنه ساكن في الإمارات بدون ذكر إمارة أو منطقة"
+      },
+      risky: {
+        en: "Send his live location for a few minutes only",
+        ar: "يرسل موقعه الحي لعدة دقائق فقط"
+      },
+      levelLabel: { en: "Level 7 · Location", ar: "المستوى ٧ · الموقع" },
+      badTip: {
+        en: "Live location can show exactly where you are. Even a short time is enough for someone with bad intentions.",
+        ar: "الموقع الحي يبين مكانك بالضبط. حتى لو كان الوقت قصير، يكفي للي نيته سيئة."
+      }
+    },
+    {
+      type: "dm",
+      icon: "👥",
+      title: { en: "Group Chat Drama", ar: "جروب فيه تنمّر" },
+      msg: {
+        en: "In a class group, some students start posting edited pictures of another kid and laughing. They say: \"Come on Saeed, send a funny comment too!\"",
+        ar: "في جروب الصف، بعض الطلاب ينزلون صور معدلة لزميلهم و يضحكون. يقولون: \"يلا يا سعيد، اكتب تعليق يضحك بعد!\""
+      },
+      system: {
+        en: "Saeed doesn’t want to look boring in front of his friends.",
+        ar: "سعيد ما يبي يظهر ممل قدام أصحابه."
+      },
+      safe: {
+        en: "Refuse to join and privately support the bullied student",
+        ar: "يرفض يشارك و يرسل رسالة خاصة لزميله يوقف معه"
+      },
+      mid: {
+        en: "Stay silent and leave the chat for a while",
+        ar: "يسكت و يطلع من الجروب لفترة"
+      },
+      risky: {
+        en: "Send one \"joking\" comment so others don’t think he’s weak",
+        ar: "يكتب تعليق ساخر واحد عشان ما يظنونه ضعيف"
+      },
+      levelLabel: { en: "Level 8 · Cyberbullying", ar: "المستوى ٨ · التنمّر الإلكتروني" },
+      badTip: {
+        en: "Even one \"joke\" can hurt someone and count as cyberbullying. It’s stronger to stay kind than to join the crowd.",
+        ar: "حتى \"مزحة\" وحدة ممكن تجرح الشخص و تعتبر تنمّر إلكتروني. القوة الحقيقية أنك تظل طيب و ما تمشي مع المجموعة."
+      }
+    },
+    {
+      type: "game",
+      icon: "🧾",
+      title: { en: "In-Game Purchases", ar: "مشتريات داخل اللعبة" },
+      msg: {
+        en: "A friend in-game says: \"Give me your parent’s card number and I’ll buy us both rare skins. I promise I’ll only use it once.\"",
+        ar: "صديق في اللعبة يقول: \"اعطني رقم بطاقة أبوك أشتري لنا سكنات نادرة. أوعدك أستخدمها مرة وحدة بس.\""
+      },
+      system: {
+        en: "Saeed really wants the rare skin.",
+        ar: "سعيد وايد نفسه في هذا السكن النادر."
+      },
+      safe: {
+        en: "Say no and tell his parents what the friend asked for",
+        ar: "يقول لا و يخبر أهله شو طلب منه صديقه"
+      },
+      mid: {
+        en: "Ask his parents if they can buy the skin from their own phone",
+        ar: "يسأل أهله إذا يقدرون يشترون السكن من جوالاتهم"
+      },
+      risky: {
+        en: "Send the card number but ask the friend not to buy too much",
+        ar: "يعطيه رقم البطاقة و يطلب منه ما يشتري أشياء كثيرة"
+      },
+      levelLabel: { en: "Level 9 · Money & Games", ar: "المستوى ٩ · المال و الألعاب" },
+      badTip: {
+        en: "Card numbers are secret. Sharing them can lose a lot of money very fast.",
+        ar: "أرقام البطاقات سرية. مشاركتها ممكن تسبب خسارة فلوس كثيرة بسرعة."
+      }
+    },
+    {
+      type: "email",
+      icon: "🏫",
+      title: { en: "School Account Warning", ar: "تحذير من حساب المدرسة" },
+      msg: {
+        en: "An email that looks like it’s from school says: \"Your school account will be deleted tomorrow. Log in with your username and password on this website to keep it active.\"",
+        ar: "إيميل شكله من المدرسة يقول: \"راح نحذف حسابك غدًا. سجل دخول باسم المستخدم و كلمة السر في هذا الموقع عشان يبقى حسابك فعال.\""
+      },
+      system: {
+        en: "The logo looks similar to the school’s logo but the link is different.",
+        ar: "الشعار يشبه شعار المدرسة لكن الرابط غريب و مختلف."
+      },
+      safe: {
+        en: "Open the official school portal or ask IT instead of using the link",
+        ar: "يفتح البوابة الرسمية للمدرسة أو يسأل قسم تقنية المعلومات بدل ما يضغط الرابط"
+      },
+      mid: {
+        en: "Show the email to a teacher to double-check",
+        ar: "يوري الإيميل للمعلم عشان يتأكد"
+      },
+      risky: {
+        en: "Use the link and type his username and password quickly",
+        ar: "يستخدم الرابط و يدخل اسم المستخدم و كلمة السر بسرعة"
+      },
+      levelLabel: { en: "Level 10 · School Accounts", ar: "المستوى ١٠ · حسابات المدرسة" },
+      badTip: {
+        en: "Fake pages can steal passwords. Always use saved bookmarks or official apps for school accounts.",
+        ar: "الصفحات المزيفة تسرق كلمات المرور. استخدم الروابط المحفوظة أو التطبيقات الرسمية لحسابات المدرسة."
+      }
+    }
+  ];
 
-/* ---------- INTRO AUDIO LOGIC ---------- */
-const introAudio = document.getElementById("introAudio");
-const playIntroBtn = document.getElementById("playIntroBtn");
-const startGameBtn = document.getElementById("startGameBtn");
-const introScreen = document.getElementById("introScreen");
-const gameWrapper = document.getElementById("gameWrapper");
+  let currentIndex = 0;
+  let hearts = 3;
+  let lang = "en";
 
-playIntroBtn.addEventListener("click", () => {
-  introAudio.play().catch(()=>{});
-  playIntroBtn.disabled = true;
-  playIntroBtn.textContent = "▶️ Playing...";
+  const heartsEl = document.getElementById("hearts");
+  const levelPill = document.getElementById("level-pill");
+  const phone = document.getElementById("phone");
+  const chatArea = document.getElementById("chat-area");
+  const avatarEl = document.getElementById("phone-avatar");
+  const titleEl = document.getElementById("phone-title");
+  const tipEl = document.getElementById("phone-tip");
+  const btnSafe = document.getElementById("btn-safe");
+  const btnMid = document.getElementById("btn-mid");
+  const btnRisk = document.getElementById("btn-risk");
+  const saeedInner = document.getElementById("saeed-inner");
+  const mouth = document.getElementById("mouth");
+  const introOverlay = document.getElementById("intro-overlay");
+  const endOverlay = document.getElementById("end-overlay");
+  const endTitle = document.getElementById("end-title");
+  const endText = document.getElementById("end-text");
 
-  introAudio.addEventListener("ended", () => {
-    startGameBtn.style.display = "inline-block";
-    playIntroBtn.textContent = "✅ Finished";
-  });
-});
-
-startGameBtn.addEventListener("click", () => {
-  introScreen.style.display = "none";
-  gameWrapper.style.display = "flex";
-  showQuestion();
-});
-
-/* ---------- QUESTIONS ---------- */
-const questions = [
-{
-  en:"A stranger asks: 'Send me a private picture?'",
-  ar:"شخص غريب يطلب صور خاصة؟",
-  o1:{en:"Block & report",ar:"حظر وبلاغ",correct:true},
-  o2:{en:"Send photo",ar:"أرسل الصورة",correct:false}
-},
-{
-  en:"You get a link: 'Win iPhone if you login!'",
-  ar:"رابط: اربح آيفون إذا سجلت دخولك!",
-  o1:{en:"Delete the message",ar:"احذف الرسالة",correct:true},
-  o2:{en:"Login quickly!",ar:"أسجل بسرعة!",correct:false}
-},
-{
-  en:"Email: 'We suspended your bank account. Click here'",
-  ar:"إيميل: تم تعليق حسابك البنكي. اضغط هنا",
-  o1:{en:"Ignore & check bank app",ar:"أتجاهل وأفحص من التطبيق",correct:true},
-  o2:{en:"Click the link",ar:"أضغط الرابط",correct:false}
-},
-{
-  en:"Someone sends QR code saying: 'claim your prize'",
-  ar:"أرسل لك QR وقال: 'خذ جائزتك'",
-  o1:{en:"Don't scan",ar:"ما أمسحه",correct:true},
-  o2:{en:"Scan it",ar:"أمسحه",correct:false}
-},
-{
-  en:"Message: 'I know where you live, send money'",
-  ar:"رسالة: أعرف مكانك، أرسل فلوس",
-  o1:{en:"Contact police",ar:"أتواصل مع الشرطة",correct:true},
-  o2:{en:"Send money",ar:"أرسل فلوس",correct:false}
-},
-{
-  en:"Friend sends weird link suddenly",
-  ar:"صديق يرسل رابط غريب فجأة",
-  o1:{en:"Ask if it's really them",ar:"أسأل إذا فعلًا هو",correct:true},
-  o2:{en:"Click it immediately",ar:"أضغطه فورًا",correct:false}
-},
-{
-  en:"Instagram message: 'I hacked you, pay to restore'",
-  ar:"رسالة: اخترقتك، ادفع عشان أرجع حسابك",
-  o1:{en:"Report + enable 2FA",ar:"بلاغ + تفعيل تحقق بخطوتين",correct:true},
-  o2:{en:"Pay them",ar:"أدفع لهم",correct:false}
-},
-{
-  en:"Pop-up: 'Install this extension for free crypto'",
-  ar:"نافذة: ثبتي إضافة للحصول على عملات",
-  o1:{en:"Close window",ar:"أغلق النافذة",correct:true},
-  o2:{en:"Install it",ar:"أثبتها",correct:false}
-},
-{
-  en:"Phone call: 'I'm from Etisalat. Give me your OTP'",
-  ar:"اتصال: أنا من الاتصالات، عطيني OTP",
-  o1:{en:"Never share OTP",ar:"ما أعطيه",correct:true},
-  o2:{en:"Give OTP",ar:"أعطيه",correct:false}
-},
-{
-  en:"WiFi: 'Free open network, no password'",
-  ar:"واي فاي مجاني بدون كلمة مرور",
-  o1:{en:"Don't connect",ar:"ما أتصل",correct:true},
-  o2:{en:"Connect",ar:"أتصل",correct:false}
-}
-];
-
-let current = 0;
-let hearts = 3;
-
-function showQuestion(){
-  const q = questions[current];
-  document.getElementById("questionText").innerText = lang==="EN"? q.en : q.ar;
-  document.getElementById("opt1").innerText = lang==="EN"? q.o1.en : q.o1.ar;
-  document.getElementById("opt2").innerText = lang==="EN"? q.o2.en : q.o2.ar;
-
-  document.getElementById("opt1").onclick = ()=> choose(q.o1.correct);
-  document.getElementById("opt2").onclick = ()=> choose(q.o2.correct);
-  document.getElementById("levelLabel").innerText = lang==="EN"
-    ? `Level ${current+1} • DMs`
-    : `المستوى ${current+1} • الرسائل`;
-}
-
-function reaction(correct){
-  let mouth = document.getElementById("mouth");
-  if(correct){ 
-    mouth.style.transform="scaleY(1)";
-    mouth.style.background="#111827";
-  } else {
-    mouth.style.transform="scaleY(-1)";
-    mouth.style.background="#b91c1c";
+  function updateHUD() {
+    heartsEl.textContent = "❤️".repeat(hearts) + "🖤".repeat(3 - hearts);
+    const lvl = levels[currentIndex];
+    levelPill.textContent = lvl.levelLabel[lang];
   }
-}
 
-function choose(correct){
-  reaction(correct);
-
-  if(correct){
-    if(navigator.vibrate) navigator.vibrate(200);
-    current++;
-    if(current>=questions.length){ win(); return; }
-    setTimeout(showQuestion,600);
-  } else {
-    if(navigator.vibrate) navigator.vibrate([100,100,100]);
-    hearts--;
-    document.getElementById("hearts").innerText = "❤️".repeat(hearts);
-    if(hearts<=0){ lose(); return; }
+  function setMouthHappy() {
+    mouth.setAttribute("d", "M50 76 Q60 82 70 76");
   }
-}
 
-function win(){
-  alert(lang==="EN"
-    ? "✨ You helped Saeed stay safe online!"
-    : "✨ لقد ساعدت سعيد ليكون آمنًا على الإنترنت!");
-}
-function lose(){
-  alert(lang==="EN"
-    ? "⚠️ Saeed is in danger! Try again."
-    : "⚠️ سعيد في خطر! حاول مرة أخرى.");
-  location.reload();
-}
+  function setMouthSad() {
+    mouth.setAttribute("d", "M50 78 Q60 72 70 78");
+  }
+
+  function clearReactions() {
+    saeedInner.classList.remove("happy-jump", "sad-shake");
+  }
+
+  function playHappy() {
+    clearReactions();
+    setMouthHappy();
+    saeedInner.classList.add("happy-jump");
+    setTimeout(clearReactions, 450);
+  }
+
+  function playSad() {
+    clearReactions();
+    setMouthSad();
+    saeedInner.classList.add("sad-shake");
+    setTimeout(clearReactions, 450);
+  }
+
+  function renderLevel() {
+    const lvl = levels[currentIndex];
+    updateHUD();
+    phone.classList.remove("show");
+    void phone.offsetWidth; // restart animation
+    phone.classList.add("show");
+
+    avatarEl.textContent = lvl.icon;
+    titleEl.textContent = lvl.title[lang];
+
+    chatArea.innerHTML = `
+      <div class="bubble-system">${lvl.system[lang]}</div>
+      ${lvl.type === "email"
+        ? `<div class="email-box">
+             <div class="email-from">${lang === "en" ? "From: unknown sender" : "من: مرسل غير معروف"}</div>
+             <div class="email-sub">${lvl.title[lang]}</div>
+             <div>${lvl.msg[lang].replace(/\n/g, "<br>")}</div>
+           </div>`
+        : `<div class="bubble-in">${lvl.msg[lang]}</div>`
+      }
+    `;
+
+    btnSafe.textContent = lvl.safe[lang];
+    btnRisk.textContent = lvl.risky[lang];
+    tipEl.textContent = "";
+    if (lvl.mid) {
+      btnMid.style.display = "block";
+      btnMid.textContent = lvl.mid[lang];
+    } else {
+      btnMid.style.display = "none";
+    }
+  }
+
+  function handleAnswer(type) {
+    const lvl = levels[currentIndex];
+
+    if (type === "risk") {
+      hearts--;
+      playSad();
+      tipEl.textContent = "❌ " + lvl.badTip[lang];
+    } else {
+      // safe or mid
+      playHappy();
+      tipEl.textContent = lang === "en"
+        ? "✅ Nice choice! That keeps Saeed safer online."
+        : "✅ اختيار ممتاز! هذا يحمي سعيد أكثر على الإنترنت.";
+    }
+
+    updateHUD();
+
+    if (hearts <= 0) {
+      setTimeout(() => endGame(false), 900);
+      return;
+    }
+
+    // move to next only once reaction is seen
+    setTimeout(() => {
+      currentIndex++;
+      if (currentIndex >= levels.length) {
+        endGame(true);
+      } else {
+        renderLevel();
+      }
+    }, 1100);
+  }
+
+  function endGame(win) {
+    endOverlay.style.display = "flex";
+    if (win) {
+      endTitle.textContent = lang === "en"
+        ? "You kept Saeed safe! 🎉"
+        : "حميت سعيد! 🎉";
+      endText.textContent = lang === "en"
+        ? "You made strong cyber safety choices. Keep using what you learned in real life when you chat, play, or get emails."
+        : "اخترت قرارات آمنة تحمي سعيد. استخدم نفس الأفكار في حياتك الحقيقية لما تدردش أو تلعب أو تستقبل إيميلات.";
+    } else {
+      endTitle.textContent = lang === "en"
+        ? "Game over ⚠️"
+        : "انتهت اللعبة ⚠️";
+      endText.textContent = lang === "en"
+        ? "Saeed ran out of hearts because of risky choices. It’s okay – try again and choose safer options next time."
+        : "سعيد خسر كل القلوب بسبب قرارات خطرة. عادي، العب مرة ثانية و جرّب تختار خيارات أكثر أمانًا.";
+    }
+  }
+
+  function startGame(selectedLang) {
+    lang = selectedLang;
+    introOverlay.style.display = "none";
+    currentIndex = 0;
+    hearts = 3;
+    setMouthHappy();
+    renderLevel();
+  }
+
+  btnSafe.addEventListener("click", () => handleAnswer("safe"));
+  btnMid.addEventListener("click", () => handleAnswer("mid"));
+  btnRisk.addEventListener("click", () => handleAnswer("risk"));
+
+  // end overlay hidden by default
+  endOverlay.style.display = "none";
 </script>
+
 </body>
 </html>
+
