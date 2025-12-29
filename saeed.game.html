@@ -227,15 +227,31 @@ animation:pop .4s ease;
 </main>
 
 <script>
-// 🎧 INTRO FIX (iPhone safe)
-function playIntro(){
-const audio=document.getElementById("introAudio");
-document.getElementById("introStatus").style.display="block";
-audio.play().then(()=>{
-audio.onended=()=>{document.getElementById("intro").style.display="none";
-document.getElementById("lang").style.display="flex";}
-}).catch(()=>alert("Tap the screen then press play again."));
+async function playIntro(){
+  const audio = document.getElementById("introAudio");
+  const status = document.getElementById("introStatus");
+
+  status.style.display = "block";
+  status.textContent = "🎧 Loading...";
+
+  try {
+    // Attempt to play (Safari requires gesture)
+    await audio.play();
+    status.textContent = "🎙 Playing...";
+
+    audio.onended = () => {
+      document.getElementById("intro").style.display = "none";
+      document.getElementById("lang-overlay").style.display = "flex";
+    };
+
+  } catch(err) {
+    // If Safari blocks audio
+    alert("📱 iPhone detected — tap the screen once, then press Play again.");
+    status.textContent = "❗ Try again — iPhone blocked autoplay";
+    console.log("AUDIO ERROR:", err);
+  }
 }
+
 
 // 🌍 LANGUAGE + GAME
 let lang="en",idx=0,hearts=3;
