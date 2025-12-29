@@ -2,45 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Saeed's Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <title>Saeed's Game</title>
+  <link rel="stylesheet" href="styles/style.css" />
   <style>
-    :root {
-      --bg: #020617;
-      --phone-bg: #020617;
-      --card: #020617;
-      --accent-green: #16a34a;
-      --accent-red: #b91c1c;
-      --border-subtle: #1e293b;
-      --text-muted: #9ca3af;
-      --skin: #fde7c6;
-    }
+    /* --------- PAGE LAYOUT --------- */
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
         sans-serif;
-      background: #020617;
+      background: #020616;
       color: #f9fafb;
       overflow: hidden;
     }
 
-    .page-body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #111827, #020617);
-      color: #f9fafb;
-    }
-
-    /* ---------- NAV ---------- */
     .top-nav {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 24px;
-      background: rgba(15, 23, 42, 0.9);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #1e293b;
+      gap: 16px;
+      padding: 10px 18px;
+      background: #020617;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
       position: sticky;
       top: 0;
       z-index: 50;
@@ -49,518 +32,616 @@
     .top-nav a {
       color: #e5e7eb;
       text-decoration: none;
+      font-size: 14px;
       padding: 6px 10px;
       border-radius: 999px;
-      font-size: 13px;
-    }
-
-    .top-nav a.brand {
-      font-weight: 700;
-      margin-right: 10px;
     }
 
     .top-nav a.active {
-      background: #16a34a;
-      color: white;
+      background: #22c55e22;
+      color: #22c55e;
+      font-weight: 600;
     }
 
-    .top-nav a:hover {
-      background: rgba(148, 163, 184, 0.15);
+    .top-nav .brand {
+      font-weight: 600;
     }
 
-    /* ---------- GAME SHELL ---------- */
-    .game-shell-wrapper {
-      width: 100vw;
-      height: calc(100vh - 56px);
+    .game-wrapper {
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding-bottom: 12px;
+      justify-content: center;
+      height: calc(100vh - 48px);
+      background: radial-gradient(circle at top, #111827, #020617 55%);
     }
 
-    .game-shell {
-      width: 900px;
-      height: 520px;
-      border-radius: 24px;
-      background: radial-gradient(circle at top, #0b1220, #020617);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+    .game-frame {
+      width: min(1000px, 100vw - 40px);
+      height: min(520px, 70vh);
+      border-radius: 26px;
+      background: linear-gradient(180deg, #020617, #020617 55%, #020617 100%);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.85);
       position: relative;
+      padding: 18px 24px;
+      box-sizing: border-box;
       overflow: hidden;
-      padding: 16px;
-      transition: filter 0.3s ease;
     }
 
-    .game-shell.blurred {
-      filter: blur(6px);
-      pointer-events: none;
+    /* --------- HEADER INSIDE GAME --------- */
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #e5e7eb;
     }
 
-    .game-area {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      border-radius: 18px;
-      overflow: hidden;
-      background: #020617;
+    .game-hearts {
+      display: flex;
+      gap: 4px;
+      font-size: 18px;
     }
 
-    /* ---------- BACKGROUND ---------- */
-    .game-bg-sky {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 60px;
-      height: 200px;
-      background: linear-gradient(#020617, #020617);
-    }
-
-    .building {
-      position: absolute;
-      bottom: 210px;
-      width: 70px;
-      height: 140px;
-      background: #111827;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-    }
-    .b1 { left: 200px; }
-    .b2 { left: 360px; }
-    .b3 { left: 520px; }
-
-    .sidewalk {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 210px;
-      height: 30px;
-      background: #020617;
-    }
-
-    .tree {
-      position: absolute;
-      bottom: 210px;
-      width: 30px;
-      height: 80px;
-    }
-    .tree-trunk {
-      width: 8px;
-      height: 26px;
-      margin: 0 auto;
-      background: #6b3f1f;
-      border-radius: 4px;
-    }
-    .tree-top {
-      width: 34px;
-      height: 34px;
-      background: #16a34a;
+    .badge {
+      padding: 4px 10px;
       border-radius: 999px;
-      margin: -6px auto 0;
-      box-shadow: 0 0 10px rgba(22, 163, 74, 0.6);
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 12px;
     }
-    .t1 { left: 120px; }
-    .t2 { left: 310px; }
-    .t3 { left: 500px; }
 
-    .road {
+    .badge-level {
+      background: #0f172a;
+      color: #a5b4fc;
+      border-color: #6366f1aa;
+    }
+
+    /* --------- STREET BACKGROUND --------- */
+
+    .scene {
+      position: absolute;
+      inset: 60px 24px 24px 24px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #020617 0%, #020617 42%, #020617 42%, #020617 60%, #020617 100%);
+      overflow: hidden;
+    }
+
+    .sky {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, #38bdf8, #020617 55%);
+    }
+
+    .city-silhouette {
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 90px;
+      top: 26%;
       height: 120px;
-      background: linear-gradient(#020617, #020617 40%, #020617 41%, #020617);
+      background: url("https://i.imgur.com/Zu7q3pM.png");
+      background-size: cover;
+      opacity: 0.15;
+    }
+
+    .street {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 26%;
+      height: 120px;
+      background: linear-gradient(180deg, #020617 0, #020617 55%, #020617 100%);
     }
 
     .road-line {
       position: absolute;
-      left: 60px;
-      right: 60px;
-      top: 55px;
+      left: 10%;
+      right: 10%;
+      top: 50%;
       height: 4px;
-      background: repeating-linear-gradient(
+      background-image: repeating-linear-gradient(
         to right,
-        #e5e7eb 0 40px,
-        transparent 40px 70px
+        #e5e7eb,
+        #e5e7eb 40px,
+        transparent 40px,
+        transparent 70px
       );
+      opacity: 0.7;
     }
 
-    /* ---------- HUD ---------- */
-    .hearts {
+    .palm {
       position: absolute;
-      top: 12px;
-      left: 14px;
-      font-size: 22px;
-      z-index: 5;
-    }
-
-    .level-label {
-      position: absolute;
-      top: 12px;
-      right: 14px;
-      background: #065f46;
-      padding: 6px 12px;
+      width: 26px;
+      height: 90px;
+      bottom: 32%;
+      background: linear-gradient(180deg, #4b5563, #111827);
       border-radius: 999px;
-      font-size: 13px;
-      z-index: 5;
     }
 
-    .language-toggle {
+    .palm::before {
+      content: "";
       position: absolute;
-      top: 12px;
-      right: 120px;
-      background: #1f2937;
-      padding: 6px 10px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 12px;
-      z-index: 7;
-      user-select: none;
+      top: -22px;
+      left: -12px;
+      right: -12px;
+      height: 36px;
+      background: radial-gradient(circle at top, #22c55e, #14532d);
+      border-radius: 50%;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
     }
 
-    /* ---------- SAEED (cute round) ---------- */
-    #saeed {
+    .palm.p1 { left: 12%; }
+    .palm.p2 { left: 28%; bottom: 34%; transform: scale(0.9); }
+    .palm.p3 { left: 60%; bottom: 35%; transform: scale(1.1); }
+    .palm.p4 { left: 78%; bottom: 33%; transform: scale(0.95); }
+
+    /* --------- SAEED CHARACTER --------- */
+
+    .saeed {
       position: absolute;
-      left: 180px;
-      bottom: 110px;
-      width: 90px;
-      height: 190px;
-      background: transparent;
+      bottom: 31%;
+      left: 26%;
+      width: 70px;
+      height: 150px;
+      background: #f9fafb;
+      border-radius: 24px;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.7);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
-      z-index: 4;
-      animation: saeed-bob 2.4s ease-in-out infinite;
+      justify-content: flex-start;
+      padding-top: 10px;
+      box-sizing: border-box;
+      transition: transform 0.35s ease;
     }
 
-    @keyframes saeed-bob {
-      0%,100% { transform: translateX(-3px); }
-      50%     { transform: translateX(3px); }
-    }
-
-    .head {
-      width: 80px;
-      height: 82px;
-      border-radius: 26px;
-      background: var(--skin);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-      margin-bottom: 6px;
+    .saeed-head {
+      width: 54px;
+      height: 58px;
+      border-radius: 18px 18px 20px 20px;
+      background: #fefce8;
       position: relative;
-      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.7);
     }
 
-    .ghutra {
+    .saeed-kandora {
       position: absolute;
-      left: -4px;
-      right: -4px;
-      top: -10px;
-      height: 32px;
-      background: #f9fafb;
-      border-radius: 28px 28px 16px 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+      inset: 0 -3px auto -3px;
+      height: 12px;
+      background: #0f172a;
+      border-radius: 18px 18px 12px 12px;
     }
 
-    .igal {
+    .saeed-eye {
       position: absolute;
-      left: 7px;
-      right: 7px;
-      top: 2px;
-      height: 10px;
+      top: 22px;
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
-      border: 3px solid #020617;
+      background: #020617;
     }
 
-    .face-inner {
+    .eye-left { left: 17px; }
+    .eye-right { right: 17px; }
+
+    .saeed-mouth {
       position: absolute;
-      left: 12px;
-      right: 12px;
-      top: 20px;
-      bottom: 10px;
+      top: 34px;
+      left: 50%;
+      width: 18px;
+      height: 8px;
+      margin-left: -9px;
+      border-radius: 0 0 999px 999px;
+      border-bottom: 3px solid #16a34a;
+      border-left: 2px solid transparent;
+      border-right: 2px solid transparent;
+      transition: all 0.18s ease;
     }
 
-    .eyes {
+    .saeed-mouth.worried {
+      border-bottom-color: #f97316;
+      transform: scaleX(0.8);
+    }
+
+    .saeed-mouth.sad {
+      border-bottom-color: #ef4444;
+      transform: rotate(180deg);
+    }
+
+    .saeed-body {
+      margin-top: 70px;
+      width: 52px;
+      height: 68px;
+      border-radius: 18px;
+      background: #f9fafb;
+      box-shadow: inset 0 -6px 0 rgba(209,213,219,0.9);
+      position: relative;
+    }
+
+    .saeed-arm {
+      position: absolute;
+      top: 24px;
+      right: -8px;
+      width: 20px;
+      height: 32px;
+      border-radius: 14px;
+      background: #f9fafb;
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,0.5);
+    }
+
+    .saeed-phone {
+      position: absolute;
+      top: 6px;
+      left: 4px;
+      width: 12px;
+      height: 20px;
+      border-radius: 4px;
+      background: #020617;
+    }
+
+    .saeed-feet {
+      position: absolute;
+      bottom: -10px;
+      left: 6px;
+      right: 6px;
       display: flex;
       justify-content: space-between;
-      padding: 0 4px;
-    }
-
-    .eye {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #020617;
-      transform-origin: center;
-      transition: transform 0.2s ease;
-    }
-
-    .mouth {
-      position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 6px;
-      height: 6px;
-      border-radius: 0 0 999px 999px;
-      background: #111827;
-      transition: transform 0.2s, background 0.2s;
-    }
-
-    .body {
-      width: 46px;
-      height: 90px;
-      border-radius: 22px;
-      background: #f9fafb;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.45);
-      position: relative;
-    }
-
-    .body::before {
-      content:'';
-      position:absolute;
-      left:-10px; right:-10px; top:24px;
-      height:18px;
-      border-radius: 999px;
-      border-top:2px solid #e5e7eb;
-      opacity:0.8;
-    }
-
-    .feet {
-      display: flex;
-      gap: 12px;
-      margin-top: 6px;
     }
 
     .foot {
-      width: 26px;
-      height: 10px;
-      border-radius: 999px;
+      width: 18px;
+      height: 8px;
       background: #020617;
-      position: relative;
+      border-radius: 999px;
     }
 
-    .foot::after {
-      content:'';
-      position:absolute;
-      left:4px; right:4px; top:3px; bottom:1px;
-      border-radius:999px;
-      background:#f1f5f9;
-    }
+    /* --------- PHONE CARD --------- */
 
-    /* ---------- PHONE ---------- */
-    .phone {
+    .phone-card {
       position: absolute;
-      right: 150px;
-      bottom: 95px;
-      width: 270px;
-      background: var(--phone-bg);
+      right: 17%;
+      bottom: 32%;
+      width: 260px;
       border-radius: 26px;
-      padding: 10px;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
-      border: 1px solid var(--border-subtle);
-      z-index: 6;
+      background: #020617;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      overflow: hidden;
+      font-size: 12px;
+      color: #e5e7eb;
     }
 
-    .phone-inner {
-      border-radius: 22px;
-      background: var(--phone-bg);
-      padding: 10px;
-      border: 1px solid #1f2937;
-    }
-
-    .app-header {
-      font-size: 13px;
-      background: var(--card);
-      padding: 6px 10px;
-      border-radius: 14px;
-      margin-bottom: 8px;
+    .phone-top {
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.45);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border: 1px solid #1f2937;
+      background: radial-gradient(circle at top, #0f172a, #020617);
     }
 
-    .app-header-left {
+    .phone-top-left {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
-    .app-avatar {
-      width: 18px;
-      height: 18px;
-      border-radius: 6px;
-      background: radial-gradient(circle at 30% 30%, #22d3ee, #4f46e5);
-    }
-
-    .app-name {
-      font-weight: 600;
-    }
-
-    .app-status {
+    .phone-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #3b82f6, #22c55e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 11px;
-      opacity: 0.7;
+      font-weight: 700;
+      color: #0b1020;
     }
 
-    .question-box {
-      font-size: 13px;
+    .phone-chip {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #111827;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .phone-msg {
+      padding: 12px;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+    }
+
+    .message-bubble {
+      max-width: 220px;
+      padding: 8px 10px;
+      border-radius: 14px 14px 4px 14px;
+      background: #0b1120;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .phone-actions {
       padding: 10px 10px 12px;
-      background: var(--card);
-      border-radius: 16px;
-      min-height: 60px;
-      border: 1px solid #1f2937;
-      margin-bottom: 6px;
-      line-height: 1.5;
-    }
-
-    .btn {
-      margin-top: 6px;
-      padding: 9px;
-      border-radius: 14px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      position: relative;
-      z-index: 10;
-      pointer-events: auto;
-      user-select: none;
-    }
-
-    .btn.correct {
-      background: var(--accent-green);
-      color: #f9fafb;
-    }
-
-    .btn.wrong {
-      background: #f97373;
-      color: #111827;
-    }
-
-    .btn:hover {
-      filter: brightness(1.07);
-    }
-
-    .btn:active {
-      transform: scale(0.97);
-    }
-
-    /* ---------- INTRO OVERLAY ---------- */
-    #introScreen {
-      position: fixed;
-      inset: 0;
       display: flex;
       flex-direction: column;
+      gap: 8px;
+    }
+
+    .phone-btn {
+      border-radius: 999px;
+      padding: 8px 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .phone-btn.primary {
+      background: #22c55e;
+      color: #022c22;
+      box-shadow: 0 6px 14px rgba(34, 197, 94, 0.5);
+    }
+
+    .phone-btn.secondary {
+      background: #f97316;
+      color: #111827;
+      box-shadow: 0 6px 14px rgba(248, 113, 113, 0.4);
+    }
+
+    .phone-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.7);
+    }
+
+    /* --------- TOAST --------- */
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 14%;
+      transform: translateX(-50%);
+      padding: 8px 14px;
+      font-size: 12px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      color: #e5e7eb;
+    }
+
+    .toast.show {
+      display: inline-flex;
+      animation: fadeToast 1.2s ease forwards;
+    }
+
+    @keyframes fadeToast {
+      0% { opacity: 0; transform: translate(-50%, 10px); }
+      10% { opacity: 1; transform: translate(-50%, 0); }
+      80% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, 4px); }
+    }
+
+    /* --------- INTRO OVERLAY --------- */
+
+    #introOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(6px);
+      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 100;
-      pointer-events: auto;
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.88), #020617);
     }
 
-    #introCard {
-      max-width: 420px;
-      background: rgba(15, 23, 42, 0.95);
-      border-radius: 24px;
+    .intro-card {
+      width: 360px;
+      max-width: 90vw;
+      background: #020617;
+      border-radius: 22px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.95);
       padding: 22px 22px 18px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
-      position: relative;
+      text-align: center;
+      color: #e5e7eb;
     }
 
-    #introSaeed {
-      width: 110px;
-      height: 180px;
+    .intro-saeed {
+      margin: 14px auto 10px;
+      width: 80px;
+      height: 140px;
+      border-radius: 24px;
       background: #f9fafb;
-      border-radius: 26px;
-      margin: 0 auto 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 14px;
       position: relative;
+      box-shadow: 0 14px 26px rgba(15, 23, 42, 0.8);
+      animation: float 3s ease-in-out infinite;
     }
 
-    #introEyes {
+    .intro-saeed-head {
+      width: 56px;
+      height: 60px;
+      border-radius: 18px 18px 20px 20px;
+      background: #fefce8;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .intro-kandora {
+      position: absolute;
+      inset: 0 -4px auto -4px;
+      height: 14px;
+      background: #020617;
+      border-radius: 18px 18px 12px 12px;
+    }
+
+    .intro-eye {
+      position: absolute;
+      top: 22px;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #020617;
+    }
+    .intro-eye-left { left: 17px; }
+    .intro-eye-right { right: 17px; }
+
+    .intro-mouth {
+      position: absolute;
+      top: 36px;
+      left: 50%;
+      width: 20px;
+      height: 8px;
+      margin-left: -10px;
+      border-bottom: 3px solid #16a34a;
+      border-radius: 0 0 999px 999px;
+    }
+
+    .intro-saeed-body {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 58px;
+      height: 70px;
+      border-radius: 20px;
+      background: #f9fafb;
+      box-shadow: inset 0 -8px 0 rgba(209, 213, 219, 0.9);
+    }
+
+    .intro-saeed-feet {
+      position: absolute;
+      bottom: -10px;
+      left: 12px;
+      right: 12px;
       display: flex;
-      gap: 10px;
-      margin-bottom: 6px;
-      margin-top: 16px;
+      justify-content: space-between;
     }
 
-    .introEye {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
+    .intro-foot {
+      width: 18px;
+      height: 8px;
+      border-radius: 999px;
       background: #020617;
     }
 
-    #introMouth {
-      width: 28px;
-      height: 5px;
-      border-radius: 0 0 10px 10px;
-      background: #111827;
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
 
-    #introText {
-      margin-top: 10px;
-      font-size: 14px;
-      line-height: 1.6;
-      text-align: center;
+    .intro-title {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 600;
     }
 
-    #introButtons {
+    .intro-text {
+      font-size: 13px;
+      color: #cbd5f5;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .intro-buttons {
       margin-top: 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      align-items: center;
+      gap: 8px;
     }
 
-    .introBtn {
-      padding: 9px 18px;
+    .intro-btn {
       border-radius: 999px;
+      padding: 9px 12px;
       border: none;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.12s ease;
     }
 
-    #playIntroBtn {
-      background: #16a34a;
-      color: white;
+    .intro-btn.primary {
+      background: #22c55e;
+      color: #052e16;
+      box-shadow: 0 10px 24px rgba(34, 197, 94, 0.6);
     }
 
-    #startGameBtn {
+    .intro-btn.secondary {
       background: #0f172a;
-      color: white;
-      opacity: 0.6;
-      pointer-events: none;
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.7);
     }
 
-    #startGameBtn.ready {
-      opacity: 1;
-      pointer-events: auto;
+    .intro-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.9);
     }
 
-    #introHint {
+    .intro-hint {
+      margin-top: 8px;
       font-size: 11px;
-      opacity: 0.7;
-      margin-top: 6px;
-      text-align: center;
+      color: #9ca3af;
     }
 
-    #introLangToggle {
+    .lang-toggle {
       position: absolute;
-      top: 14px;
+      top: 12px;
       right: 18px;
-      background: #111827;
-      padding: 5px 9px;
+      display: flex;
+      gap: 6px;
+      z-index: 120;
+    }
+
+    .lang-btn {
       border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: #020617;
+      color: #e5e7eb;
+      padding: 4px 8px;
       font-size: 11px;
       cursor: pointer;
-      color: #e5e7eb;
+    }
+
+    .lang-btn.active {
+      background: #22c55e;
+      color: #052e16;
+      border-color: #22c55e;
+      font-weight: 600;
+    }
+
+    /* Mobile tweak */
+    @media (max-width: 768px) {
+      .game-frame {
+        height: calc(100vh - 80px);
+        border-radius: 0;
+      }
+      .scene {
+        inset: 64px 10px 16px 10px;
+      }
+      .saeed {
+        left: 16%;
+      }
+      .phone-card {
+        right: 8%;
+      }
     }
   </style>
 </head>
-<body class="page-body">
+
+<body>
+  <!-- NAV -->
   <nav class="top-nav">
     <a href="index.html" class="brand">🏠 Home</a>
     <a href="chat.html">💬 Chat</a>
@@ -570,396 +651,505 @@
     <a href="saeed.game.html" class="active">🎮 Saeed's Game</a>
   </nav>
 
+  <!-- LANGUAGE TOGGLE FOR INTRO -->
+  <div class="lang-toggle">
+    <button id="langEn" class="lang-btn active">EN</button>
+    <button id="langAr" class="lang-btn">AR</button>
+  </div>
+
   <!-- INTRO OVERLAY -->
-  <div id="introScreen">
-    <div id="introLangToggle">EN</div>
-    <div id="introCard">
-      <div id="introSaeed">
-        <div id="introEyes">
-          <div class="introEye"></div>
-          <div class="introEye"></div>
+  <div id="introOverlay">
+    <div class="intro-card">
+      <div class="intro-saeed">
+        <div class="intro-saeed-head">
+          <div class="intro-kandora"></div>
+          <div class="intro-eye intro-eye-left"></div>
+          <div class="intro-eye intro-eye-right"></div>
+          <div class="intro-mouth"></div>
         </div>
-        <div id="introMouth"></div>
+        <div class="intro-saeed-body"></div>
+        <div class="intro-saeed-feet">
+          <div class="intro-foot"></div>
+          <div class="intro-foot"></div>
+        </div>
       </div>
 
-      <div id="introText">
-        Meet Saeed 👦🏻<br>
-        He doesn’t know much about online safety yet.<br>
-        Listen to the short intro, then help him stay safe from scams and bad messages.
+      <div class="intro-title" id="introTitle">Meet Saeed 👳🏻‍♂️</div>
+      <div class="intro-text" id="introText">
+        He doesn’t know much about online safety yet.<br />
+        Listen to the short intro, then help him stay safe from scams and
+        bad messages.
       </div>
 
-      <div id="introButtons">
-        <button id="playIntroBtn" class="introBtn">▶️ Play introduction</button>
-        <button id="startGameBtn" class="introBtn">
-          ✅ Yes, let's start the game
+      <div class="intro-buttons">
+        <button class="intro-btn primary" id="playIntroBtn">
+          ▶️ Play introduction
         </button>
-        <div id="introHint">
-          On phones, tap “Play introduction” once so the sound can start.
-        </div>
+        <button class="intro-btn secondary" id="startGameBtn" disabled>
+          ✅ Yes, let’s start the game
+        </button>
       </div>
 
-      <!-- hidden audio: plays only from the button -->
-      <audio
-        id="introAudio"
-        src="/intro-voice.mp3"
-        preload="auto"
-      ></audio>
+      <div class="intro-hint" id="introHint">
+        On phones, tap “Play introduction” once so the sound can start.
+      </div>
     </div>
   </div>
 
-  <div class="game-shell-wrapper">
-    <div class="game-shell blurred" id="gameShell">
-      <div class="game-area">
-        <div class="game-bg-sky"></div>
-        <div class="building b1"></div>
-        <div class="building b2"></div>
-        <div class="building b3"></div>
-        <div class="sidewalk"></div>
+  <!-- AUDIO (same folder / project root) -->
+  <audio id="introAudio" src="intro-voice.mp3" preload="auto"></audio>
 
-        <div class="tree t1">
-          <div class="tree-trunk"></div>
-          <div class="tree-top"></div>
+  <!-- MAIN GAME -->
+  <main class="game-wrapper">
+    <section class="game-frame">
+      <header class="game-header">
+        <div class="badge">Abu Dhabi →</div>
+        <div class="game-hearts" id="hearts">
+          ❤️ ❤️ ❤️
         </div>
-        <div class="tree t2">
-          <div class="tree-trunk"></div>
-          <div class="tree-top"></div>
-        </div>
-        <div class="tree t3">
-          <div class="tree-trunk"></div>
-          <div class="tree-top"></div>
-        </div>
+        <div class="badge badge-level" id="levelLabel">Level 1 · DMs</div>
+      </header>
 
-        <div class="road">
+      <div class="scene">
+        <div class="sky"></div>
+        <div class="city-silhouette"></div>
+        <div class="palm p1"></div>
+        <div class="palm p2"></div>
+        <div class="palm p3"></div>
+        <div class="palm p4"></div>
+
+        <div class="street">
           <div class="road-line"></div>
         </div>
 
-        <div class="language-toggle" id="gameLangToggle">EN</div>
-        <div class="hearts" id="hearts">❤️❤️❤️</div>
-        <div class="level-label" id="levelLabel">Level 1 • DMs</div>
-
-        <div id="saeed">
-          <div class="head">
-            <div class="ghutra"></div>
-            <div class="igal"></div>
-            <div class="face-inner">
-              <div class="eyes">
-                <div class="eye" id="eyeL"></div>
-                <div class="eye" id="eyeR"></div>
-              </div>
-              <div class="mouth" id="mouth"></div>
+        <!-- Saeed -->
+        <div class="saeed" id="saeedChar">
+          <div class="saeed-head">
+            <div class="saeed-kandora"></div>
+            <div class="saeed-eye eye-left"></div>
+            <div class="saeed-eye eye-right"></div>
+            <div class="saeed-mouth" id="saeedMouth"></div>
+          </div>
+          <div class="saeed-body">
+            <div class="saeed-arm">
+              <div class="saeed-phone"></div>
             </div>
           </div>
-          <div class="body"></div>
-          <div class="feet">
+          <div class="saeed-feet">
             <div class="foot"></div>
             <div class="foot"></div>
           </div>
         </div>
 
-        <div class="phone">
-          <div class="phone-inner">
-            <div class="app-header">
-              <div class="app-header-left">
-                <div class="app-avatar"></div>
-                <div class="app-name" id="appName">Instagram DM</div>
+        <!-- Phone -->
+        <div class="phone-card">
+          <div class="phone-top">
+            <div class="phone-top-left">
+              <div class="phone-avatar">IG</div>
+              <div>
+                <div id="phoneApp">Instagram DM</div>
+                <div style="font-size: 10px; opacity: 0.8" id="phoneSub">
+                  online · @random_account
+                </div>
               </div>
-              <div class="app-status" id="appStatus">online</div>
             </div>
+            <div class="phone-chip" id="phoneChip">
+              Suspicious
+            </div>
+          </div>
 
-            <div class="question-box" id="questionText">Loading...</div>
+          <div class="phone-msg">
+            <div class="message-bubble" id="messageBubble">
+              ...
+            </div>
+          </div>
 
-            <div class="btn correct" id="opt1"></div>
-            <div class="btn wrong" id="opt2"></div>
+          <div class="phone-actions">
+            <button class="phone-btn primary" id="option1"></button>
+            <button class="phone-btn secondary" id="option2"></button>
           </div>
         </div>
+
+        <div class="toast" id="toast"></div>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script>
-    let lang = "EN";
-    const gameShell = document.getElementById("gameShell");
-    const gameLangToggle = document.getElementById("gameLangToggle");
-    const introLangToggle = document.getElementById("introLangToggle");
-
-    function setLanguage(newLang) {
-      lang = newLang;
-      gameLangToggle.textContent = lang;
-      introLangToggle.textContent = lang;
-
-      const introText = document.getElementById("introText");
+    document.addEventListener("DOMContentLoaded", () => {
+      /* ---------- INTRO + AUDIO ---------- */
+      const introOverlay = document.getElementById("introOverlay");
       const playIntroBtn = document.getElementById("playIntroBtn");
       const startGameBtn = document.getElementById("startGameBtn");
+      const introAudio = document.getElementById("introAudio");
+      const introTitle = document.getElementById("introTitle");
+      const introText = document.getElementById("introText");
       const introHint = document.getElementById("introHint");
-      const appName = document.getElementById("appName");
+      const langEnBtn = document.getElementById("langEn");
+      const langArBtn = document.getElementById("langAr");
 
-      if (lang === "EN") {
-        introText.innerHTML =
-          "Meet Saeed 👦🏻<br>He doesn’t know much about online safety yet.<br>Listen to the short intro, then help him stay safe from scams and bad messages.";
-        playIntroBtn.textContent = "▶️ Play introduction";
-        startGameBtn.textContent = "✅ Yes, let's start the game";
-        introHint.textContent =
-          "On phones, tap “Play introduction” once so the sound can start.";
-        appName.textContent = "Instagram DM";
-      } else {
-        introText.innerHTML =
-          "تعرف على سعيد 👦🏻<br>لسه ما يعرف كثير عن الأمان الرقمي.<br>اسمع المقدمة القصيرة، وبعدها ساعده يتجنب الاحتيال والرسائل المزعجة.";
-        playIntroBtn.textContent = "▶️ تشغيل المقدمة";
-        startGameBtn.textContent = "✅ نعم، لنبدأ اللعبة";
-        introHint.textContent =
-          "في الجوال، اضغط على زر تشغيل المقدمة مرة واحدة عشان يشتغل الصوت.";
-        appName.textContent = "رسائل إنستغرام";
+      let currentLang = "en";
+      let introPlayedOnce = false;
+
+      const introCopy = {
+        en: {
+          title: "Meet Saeed 👳🏻‍♂️",
+          text:
+            "He doesn’t know much about online safety yet.\nListen to the short intro, then help him stay safe from scams and bad messages.",
+          play: "▶️ Play introduction",
+          start: "✅ Yes, let’s start the game",
+          hint:
+            "On phones, tap “Play introduction” once so the sound can start.",
+        },
+        ar: {
+          title: "تعرّف على سعيد 👳🏻‍♂️",
+          text:
+            "سعيد ما يعرف وايد عن الأمان الرقمي.\nاسمع المقدمة القصيرة، وبعدين ساعده يحمي نفسه من الاحتيال والرسائل الخطيرة.",
+          play: "▶️ تشغيل المقدمة",
+          start: "✅ لنبدأ اللعبة",
+          hint: "في الجوال، اضغط زر تشغيل المقدمة أولاً علشان يشتغل الصوت.",
+        },
+      };
+
+      function updateIntroLanguage() {
+        const copy = introCopy[currentLang];
+        introTitle.textContent = copy.title;
+        introText.innerHTML = copy.text.replace(/\n/g, "<br />");
+        playIntroBtn.textContent = copy.play;
+        startGameBtn.textContent = copy.start;
+        introHint.textContent = copy.hint;
       }
 
-      showQuestion();
-    }
+      langEnBtn.addEventListener("click", () => {
+        currentLang = "en";
+        langEnBtn.classList.add("active");
+        langArBtn.classList.remove("active");
+        updateIntroLanguage();
+        updateScenario();
+      });
 
-    gameLangToggle.addEventListener("click", () =>
-      setLanguage(lang === "EN" ? "AR" : "EN")
-    );
-    introLangToggle.addEventListener("click", () =>
-      setLanguage(lang === "EN" ? "AR" : "EN")
-    );
+      langArBtn.addEventListener("click", () => {
+        currentLang = "ar";
+        langArBtn.classList.add("active");
+        langEnBtn.classList.remove("active");
+        updateIntroLanguage();
+        updateScenario();
+      });
 
-    setLanguage("EN");
+      playIntroBtn.addEventListener("click", async () => {
+        try {
+          introAudio.currentTime = 0;
+          await introAudio.play();
+          introPlayedOnce = true;
+          playIntroBtn.textContent =
+            currentLang === "en" ? "🔊 Playing..." : "🔊 يتم التشغيل...";
+          playIntroBtn.disabled = true;
+          setTimeout(() => {
+            startGameBtn.disabled = false;
+          }, 2000);
+        } catch (err) {
+          alert(
+            currentLang === "en"
+              ? "Safari/Chrome blocked the sound. Tap anywhere on the page once, then press Play again."
+              : "المتصفح منع تشغيل الصوت. اضغطي في أي مكان في الصفحة مرة، وبعدين اضغطي تشغيل المقدمة مرة ثانية."
+          );
+        }
+      });
 
-    const introAudio = document.getElementById("introAudio");
-    const playIntroBtn = document.getElementById("playIntroBtn");
-    const startGameBtn = document.getElementById("startGameBtn");
-    const introScreen = document.getElementById("introScreen");
+      startGameBtn.addEventListener("click", () => {
+        introOverlay.style.display = "none";
+      });
 
-    let introPlayed = false;
-    let startReady = false;
+      /* ---------- GAME LOGIC ---------- */
 
-    function makeStartReady() {
-      if (startReady) return;
-      startReady = true;
-      startGameBtn.classList.add("ready");
-      startGameBtn.textContent =
-        lang === "EN"
-          ? "✅ Yes, let's start the game"
-          : "✅ نعم، لنبدأ اللعبة";
-    }
-
-    // play intro voice with error alert
-    playIntroBtn.addEventListener("click", () => {
-      introAudio.currentTime = 0;
-      introAudio
-        .play()
-        .then(() => {
-          console.log("Intro audio started");
-        })
-        .catch((err) => {
-          console.log("Audio play error:", err);
-          alert("Audio error: " + err.message);
-        });
-
-      introPlayed = true;
-      playIntroBtn.disabled = true;
-      playIntroBtn.textContent =
-        lang === "EN" ? "▶️ Playing..." : "▶️ يتم التشغيل...";
-
-      // safety: unlock start even if onended doesn't fire
-      setTimeout(makeStartReady, 21000);
-    });
-
-    introAudio.addEventListener("ended", () => {
-      makeStartReady();
-    });
-
-    // start game after intro
-    startGameBtn.addEventListener("click", () => {
-      if (!introPlayed || !startReady) return;
-      introScreen.style.display = "none";
-      gameShell.classList.remove("blurred");
-      showQuestion();
-    });
-
-    /* ---------- QUESTIONS ---------- */
-    const questions = [
-      {
-        type: "dm",
-        en: "A stranger says: “I found your account, send me a private picture, I won’t show anyone 😉”",
-        ar: "شخص غريب يقول: «لقيت حسابك، ارسل لي صورة خاصة، ما بوريها لأحد 😉»",
-        o1: { en: "Block & report this account", ar: "حظر + إبلاغ عن الحساب", correct: true },
-        o2: { en: "Send them a photo",          ar: "أرسل له الصورة",          correct: false }
-      },
-      {
-        type: "link",
-        en: "You get a DM with a link: “Free iPhone for the first 100 people, just login with Instagram!”",
-        ar: "تجيك رسالة مع رابط: «آيفون مجاني لأول ١٠٠ شخص، بس سجل دخول بحسابك في إنستغرام!»",
-        o1: { en: "Delete the message and ignore it", ar: "أحذف الرسالة وأتجاهلها", correct: true },
-        o2: { en: "Login using the link quickly",     ar: "أسجل دخول من الرابط بسرعة", correct: false }
-      },
-      {
-        type: "email",
-        en: "Email: “Your bank account will be closed today. Click here and enter your card number to keep it active.”",
-        ar: "إيميل: «راح نقفل حسابك البنكي اليوم، اضغط هنا واكتب رقم بطاقتك عشان يظل شغال.»",
-        o1: { en: "Ignore email & check from the bank app or official number",
-              ar: "أتجاهل الإيميل وأتأكد من تطبيق البنك أو الرقم الرسمي", correct: true },
-        o2: { en: "Click the link and type full card details",
-              ar: "أضغط الرابط وأحط بيانات البطاقة كاملة", correct: false }
-      },
-      {
-        type: "qr",
-        en: "Someone at the mall shows you a QR code: “Scan it to get a free gift, no need to ask your parents.”",
-        ar: "واحد في المول يوريك QR ويقول: «أمسح الكود وخذ هدية مجانية، ما تحتاج تخبر أهلك.»",
-        o1: { en: "Don’t scan and walk away", ar: "ما أمسح الكود وأمشي", correct: true },
-        o2: { en: "Scan it and follow the instructions", ar: "أمسح الكود وأتبع التعليمات", correct: false }
-      },
-      {
-        type: "threat",
-        en: "Message: “I have your pictures, if you don’t send money I will post them.”",
-        ar: "رسالة: «عندي صورك، لو ما حولت فلوس رح أنشرها.»",
-        o1: { en: "Keep evidence & tell family / police (don’t pay)",
-              ar: "أحفظ الأدلة وأخبر أهلي / الشرطة (وما أدفع)", correct: true },
-        o2: { en: "Send money so they stop", ar: "أحول له فلوس عشان يوقف", correct: false }
-      },
-      {
-        type: "friend-link",
-        en: "Your close friend sends a strange link with no text.",
-        ar: "صديقك المقرب يرسل لك رابط غريب بدون أي كلام.",
-        o1: { en: "Ask them on another app if they really sent it",
-              ar: "أسأل صديقي في تطبيق ثاني إذا فعلًا أرسل الرابط", correct: true },
-        o2: { en: "Click it immediately because you trust them",
-              ar: "أضغط الرابط فورًا لأني أثق فيه", correct: false }
-      },
-      {
-        type: "hack",
-        en: "Someone says: “I hacked your account. If you pay me, I’ll give it back.”",
-        ar: "شخص يقول: «اخترقت حسابك، لو دفعت لي أرجعه لك.»",
-        o1: { en: "Report to the platform & enable 2FA, don’t pay",
-              ar: "أبلغ المنصة وأفعل التحقق بخطوتين، وما أدفع", correct: true },
-        o2: { en: "Pay them and hope they are honest",
-              ar: "أدفع له وأتمنى يكون صادق", correct: false }
-      },
-      {
-        type: "extension",
-        en: "Pop-up on your browser: “Install this free extension to get crypto rewards every day.”",
-        ar: "نافذة في المتصفح: «ثبت هذه الإضافة المجانية وخذ عملات رقمية كل يوم.»",
-        o1: { en: "Close the pop-up, don’t install anything",
-              ar: "أغلق النافذة وما أثبت أي شيء", correct: true },
-        o2: { en: "Install it because it sounds cool",
-              ar: "أثبتها لأنها شكلها حلو", correct: false }
-      },
-      {
-        type: "otp",
-        en: "Someone calls: “I’m from Etisalat, tell me the OTP we sent to your phone.”",
-        ar: "اتصال: «معك من الاتصالات، عطيني رمز التحقق اللي وصلك.»",
-        o1: { en: "Never share OTP with anyone", ar: "ما أعطي الرمز لأي أحد", correct: true },
-        o2: { en: "Tell them the OTP to be helpful", ar: "أعطيه الرمز عشان أساعد", correct: false }
-      },
-      {
-        type: "wifi",
-        en: "You see public Wi-Fi: “FREE_Internet_No_Password” in a café.",
-        ar: "تشوف واي فاي عام اسمه: «FREE_Internet_No_Password» في كافيه.",
-        o1: { en: "Avoid connecting or use VPN only for simple browsing",
-              ar: "ما أتصل، أو أستخدم VPN فقط لأشياء بسيطة", correct: true },
-        o2: { en: "Use it for banking and passwords",
-              ar: "أستخدمه للبنك وكلمات السر", correct: false }
-      }
-    ];
-
-    let current = 0;
-    let hearts = 3;
-
-    function showQuestion() {
-      const q = questions[current];
-      if (!q) return;
-
-      const questionText = document.getElementById("questionText");
-      const opt1 = document.getElementById("opt1");
-      const opt2 = document.getElementById("opt2");
+      const saeedMouth = document.getElementById("saeedMouth");
+      const toast = document.getElementById("toast");
+      const heartsEl = document.getElementById("hearts");
       const levelLabel = document.getElementById("levelLabel");
+      const messageBubble = document.getElementById("messageBubble");
+      const phoneChip = document.getElementById("phoneChip");
+      const phoneApp = document.getElementById("phoneApp");
+      const phoneSub = document.getElementById("phoneSub");
+      const option1Btn = document.getElementById("option1");
+      const option2Btn = document.getElementById("option2");
 
-      questionText.textContent = lang === "EN" ? q.en : q.ar;
-      opt1.textContent = lang === "EN" ? q.o1.en : q.o1.ar;
-      opt2.textContent = lang === "EN" ? q.o2.en : q.o2.ar;
+      let currentLevel = 0;
+      let lives = 3;
 
-      levelLabel.textContent =
-        lang === "EN"
-          ? "Level " + (current + 1) + " • DMs"
-          : "المستوى " + (current + 1) + " • الرسائل";
+      const scenarios = [
+        {
+          type: "dm",
+          en: {
+            app: "Instagram DM",
+            sub: "online · unknown account",
+            chip: "Suspicious",
+            message:
+              "Hey, I found your account. Can you send me a private picture? 🤫",
+            options: [
+              "Block & report this account",
+              "Send them a photo",
+            ],
+            correct: 0,
+            feedbackGood:
+              "Perfect! Blocking and reporting protects you and others.",
+            feedbackBad:
+              "Never send private photos to strangers. They can use them to threaten or blackmail you.",
+          },
+          ar: {
+            app: "رسالة إنستغرام",
+            sub: "متصل · حساب غريب",
+            chip: "حساب مريب",
+            message:
+              "هلا، شفت حسابك. تقدرين ترسلين لي صورة خاصة؟ 🤫",
+            options: ["حظر وإبلاغ عن الحساب", "إرسال الصورة له"],
+            correct: 0,
+            feedbackGood:
+              "صح! الحظر والإبلاغ يحميك ويحمي غيرك من الابتزاز.",
+            feedbackBad:
+              "لا ترسلين صور خاصة لأحد غريب، ممكن يستخدمها للتهديد أو الابتزاز.",
+          },
+        },
+        {
+          type: "email",
+          en: {
+            app: "Email",
+            sub: "“Bank UAE” <suspicious@random.com>",
+            chip: "Fake bank",
+            message:
+              "Dear customer, your account will be closed today. Click this link and enter your card details to keep it active.",
+            options: [
+              "Ignore & contact my bank using the official app",
+              "Click the link & fill my card details",
+            ],
+            correct: 0,
+            feedbackGood:
+              "Good! Always use the official bank app or number, never random links.",
+            feedbackBad:
+              "This is classic phishing. Never type your card info on links you receive by email or SMS.",
+          },
+          ar: {
+            app: "البريد الإلكتروني",
+            sub: "“بنك الإمارات” <suspicious@random.com>",
+            chip: "بنك مزيف",
+            message:
+              "عميلنا العزيز، سيتم إغلاق حسابك اليوم. اضغط الرابط وأدخل بيانات بطاقتك لتفادي الإغلاق.",
+            options: [
+              "أتجاهل الرسالة وأتواصل مع البنك من التطبيق الرسمي",
+              "أضغط الرابط وأدخل بيانات البطاقة",
+            ],
+            correct: 0,
+            feedbackGood:
+              "ممتاز! تواصلك مع البنك من التطبيق الرسمي هو التصرف الصحيح.",
+            feedbackBad:
+              "هذا تصيّد إلكتروني. لا تدخل بيانات بطاقتك في روابط تجيك برسالة.",
+          },
+        },
+        {
+          type: "dm",
+          en: {
+            app: "Snapchat",
+            sub: "Friend of friend",
+            chip: "Risky",
+            message:
+              "I have a way to add free followers to your account. Just share your login and I’ll do it for you.",
+            options: [
+              "Share my username only, not password",
+              "Never share my password or 2FA code",
+            ],
+            correct: 1,
+            feedbackGood:
+              "Exactly. Passwords and codes are private. No one should ever ask for them.",
+            feedbackBad:
+              "Even if they seem friendly, never share login details. They can steal your account.",
+          },
+          ar: {
+            app: "سناب شات",
+            sub: "صديق لصديقتك",
+            chip: "طلب خطير",
+            message:
+              "عندي طريقة أزود متابعينك ببلاش، بس عطيني اسم المستخدم وكلمة المرور.",
+            options: [
+              "أعطيه اسم المستخدم بس بدون كلمة المرور",
+              "ما أعطيه كلمة المرور أو كود التحقق نهائياً",
+            ],
+            correct: 1,
+            feedbackGood:
+              "بالضبط. كلمة المرور وأكواد التحقق سرية، ما نعطيها لأي شخص.",
+            feedbackBad:
+              "حتى لو كان شكله طيب، لا تشاركين بيانات الدخول. ممكن يسرق الحساب بالكامل.",
+          },
+        },
+        {
+          type: "link",
+          en: {
+            app: "WhatsApp",
+            sub: "Friend’s number",
+            chip: "Strange link",
+            message:
+              "Look at this video of you 😂😂 https://weird-short-link.xyz",
+            options: ["Click the link quickly to see", "Don’t click & ask my friend if they really sent it"],
+            correct: 1,
+            feedbackGood:
+              "Nice! Many hacked accounts send strange links. Always confirm first.",
+            feedbackBad:
+              "These links can install malware or steal your logins. Always verify before clicking.",
+          },
+          ar: {
+            app: "واتساب",
+            sub: "رقم صديقتك",
+            chip: "رابط غريب",
+            message:
+              "شوفي هذا الفيديو عنج 😂😂 https://weird-short-link.xyz",
+            options: [
+              "أضغط الرابط بسرعة عشان أشوف",
+              "ما أضغط وأسأل صديقتي إذا فعلاً أرسلته",
+            ],
+            correct: 1,
+            feedbackGood:
+              "حلو! كثير من الحسابات المخترقة ترسل روابط غريبة، لازم نتأكد أول.",
+            feedbackBad:
+              "الرابط ممكن يكون برنامج خبيث أو موقع لسرقة الحساب. لا تضغطين قبل ما تتأكدين.",
+          },
+        },
+        {
+          type: "dm",
+          en: {
+            app: "Instagram DM",
+            sub: "Giveaway account",
+            chip: "Too good to be true",
+            message:
+              "Congrats! You won an iPhone 16 Pro. Send your Emirates ID front & back to claim.",
+            options: [
+              "Send my Emirates ID photos",
+              "Refuse & report the account as a scam",
+            ],
+            correct: 1,
+            feedbackGood:
+              "Correct. Never send ID photos to random accounts. Real brands don’t ask that in DMs.",
+            feedbackBad:
+              "Your ID can be used to open accounts or commit fraud in your name. Don’t share it.",
+          },
+          ar: {
+            app: "رسالة إنستغرام",
+            sub: "حساب مسابقات",
+            chip: "جائزة مزيفة",
+            message:
+              "مبروك! ربحتي آيفون 16 برو. أرسلي صورة الهوية من الجهتين عشان تستلمين الجائزة.",
+            options: [
+              "أرسل لهم صور هويتي",
+              "أرفض وأبلغ أن الحساب احتيال",
+            ],
+            correct: 1,
+            feedbackGood:
+              "صح. الجهات الرسمية ما تطلب صور الهوية في الخاص بهالطريقة.",
+            feedbackBad:
+              "صور هويتك ممكن تُستخدم في عمليات احتيال باسمك. لا تشاركينها مع أحد.",
+          },
+        },
+      ];
 
-      opt1.onclick = () => choose(q.o1.correct);
-      opt2.onclick = () => choose(q.o2.correct);
-    }
-
-    function setFace(correct) {
-      const mouth = document.getElementById("mouth");
-      const eyeL = document.getElementById("eyeL");
-      const eyeR = document.getElementById("eyeR");
-
-      if (correct) {
-        mouth.style.transform = "scaleY(1)";
-        mouth.style.background = "#16a34a";
-        eyeL.style.transform = "scale(1)";
-        eyeR.style.transform = "scale(1)";
-      } else {
-        mouth.style.transform = "scaleY(-1)";
-        mouth.style.background = "#b91c1c";
-        eyeL.style.transform = "scaleY(0.6)";
-        eyeR.style.transform = "scaleY(0.6)";
+      function vibrate(ms) {
+        if (navigator.vibrate) {
+          navigator.vibrate(ms);
+        }
       }
 
-      setTimeout(() => {
-        mouth.style.transform = "scaleY(1)";
-        mouth.style.background = "#111827";
-        eyeL.style.transform = "scale(1)";
-        eyeR.style.transform = "scale(1)";
-      }, 600);
-    }
+      function showToast(text, good = false) {
+        toast.textContent = text;
+        toast.style.borderColor = good ? "#22c55e" : "#f97316";
+        toast.style.color = good ? "#bbf7d0" : "#fed7aa";
+        toast.classList.remove("show");
+        // force reflow
+        void toast.offsetWidth;
+        toast.classList.add("show");
+      }
 
-    function choose(isCorrect) {
-      setFace(isCorrect);
+      function updateHearts() {
+        heartsEl.textContent = "❤️ ".repeat(lives).trim() || "💔";
+      }
 
-      if (isCorrect) {
-        if (navigator.vibrate) navigator.vibrate(120);
-        current++;
-        if (current >= questions.length) {
-          win();
+      function updateScenario() {
+        const sc = scenarios[currentLevel];
+        const t = sc[currentLang];
+
+        phoneApp.textContent = t.app;
+        phoneSub.textContent = t.sub;
+        phoneChip.textContent = t.chip;
+        messageBubble.textContent = t.message;
+        option1Btn.textContent = t.options[0];
+        option2Btn.textContent = t.options[1];
+
+        const levelName =
+          sc.type === "dm"
+            ? currentLang === "en"
+              ? "DMs"
+              : "الرسائل الخاصة"
+            : sc.type === "email"
+            ? currentLang === "en"
+              ? "Emails"
+              : "البريد الإلكتروني"
+            : currentLang === "en"
+            ? "Links"
+            : "الروابط";
+        const labelBase =
+          currentLang === "en" ? "Level" : "المستوى";
+        levelLabel.textContent = `${labelBase} ${
+          currentLevel + 1
+        } · ${levelName}`;
+      }
+
+      function handleAnswer(choiceIndex) {
+        const sc = scenarios[currentLevel];
+        const t = sc[currentLang];
+        const correct = t.correct;
+
+        const good = choiceIndex === correct;
+
+        if (good) {
+          saeedMouth.classList.remove("sad", "worried");
+          saeedMouth.style.borderBottomColor = "#22c55e";
+          showToast(t.feedbackGood, true);
         } else {
-          setTimeout(showQuestion, 650);
+          lives = Math.max(0, lives - 1);
+          updateHearts();
+          vibrate([80, 60, 80]);
+          saeedMouth.classList.remove("sad");
+          saeedMouth.classList.add("sad");
+          showToast(t.feedbackBad, false);
         }
-      } else {
-        if (navigator.vibrate) navigator.vibrate([80, 70, 80]);
-        hearts--;
-        document.getElementById("hearts").textContent =
-          "❤️".repeat(Math.max(0, hearts));
-        if (hearts <= 0) {
-          lose();
-        }
+
+        setTimeout(() => {
+          saeedMouth.classList.remove("sad");
+          if (lives === 0) {
+            const msg =
+              currentLang === "en"
+                ? "Game over! Saeed clicked too many risky things. Refresh to try again."
+                : "انتهت اللعبة! سعيد ضغط على أشياء خطيرة كثيرة. حدّث الصفحة وجربي مرة ثانية.";
+            alert(msg);
+            return;
+          }
+
+          if (currentLevel < scenarios.length - 1) {
+            currentLevel++;
+            updateScenario();
+          } else {
+            const msg =
+              currentLang === "en"
+                ? "Amazing! You helped Saeed through all the situations. 🎉"
+                : "إبداع! ساعدتِ سعيد في كل المواقف. 🎉";
+            alert(msg);
+          }
+        }, 1200);
       }
-    }
 
-    function win() {
-      alert(
-        lang === "EN"
-          ? "✨ You helped Saeed stay safe online! \nNice job, security expert 😎"
-          : "✨ أحسنت! ساعدت سعيد يكون آمنًا على الإنترنت 😎"
-      );
-    }
+      option1Btn.addEventListener("click", () => handleAnswer(0));
+      option2Btn.addEventListener("click", () => handleAnswer(1));
 
-    function lose() {
-      alert(
-        lang === "EN"
-          ? "⚠️ Saeed is in danger! Try again and be even more careful."
-          : "⚠️ سعيد في خطر! حاول مرة ثانية وكن أكثر حذرًا."
-      );
-      location.reload();
-    }
-
-    // blink animation
-    setInterval(() => {
-      const eyeL = document.getElementById("eyeL");
-      const eyeR = document.getElementById("eyeR");
-      eyeL.style.transform = "scaleY(0.1)";
-      eyeR.style.transform = "scaleY(0.1)";
-      setTimeout(() => {
-        eyeL.style.transform = "scaleY(1)";
-        eyeR.style.transform = "scaleY(1)";
-      }, 120);
-    }, 3500);
+      updateHearts();
+      updateIntroLanguage();
+      updateScenario();
+    });
   </script>
 </body>
 </html>
+
