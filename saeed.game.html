@@ -5,6 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Saeed's Cyber Safety Game</title>
 <style>
+
+  /* --- MOBILE FIXES (iPhone etc.) --- */
+
+/* make scene a bit shorter so it fits on small screens */
+@media (max-width: 768px) {
+
+  main {
+    padding: 8px 0 10px;
+  }
+
+  #game-shell {
+    max-width: 100%;
+    border-radius: 0;
+  }
+
+  #scene {
+    height: 360px;      /* was min(70vh, 520px) with min-height:380, too tall */
+    min-height: 320px;
+  }
+
+  /* move Saeed slightly and make him smaller on phone */
+  #saeed-wrapper {
+    left: 12%;
+    bottom: 70px;
+    width: 130px;
+    height: 190px;
+  }
+
+  /* make sure phone fits inside the screen on the right */
+  #phone {
+    right: 4%;
+    bottom: 80px;
+    width: 55vw;        /* use % of screen width */
+    max-width: 260px;
+  }
+}
+
 /* FIX PHONE POSITION */
 #phone {
   position: absolute;
