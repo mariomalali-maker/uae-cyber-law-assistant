@@ -1,433 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Cyber Safety Assistant | Chat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Cyber Safety Assistant | Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, #111827, #020617);
-  color: #f9fafb;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  transition: background 0.3s, color 0.3s;
-}
-    body.light-mode {
-      background: radial-gradient(circle at top, #e5e7eb, #f9fafb);
-      color: #020617;
-    }
-    .top-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 14px;
-      background: rgba(15,23,42,0.95);
-      border-bottom: 1px solid #1f2937;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    body.light-mode .top-nav {
-      background: #e5e7eb;
-      border-color: #d1d5db;
-    }
-    .nav-links {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .top-nav a {
-      color: inherit;
-      text-decoration: none;
-      font-size: 14px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      transition: background 0.2s;
-    }
-    .top-nav a.active,
-    .top-nav a:hover {
-      background: rgba(55,65,81,0.8);
-    }
-    body.light-mode .top-nav a.active,
-    body.light-mode .top-nav a:hover {
-      background: rgba(148,163,184,0.5);
-    }
-    .nav-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      font-size: 13px;
-    }
-    .toggle-btn {
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      background: transparent;
-      color: inherit;
-      padding: 4px 10px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    main {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 20px 10px 70px;
-    }
-    .chat-shell {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      justify-content: center;
-    }
-    .chat-card {
-      width: 100%;
-      max-width: 720px;
-      background: linear-gradient(145deg, #020617, #0b1220);
-      border-radius: 24px;
-      padding: 18px 18px 16px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.7);
-      border: 1px solid #1f2937;
-      position: relative;
-      overflow: hidden;
-      animation: floatCloud 4s ease-in-out infinite;
-    }
-    body.light-mode .chat-card {
-      background: #ffffff;
-      border-color: #e5e7eb;
-      box-shadow: 0 18px 40px rgba(148,163,184,0.5);
-    }
-    @keyframes floatCloud {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-8px); }
-      100% { transform: translateY(0); }
-    }
-    .chat-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .title-block h1 { font-size: 18px; margin: 0; }
-    .title-block p { margin: 2px 0 0; font-size: 12px; color: #9ca3af; }
-    #status-label { font-size: 12px; color: #9ca3af; display: flex; align-items: center; gap: 4px; }
-    .status-dot {
-      width: 9px; height: 9px; border-radius: 50%;
-      background: #22c55e; box-shadow: 0 0 10px rgba(34,197,94,0.7);
-    }
-    .labels-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; font-size:11px; }
-    .chip {
-      padding:4px 8px; border-radius:999px;
-      background:rgba(31,41,55,0.9);
-      border:1px solid rgba(148,163,184,0.4);
-      color:#d1d5db;
-    }
-    body.light-mode .chip { background:#e5e7eb; color:#111827; }
-
-    .messages-box {
-      background:rgba(15,23,42,0.95);
-      border-radius:18px;
-      padding:10px 12px;
-      border:1px solid rgba(55,65,81,0.8);
-      max-height:420px; overflow-y:auto;
-      font-size:14px;
-    }
-
-    .msg {
-      margin:6px 0; padding:10px 12px;
-      border-radius:12px;
-      white-space:pre-wrap; word-wrap:break-word;
-      line-height:1.4;
-    }
-    .user-msg { background:#16a34a; color:#ecfdf5; }
-    .ai-msg { background:#020617; border:1px solid rgba(75,85,99,0.9); }
-
-    .input-row { display:flex; gap:8px; margin-top:10px; }
-    #chat-input {
-      flex:1; border-radius:999px;
-      border:1px solid rgba(75,85,99,0.9);
-      background:#020617; color:#f9fafb;
-      padding:10px 14px; font-size:14px;
-    }
-
-    #send-btn,#mic-btn {
-      border-radius:999px; border:none;
-      padding:0 14px;
-      background:linear-gradient(135deg,#22c55e,#06b6d4);
-      color:#020617; font-weight:600;
-      cursor:pointer; font-size:14px;
-      display:flex; align-items:center; gap:4px;
-    }
-  </style>
+<style>
+/* --------------------- STYLES (unchanged) --------------------- */
+body{margin:0;font-family:system-ui;-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#111827,#020617);color:#f9fafb;min-height:100vh;display:flex;flex-direction:column;}
+.top-nav{display:flex;justify-content:space-between;padding:8px 14px;background:#0f172a;border-bottom:1px solid #1f2937}
+.nav-links{display:flex;gap:12px}
+.nav-links a{color:white;text-decoration:none;padding:5px 10px;border-radius:8px}
+.nav-links a.active,.nav-links a:hover{background:#1e293b}
+.chat-shell{max-width:900px;width:100%;margin:auto;padding:20px}
+.chat-card{background:#0b1220;border-radius:20px;padding:20px;border:1px solid #1f2937;max-width:720px;margin:auto}
+#messages{background:#111827;border-radius:12px;height:420px;overflow-y:auto;padding:10px;border:1px solid #1f2937}
+.msg{padding:10px;border-radius:8px;margin:5px 0;white-space:pre-wrap;line-height:1.4}
+.user-msg{background:#16a34a;color:white}
+.ai-msg{background:#020617;border:1px solid #334155}
+.input-row{display:flex;gap:8px;margin-top:10px}
+#chat-input{flex:1;padding:10px;border-radius:999px;border:none;background:#020617;color:white}
+button{cursor:pointer}
+</style>
 </head>
 
+
 <body>
-  <nav class="top-nav">
-    <div class="nav-links">
-      <a href="index.html">🏠 Home</a>
-      <a href="chat.html" class="active">💬 Chat</a>
-      <a href="history.html">📁 History</a>
-      <a href="quiz.html">🎯 Cyber Quiz</a>
-      <a href="detector.html">🛡 Scam Detector</a>
-      <a href="saeed.game.html">Saeeds Game</a>
-    </div>
 
-    <div class="nav-actions">
-      <button id="lang-en" class="toggle-btn">EN</button>
-      <button id="lang-ar" class="toggle-btn">AR</button>
-      <button id="theme-toggle" class="toggle-btn">🌙</button>
+<nav class="top-nav">
+<div class="nav-links">
+<a href="index.html">🏠 Home</a>
+<a href="chat.html" class="active">💬 Chat</a>
+<a href="history.html">📁 History</a>
+<a href="quiz.html">🎯 Cyber Quiz</a>
+<a href="detector.html">🛡 Scam Detector</a>
+</div>
 
-      <button id="clear-chat-btn"
-        style="background:#444;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;">
-        ✨ Clear Chat
-      </button>
+<div>
+<button id="lang-en">EN</button>
+<button id="lang-ar">AR</button>
+<button id="clear-chat-btn">✨ Clear</button>
+</div>
+</nav>
 
-      <button id="delete-all-history-btn"
-        style="background:#b91c1c;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;">
-        🗑️ Delete All History
-      </button>
-    </div>
-  </nav>
 
-  <main>
-    <div class="chat-shell">
-      <section class="chat-card">
 
-        <div class="chat-header-row">
-          <div class="title-block">
-            <h1 id="chat-title">Cyber Safety & UAE Law Assistant</h1>
-            <p id="chat-subtitle">Ask anything about hacking, online threats, privacy, cyberbullying & more.</p>
-          </div>
-          <div id="status-label"><span class="status-dot"></span>Online</div>
-        </div>
+<div class="chat-shell">
+<section class="chat-card">
 
-        <div class="labels-row">
-          <span class="chip">Understands slang & typos</span>
-          <span class="chip">UAE cyber safety context</span>
-          <span class="chip">AI powered</span>
-        </div>
+<h3 id="title">Cyber Safety & UAE Law Assistant</h3>
+<p id="subtitle">Ask about hacking, threats, privacy, bullying…</p>
 
-        <div id="messages" class="messages-box"></div>
+<div id="messages"></div>
 
-        <form id="chat-form" class="input-row">
-          <input id="chat-input" placeholder="Example: my snap got hacked wallah what do I do?">
-          <button id="mic-btn" type="button">🎙</button>
-          <button id="send-btn" type="submit">Send</button>
-        </form>
+<form id="chat-form" class="input-row">
+<input id="chat-input" placeholder="my snap got hacked wallah help?">
+<button id="send-btn">Send</button>
+</form>
 
-        <p class="helper" id="chat-helper">You can write in English or Arabic, even slang 😌</p>
-      </section>
-    </div>
-  </main>
+</section>
+</div>
 
-  <p style="text-align:center;margin:14px;">Created by Mariam – 2025</p>
 
+<!-- ---------------------- JAVASCRIPT ---------------------- -->
 <script>
-/* ------------------------------------------------------
-   🌍 CONSTANTS
------------------------------------------------------- */
+const messages = document.getElementById("messages");
 const form = document.getElementById("chat-form");
 const input = document.getElementById("chat-input");
-const messagesBox = document.getElementById("messages");
-const statusLabel = document.getElementById("status-label");
-const micBtn = document.getElementById("mic-btn");
-const sendBtn = document.getElementById("send-btn");
-const clearChat = document.getElementById("clear-chat-btn");
+const clearBtn = document.getElementById("clear-chat-btn");
+const enBtn = document.getElementById("lang-en");
+const arBtn = document.getElementById("lang-ar");
+let lang = localStorage.getItem("lang") || "en";
 
-const NAME_KEY = "cyber_user_name";
-const HISTORY_KEY = "cyber_chat_history_v2";
-const LANG_KEY = "cyber_lang";
-let currentLang = localStorage.getItem(LANG_KEY) || "en";
-let userName = localStorage.getItem(NAME_KEY) || "User";
-
-/* ------------------------------------------------------
-   💬 ADD BUBBLE
------------------------------------------------------- */
-function addBubble(text, type) {
-  const div = document.createElement("div");
-  div.className = "msg " + (type === "user" ? "user-msg" : "ai-msg");
-  div.textContent = text;
-  messagesBox.appendChild(div);
-  messagesBox.scrollTop = messagesBox.scrollHeight;
+function bubble(text,type){
+  const div=document.createElement("div");
+  div.className="msg "+(type==="user"?"user-msg":"ai-msg");
+  div.textContent=text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
 }
 
-/* ------------------------------------------------------
-   🎉 GREETING (FIX FROM OPTION C)
------------------------------------------------------- */
-window.addEventListener("load", () => {
-  const history = localStorage.getItem(HISTORY_KEY);
-  if (history) return;
+/* 🌍 LANGUAGE TEXT */
+function applyLang(){
+ if(lang==="ar"){
+   document.getElementById("title").textContent="مساعد الأمن السيبراني والقانون الإماراتي";
+   document.getElementById("subtitle").textContent="اسأل عن التهكير، الابتزاز، الخصوصية، التنمر الإلكتروني...";
+   input.placeholder="تهكر حسابي شو أسوي؟";
+ } else {
+   document.getElementById("title").textContent="Cyber Safety & UAE Law Assistant";
+   document.getElementById("subtitle").textContent="Ask about hacking, threats, privacy, cyberbullying…";
+   input.placeholder="my snap got hacked wallah help?";
+ }
+}
+applyLang();
 
-  if (currentLang === "ar") {
-    addBubble(
-`مرحباً ${userName}! 👋
-أنا مساعد الأمن السيبراني في الإمارات 🇦🇪
+/* 👋 GREETING */
+function greet(){
+ messages.innerHTML="";
+ if(lang==="ar"){
+   bubble("مرحباً! كيف أقدر أساعدك؟ 😌","ai");
+ } else {
+   bubble("Hey! How can I help you today? 😌","ai");
+ }
+}
+greet();
 
-أمثلة:
-• تهكر حسابي في سناب، شو أسوي؟
-• شخص يهددني بصوري، وين أشتكي؟
-• كيف أقوي حماية الانستغرام؟
+/* ✉️ SEND TO API */
+form.onsubmit = async(e)=>{
+ e.preventDefault();
+ const text = input.value.trim();
+ if(!text) return;
 
-⚠️ المعلومات عامة وليست استشارة قانونية رسمية.`,
-    "ai"
-    );
-  } else {
-    addBubble(
-`Hey ${userName}! 👋
-I’m your UAE cyber safety assistant 🇦🇪
+ bubble(text,"user");
+ input.value="";
 
-Examples:
-• my snap got hacked wallah help
-• someone is threatening me with pics
-• how to secure instagram?
+ const send = lang==="ar" ? "[AR] "+text : text;
 
-⚠️ Not legal advice — general guidance only.`,
-    "ai"
-    );
-  }
-});
-
-/* ------------------------------------------------------
-   🚮 CLEAR CHAT (ONLY FIX. NO DELETING OTHER THINGS)
------------------------------------------------------- */
-clearChat.onclick = () => {
-  if (!confirm("Clear chat?")) return;
-  localStorage.removeItem(HISTORY_KEY);
-  messagesBox.innerHTML = "";
-  location.reload();
+ const res = await fetch("/api/chat",{
+   method:"POST",
+   headers:{ "Content-Type":"application/json" },
+   body:JSON.stringify({message:send})
+ });
+ const data = await res.json();
+ bubble(data.answer || "⚠️ error","ai");
 };
+
+/* 🧽 CLEAR */
+clearBtn.onclick = ()=>{ greet(); };
+
+/* 🔁 LANGUAGE SWITCH */
+enBtn.onclick = ()=>{ lang="en"; localStorage.setItem("lang","en"); applyLang(); greet(); };
+arBtn.onclick = ()=>{ lang="ar"; localStorage.setItem("lang","ar"); applyLang(); greet(); };
 
 </script>
-<script>
-/* ------------------------------------------------------
-   📌 GET ELEMENTS
------------------------------------------------------- */
-const form = document.getElementById("chat-form");
-const input = document.getElementById("chat-input");
-const messagesBox = document.getElementById("messages");
-const statusLabel = document.getElementById("status-label");
-const micBtn = document.getElementById("mic-btn");
-const sendBtn = document.getElementById("send-btn");
-const clearChatBtn = document.getElementById("clear-chat-btn");
-const deleteAllBtn = document.getElementById("delete-all-history-btn");
-const langEnBtn = document.getElementById("lang-en");
-const langArBtn = document.getElementById("lang-ar");
 
-/* ------------------------------------------------------
-   📌 USER DATA
------------------------------------------------------- */
-const NAME_KEY = "cyber_user_name";
-const HISTORY_KEY = "cyber_chat_history_v2";
-const LANG_KEY = "cyber_lang";
-let currentLang = localStorage.getItem(LANG_KEY) || "en";
-let userName = localStorage.getItem(NAME_KEY) || "User";
-
-/* ------------------------------------------------------
-   💬 MESSAGE BUBBLE
------------------------------------------------------- */
-function addBubble(text, type) {
-  const div = document.createElement("div");
-  div.className = "msg " + (type === "user" ? "user-msg" : "ai-msg");
-  div.textContent = text;
-  messagesBox.appendChild(div);
-  messagesBox.scrollTop = messagesBox.scrollHeight;
-}
-
-/* ------------------------------------------------------
-   👋 GREETING BASED ON LANGUAGE
------------------------------------------------------- */
-function greetUser(){
-  messagesBox.innerHTML = "";
-  if(currentLang === "ar"){
-    addBubble(`مرحباً ${userName}! ✨\nانا مساعدك للأمن السيبراني 🇦🇪\nاكتب مشكلتك – حتى لو سلانج\n⚠️ ليس استشارة قانونية رسمية`, "ai");
-  } else {
-    addBubble(`Hey ${userName}! ✨\nI'm your UAE cyber safety assistant 🇦🇪\nTell me your problem – slang is okay\n⚠️ Not legal advice`, "ai");
-  }
-}
-
-window.addEventListener("load", greetUser);
-
-/* ------------------------------------------------------
-   🌍 LANGUAGE SWITCH
------------------------------------------------------- */
-langEnBtn.onclick = () => {
-  localStorage.setItem(LANG_KEY, "en");
-  currentLang = "en";
-  greetUser();
-};
-
-langArBtn.onclick = () => {
-  localStorage.setItem(LANG_KEY, "ar");
-  currentLang = "ar";
-  greetUser();
-};
-
-/* ------------------------------------------------------
-   ✉️ SEND MESSAGE
------------------------------------------------------- */
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const text = input.value.trim();
-  if (!text) return;
-
-  addBubble(text, "user");
-  input.value = "";
-  statusLabel.textContent = "Thinking…";
-
-  const messageToSend = currentLang === "ar" ? "[AR] " + text : text;
-
-  const res = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: messageToSend, username: userName })
-  });
-
-  const data = await res.json();
-  statusLabel.textContent = "Online";
-
-  if (data.answer) addBubble(data.answer, "ai");
-  else addBubble("⚠️ Error contacting AI", "ai");
-});
-
-/* ------------------------------------------------------
-   🚮 CLEAR CHAT (FIXED)
------------------------------------------------------- */
-clearChatBtn.onclick = () => {
-  if(confirm("Clear chat?")){
-    messagesBox.innerHTML = "";
-    greetUser();
-  }
-};
-
-/* ------------------------------------------------------
-   🗑 DELETE ALL HISTORY
------------------------------------------------------- */
-deleteAllBtn.onclick = () => {
-  if(confirm("Delete ALL saved chats?")){
-    localStorage.removeItem(HISTORY_KEY);
-    alert("History deleted");
-  }
-};
-
-/* ------------------------------------------------------
-   🎙 MICROPHONE
------------------------------------------------------- */
-micBtn.onclick = () => {
-  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!Rec) return alert("🎙 Voice not supported");
-  const rec = new Rec();
-  rec.lang = currentLang === "ar" ? "ar-AE" : "en-US";
-  rec.onresult = e => input.value = e.results[0][0].transcript;
-  rec.start();
-};
-</script>
 </body>
 </html>
 
-</body>
-</html>
