@@ -8,129 +8,54 @@
 <style>
 body{
   background:#020617;
-  margin:0;font-family:Arial, sans-serif;
+  color:white;margin:0;
+  font-family:Arial, sans-serif;
   overflow:hidden;
-  color:white;
 }
-
-/* ====== TOP NAV ====== */
-nav{
-  background:#0f172a;
-  padding:12px 22px;
-  display:flex; gap:18px;
-  font-size:15px;
-}
-nav a{color:white;text-decoration:none;}
+nav{background:#0f172a;padding:12px 22px;display:flex;gap:18px;}
+nav a{color:white;text-decoration:none;font-size:15px;}
 nav a:hover{opacity:0.7;}
+.lang-btn{margin-left:auto;background:#22d3ee;padding:6px 12px;border-radius:8px;cursor:pointer;}
 
-.lang-btn{
-  margin-left:auto;
-  background:#22d3ee;
-  padding:6px 12px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-/* ====== MAIN LAYOUT ====== */
 #game-area{
-  width:100vw;
-  height:100vh;
-  background:url('https://i.imgur.com/j6b10h6.png') center/cover no-repeat; /* old bg look */
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
+  width:100vw;height:100vh;
+  background:#07111d url('https://i.imgur.com/j6b10h6.png') center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center;position:relative;
 }
 
-/* ===== SAEED ===== */
+/* Saeed */
 #saeed{
-  width:90px;
-  height:160px;
-  background:white;
-  border-radius:22px;
-  position:absolute;
-  left:20%;
-  bottom:20%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:0.4s;
-}
-#face{
-  width:42px;height:42px;
-  background:white;border-radius:50%;
-  border:3px solid #000;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-}
-.eye{width:8px;height:8px;background:black;border-radius:50%;margin:2px;}
-.mouth{width:14px;height:4px;background:black;border-radius:3px;}
-
-/* HEARTS */
-#hearts{position:absolute;top:16%;left:50%;transform:translateX(-50%);font-size:24px;}
-
-/* ===== PHONE ===== */
-#phone{
-  width:350px;
-  min-height:200px;
-  background:#0f172a;
-  border-radius:18px;
-  padding:16px;
-  position:absolute;
-  right:22%;
-  bottom:18%;
-}
-#msg{
-  background:rgba(255,255,255,0.08);
-  padding:14px;
-  border-radius:12px;
-  text-align:left;
-}
-.option-btn{
-  width:100%;
-  margin-top:10px;
-  padding:10px;
-  border-radius:8px;
-  border:none;
-  font-weight:bold;
-  cursor:pointer;
-}
-.correct{background:#22c55e;color:white;}
-.wrong{background:#dc2626;color:white;}
-
-/* ===== INTRO SCREEN ===== */
-#intro-screen{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,0.72);
-  backdrop-filter:blur(12px);
+  width:90px;height:160px;background:white;border-radius:22px;
+  position:absolute;left:18%;bottom:20%;
   display:flex;align-items:center;justify-content:center;
-  z-index:999;
 }
-.intro-card{
-  background:#0d1b2a;
-  border-radius:22px;
-  padding:38px;
-  width:420px;
-  text-align:center;
-  color:white;
-  display:flex;flex-direction:column;gap:14px;
+#face{width:42px;height:42px;background:white;border-radius:50%;border:3px solid #000;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.eye{width:8px;height:8px;background:black;border-radius:50%;margin:2px;}
+.mouth{width:14px;height:4px;background:black;border-radius:2px;}
+#hearts{position:absolute;top:70px;left:50%;transform:translateX(-50%);font-size:24px;}
+
+/* phone */
+#phone{
+  width:350px;background:#0f172a;border-radius:18px;
+  padding:16px;position:absolute;right:18%;bottom:18%;
 }
-#play-intro,#start-game{
-  padding:12px;
-  border-radius:10px;
-  font-weight:bold;
-  border:none;
-  cursor:pointer;
+#msg{background:rgba(255,255,255,0.08);padding:14px;border-radius:12px;min-height:80px;}
+.btn{width:100%;margin-top:8px;padding:10px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;}
+.correct{background:#22c55e;color:white;}
+.wrong{background:#ef4444;color:white;}
+
+/* INTRO */
+#intro-screen{
+  position:fixed;inset:0;background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;z-index:999;
 }
-#play-intro{background:#22c55e;color:white;}
-#start-game{background:#0ea5e9;color:white;opacity:0.4;cursor:not-allowed;}
-#lang-toggle{
-  background:#1e293b;
-  color:white;padding:6px;
-  border:none;border-radius:8px;
-  cursor:pointer;margin-top:6px;
-}
+.card{background:#112031;padding:36px;border-radius:18px;width:420px;text-align:center;}
+#play-intro,#start-game{width:100%;margin-top:12px;padding:12px;font-size:16px;border-radius:8px;border:none;}
+#play-intro{background:#22c55e;}
+#start-game{background:#0ea5e9;opacity:0.4;cursor:not-allowed;color:white;}
+#lang-toggle{background:#475569;color:white;border:none;padding:6px 12px;margin-top:10px;border-radius:8px;cursor:pointer;}
 </style>
 </head>
 
@@ -142,140 +67,126 @@ nav a:hover{opacity:0.7;}
   <a href="history.html">📄 History</a>
   <a href="quiz.html">🎯 Cyber Quiz</a>
   <a href="scam.html">⚠️ Scam Detector</a>
-  <a href="saeed.game.html" style="color:#22c55e;">🎮 Saeed's Game</a>
+  <span class="lang-btn" id="nav-lang">EN</span>
 </nav>
 
 <div id="game-area">
-
 <div id="hearts">❤️❤️❤️</div>
 
 <div id="saeed">
   <div id="face">
-    <div style="display:flex;gap:6px;">
-      <div class="eye"></div><div class="eye"></div>
-    </div>
+    <div style="display:flex;gap:6px;"><div class="eye"></div><div class="eye"></div></div>
     <div class="mouth"></div>
   </div>
 </div>
 
 <div id="phone">
   <div id="msg">---</div>
-  <button id="opt1" class="option-btn"></button>
-  <button id="opt2" class="option-btn"></button>
+  <button id="opt1" class="btn"></button>
+  <button id="opt2" class="btn"></button>
+</div>
 </div>
 
-</div>
-
-<!-- ===== INTRO ===== -->
+<!-- INTRO -->
 <div id="intro-screen">
-  <div class="intro-card">
-    <div id="intro-title">Meet Saeed 🧒🏻</div>
-    <div id="intro-desc">
-      He doesn’t know much about online safety yet.
-      Listen to the short intro, then help him stay safe from scams and bad messages.
-    </div>
-
+  <div class="card">
+    <h2 id="intro-title">Meet Saeed 🧒🏻</h2>
+    <p id="intro-desc">He doesn’t know much about online safety yet.<br>Listen to the intro first.</p>
     <button id="play-intro">▶️ Play introduction</button>
-    <button id="start-game" disabled>✔️ Yes, let's start the game</button>
-
-    <audio id="introAudio" src="intro-voice.mp3"></audio>
-
+    <button id="start-game" disabled>✔️ Start the game</button>
     <button id="lang-toggle">EN / AR</button>
+    <audio id="introAudio" src="intro-voice.mp3"></audio>
   </div>
 </div>
 
 <script>
-/* ===================== LANGUAGE ===================== */
+/* 🌍 LANGUAGE DATA */
 let lang="en";
-const text={
+const text = {
   en:{
-    title:"Meet Saeed 🧒🏻",
-    desc:"He doesn’t know much about online safety yet.\nListen to the short intro, then help him stay safe from scams and bad messages.",
+    introTitle:"Meet Saeed 🧒🏻",
+    introDesc:"He doesn’t know much about online safety yet.\nListen to the intro before starting.",
     play:"▶️ Play introduction",
-    start:" Yes, let's start the game"
+    start:"✔️ Start the game",
   },
   ar:{
-    title:"تعرف على سعيد 🧒🏻",
-    desc:"ما يعرف وايد عن الأمان الإلكتروني.\nاستمع للمقدمة القصيرة ثم ساعده يتفادى الاحتيال والرسائل الخطيرة.",
+    introTitle:"تعرف على سعيد 🧒🏻",
+    introDesc:"ما يعرف وايد عن الأمان الإلكتروني.\nاسمع المقدمة أول.",
     play:"▶️ تشغيل المقدمة",
-    start:"✔️ نعم، لنبدأ اللعبة"
+    start:"✔️ ابدأ اللعبة",
   }
 };
 
 function applyLang(){
-  document.getElementById("intro-title").innerText=text[lang].title;
-  document.getElementById("intro-desc").innerText=text[lang].desc;
+  document.getElementById("intro-title").innerText=text[lang].introTitle;
+  document.getElementById("intro-desc").innerText=text[lang].introDesc;
   document.getElementById("play-intro").innerText=text[lang].play;
   document.getElementById("start-game").innerText=text[lang].start;
+  document.getElementById("nav-lang").textContent=lang.toUpperCase();
 }
-
 document.getElementById("lang-toggle").onclick=()=>{
-  lang = (lang==="en") ? "ar" : "en";
+  lang = lang==="en"?"ar":"en";
   applyLang();
 };
 applyLang();
 
-/* ===================== INTRO LOGIC ===================== */
-const intro = document.getElementById("intro-screen");
-const audio = document.getElementById("introAudio");
-const startBtn= document.getElementById("start-game");
-
-document.getElementById("play-intro").onclick=()=>{
-  audio.play();
-};
+/* 🎧 INTRO AUDIO CONTROL */
+const audio=document.getElementById("introAudio");
+document.getElementById("play-intro").onclick=()=>{ audio.play(); };
 audio.onended=()=>{
-  startBtn.disabled=false;
-  startBtn.style.opacity=1;
-  startBtn.style.cursor="pointer";
+  let btn=document.getElementById("start-game");
+  btn.disabled=false;
+  btn.style.opacity=1;
+  btn.style.cursor="pointer";
 };
-startBtn.onclick=()=>{
-  if(startBtn.disabled)return;
-  intro.style.display="none";
+document.getElementById("start-game").onclick=()=>{
+  if(this.disabled)return;
+  document.getElementById("intro-screen").style.display="none";
 };
 
-/* ===================== GAME QUESTIONS ===================== */
-let q=0;
-const questions=[
-  {
-    m:"Hey, I found your account. Can you send a private picture?",
-    o1:"Block & report this account",
-    o2:"Send a picture",
-    correct:1
-  },
-  {
-    m:"Congrats! You won an iPhone 16 Pro. Send Emirates ID to claim!",
-    o1:"Send my Emirates ID",
-    o2:"Refuse & report as scam",
-    correct:2
-  },
-  {
-    m:"Someone sent you a suspicious link to reset your password.",
-    o1:"Click link",
-    o2:"Ignore & change password from official app",
-    correct:2
-  }
+/* 🎮 GAME QUESTIONS (10) */
+let i=0;
+let hearts=3;
+
+const Q = [
+{en:"Someone asks for a private picture?",ar:"شخص يطلب صورة خاصة؟",o1:"Block & report",o2:"Send photo",correct:1},
+{en:"You won a prize! Send Emirates ID.",ar:"ربحت جائزة! ارسل الهوية الإماراتية.",o1:"Ignore, report",o2:"Send ID",correct:1},
+{en:"Stranger sends link to reset Instagram.",ar:"رابط غريب لتغيير كلمة سر انستغرام.",o1:"Ignore & reset manually",o2:"Click link",correct:1},
+{en:"Friend sends 'OMG is this you?' link",ar:"صديق يرسل رابط 'شوف هذا انت؟'",o1:"Ask friend first",o2:"Click fast",correct:1},
+{en:"Unknown shop requests bank card pics",ar:"محل مجهول يطلب صورة بطاقتك البنكية",o1:"Report shop",o2:"Send photos",correct:1},
+{en:"Get password for free WiFi via app?",ar:"تطبيق يعطي كلمة مرور انترنت مجانا",o1:"Avoid, risky",o2:"Download",correct:1},
+{en:"Email from 'Apple' but bad domain",ar:"ايميل من 'ابل' لكن الدومين غريب",o1:"Mark phishing",o2:"Login there",correct:1},
+{en:"DM: Buy followers instantly!",ar:"رسالة: نقدر نزيد متابعينك فوراً!",o1:"Report spam",o2:"Give login",correct:1},
+{en:"Someone screenshotted your story",ar:"شخص صور الستوري عندك",o1:"Public story is ok",o2:"Send private pic",correct:1},
+{en:"Casino app asks for Emirates ID selfie",ar:"تطبيق قمار يطلب صورة الهوية",o1:"Deny & report",o2:"Send selfie",correct:1},
 ];
 
-function loadQ(){
-  document.getElementById("msg").innerText=questions[q].m;
-  document.getElementById("opt1").innerText=questions[q].o1;
-  document.getElementById("opt2").innerText=questions[q].o2;
+function load(){
+  if(i>=Q.length){
+    document.getElementById("msg").innerHTML = (lang==="en"?"🎉 You finished!":"🎉 خلصت اللعبة!");
+    document.getElementById("opt1").style.display="none";
+    document.getElementById("opt2").style.display="none";
+    return;
+  }
+  let q=Q[i];
+  document.getElementById("msg").innerText = lang==="en"?q.en:q.ar;
+  document.getElementById("opt1").innerText=q.o1;
+  document.getElementById("opt2").innerText=q.o2;
 }
-loadQ();
+load();
 
-document.getElementById("opt1").onclick=()=>choose(1);
-document.getElementById("opt2").onclick=()=>choose(2);
-
-function choose(x){
-  if(x===questions[q].correct){
+function pick(x){
+  if(x===Q[i].correct){
     document.getElementById("saeed").style.bottom="22%";
   }else{
-    document.getElementById("hearts").innerText="❤️❤️";
+    hearts--;
+    document.getElementById("hearts").innerText="❤️".repeat(hearts);
+    if(hearts<=0){ alert("Game Over"); location.reload(); }
   }
-  q++;
-  if(q<questions.length){loadQ();}
-  else{document.getElementById("msg").innerText="🎉 YOU FINISHED!"; }
+  i++; load();
 }
+document.getElementById("opt1").onclick=()=>pick(1);
+document.getElementById("opt2").onclick=()=>pick(2);
 </script>
 
 </body>
