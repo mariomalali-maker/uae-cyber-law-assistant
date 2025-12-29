@@ -299,6 +299,11 @@
       <button id="lang-ar" class="toggle-btn">AR</button>
       <button id="theme-toggle" class="toggle-btn">🌙</button>
       <button id="delete-all-history-btn" style="margin-top:10px; background:#b91c1c;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;">
+      <button id="clear-chat-btn" 
+style="margin-top:12px; background:#ef4444; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; width:100%; font-weight:600;">
+🧹 Clear Chat
+</button>
+
   🗑️ Delete All History
 </button>
 
@@ -568,7 +573,7 @@
       });
     }
     setupSpeech();
-/* ----------- 🔊 VOICE REPLY ONLY WHEN PRESSED ----------- */
+
 function speakAI(text) {
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = /[ء-ي]/.test(text) ? "ar-AE" : "en-US"; // auto detect language
@@ -577,7 +582,7 @@ function speakAI(text) {
   speechSynthesis.speak(utter);
 }
 
-/* 👇 upgrade addBubble so AI messages include a button */
+
 const originalAddBubble = addBubble;
 addBubble = function(text, type, save = true) {
   originalAddBubble(text, type, save);
@@ -595,6 +600,16 @@ addBubble = function(text, type, save = true) {
     messagesBox.lastChild.appendChild(speakBtn);
   }
 };
+   
+const clearChatBtn = document.getElementById("clear-chat-btn");
+
+clearChatBtn.addEventListener("click", () => {
+  if (confirm("Clear messages? This will NOT delete your saved history.")) {
+    messagesBox.innerHTML = "";
+    addBubble(`Chat cleared ✨\nHow can I help you now, ${userName}?`, "ai", false);
+  }
+});
+
 
   </script>
 </body>
