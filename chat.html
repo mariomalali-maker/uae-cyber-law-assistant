@@ -1,178 +1,568 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Cyber Safety Chat</title>
+  <meta charset="UTF-8">
+  <title>Cyber Safety Assistant | Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827, #020617);
+      color: #f9fafb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.light-mode {
+      background: radial-gradient(circle at top, #e5e7eb, #f9fafb);
+      color: #020617;
+    }
 
-<style>
-body{
-  margin:0;
-  font-family:system-ui,sans-serif;
-  background:#050816;
-  color:white;
-}
-nav{
-  display:flex;
-  gap:16px;
-  padding:14px 20px;
-  background:#0f1629;
-  border-bottom:1px solid rgba(255,255,255,.12);
-  overflow-x:auto;
-}
-nav a{
-  color:white;
-  text-decoration:none;
-  font-size:.9rem;
-  padding:6px 10px;
-  border-radius:8px;
-}
-nav a:hover{
-  background:#1f2937;
-}
-nav .active{
-  background:#22c55e;
-  color:#000;
-}
-
-#container{
-  max-width:780px;
-  margin:30px auto;
-  background:#0d1322;
-  padding:22px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.1);
-}
-
-.messages{
-  height:430px;
-  overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.msg{
-  max-width:78%;
-  padding:10px 14px;
-  border-radius:12px;
-  font-size:.95rem;
-  animation:pop .25s ease;
-  line-height:1.35;
-}
-@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.97);}to{opacity:1;transform:none;}}
-
-.user{background:#22c55e;color:black;margin-left:auto;}
-.bot{background:#111827;border:1px solid rgba(255,255,255,.15)}
-
-.input-box{
-  display:flex;
-  gap:8px;
-  padding:10px;
-  background:#0f172a;
-  border-radius:12px;
-  margin-top:14px;
-}
-.input-box input{
-  flex:1;
-  background:transparent;
-  border:none;
-  padding:10px;
-  color:white;
-  outline:none;
-}
-.input-box button{
-  border:none;
-  padding:10px 14px;
-  border-radius:10px;
-  cursor:pointer;
-}
-.send{background:#22c55e;color:black;}
-.mic,.speak{background:#1e293b;color:white;}
-
-</style>
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: rgba(15,23,42,0.95);
+      border-bottom: 1px solid #1f2937;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    body.light-mode .top-nav {
+      background: #e5e7eb;
+      border-color: #d1d5db;
+    }
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .top-nav a {
+      color: inherit;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      transition: background 0.2s;
+    }
+    .top-nav a.active,
+    .top-nav a:hover {
+      background: rgba(55,65,81,0.8);
+    }
+    body.light-mode .top-nav a.active,
+    body.light-mode .top-nav a:hover {
+      background: rgba(148,163,184,0.5);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+    }
+    .toggle-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: transparent;
+      color: inherit;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 10px 70px;
+    }
+    .chat-shell {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      justify-content: center;
+    }
+    .chat-card {
+      width: 100%;
+      max-width: 720px;
+      background: linear-gradient(145deg, #020617, #0b1220);
+      border-radius: 24px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+      border: 1px solid #1f2937;
+      position: relative;
+      overflow: hidden;
+      animation: floatCloud 4s ease-in-out infinite;
+    }
+    body.light-mode .chat-card {
+      background: #ffffff;
+      border-color: #e5e7eb;
+      box-shadow: 0 18px 40px rgba(148,163,184,0.5);
+    }
+    @keyframes floatCloud {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-8px); }
+      100% { transform: translateY(0); }
+    }
+    .chat-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .title-block h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+    .title-block p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    body.light-mode .title-block p {
+      color: #4b5563;
+    }
+    #status-label {
+      font-size: 12px;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    body.light-mode #status-label {
+      color: #4b5563;
+    }
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34,197,94,0.7);
+    }
+    .labels-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 11px;
+    }
+    .chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(31,41,55,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+      color: #d1d5db;
+    }
+    body.light-mode .chip {
+      background: #e5e7eb;
+      border-color: #cbd5f5;
+      color: #111827;
+    }
+    .messages-box {
+      background: rgba(15,23,42,0.95);
+      border-radius: 18px;
+      padding: 10px 12px;
+      border: 1px solid rgba(55,65,81,0.8);
+      max-height: 420px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    body.light-mode .messages-box {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+    }
+    .msg {
+      margin: 6px 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.4;
+    }
+    .user-msg {
+      background: #16a34a;
+      color: #ecfdf5;
+      align-self: flex-end;
+    }
+    .ai-msg {
+      background: #020617;
+      border: 1px solid rgba(75,85,99,0.9);
+      color: #e5e7eb;
+    }
+    body.light-mode .ai-msg {
+      background: #ffffff;
+      border-color: #d1d5db;
+      color: #111827;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    #chat-input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(75,85,99,0.9);
+      background: #020617;
+      color: #f9fafb;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+    #chat-input::placeholder {
+      color: #6b7280;
+    }
+    body.light-mode #chat-input {
+      background: #ffffff;
+      border-color: #d1d5db;
+      color: #111827;
+    }
+    body.light-mode #chat-input::placeholder {
+      color: #9ca3af;
+    }
+    #send-btn,
+    #mic-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 0 14px;
+      background: linear-gradient(135deg,#22c55e,#06b6d4);
+      color: #020617;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 0 18px rgba(34,197,94,0.4);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #send-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+    .helper {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+    body.light-mode .helper {
+      color: #4b5563;
+    }
+    .footer-sign {
+      font-family: "Brush Script MT", "Pacifico", cursive;
+      font-size: 16px;
+      color: #f97316;
+      opacity: 0.8;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .typing-msg {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #9ca3af;
+      animation: blink 1s infinite ease-in-out;
+    }
+    .dot:nth-child(2) { animation-delay: 0.15s; }
+    .dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes blink {
+      0%,100% { opacity: 0.2; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-2px); }
+    }
+    @media (max-width: 640px) {
+      main { padding: 10px 6px 60px; }
+      .chat-card { border-radius: 18px; }
+    }
+  </style>
 </head>
-
 <body>
+  <nav class="top-nav">
+    <div class="nav-links">
+      <a href="index.html">🏠 Home</a>
+      <a href="chat.html" class="active">💬 Chat</a>
+      <a href="history.html">📁 History</a>
+      <a href="quiz.html">🎯 Cyber Quiz</a>
+      <a href="detector.html">🛡 Scam Detector</a>
+      <a href="saeed.game.html">Saeeds Game</a>
+    </div>
+    <div class="nav-actions">
+      <button id="lang-en" class="toggle-btn">EN</button>
+      <button id="lang-ar" class="toggle-btn">AR</button>
+      <button id="theme-toggle" class="toggle-btn">🌙</button>
+    </div>
+  </nav>
 
-<nav>
-  <a href="index.html">🏠 Home</a>
-  <a class="active" href="chat.html">💬 Chat</a>
-  <a href="quiz.html">🧠 Cyber Quiz</a>
-  <a href="scam.html">🛑 Scam Detector</a>
-  <a href="settings.html">⚙️ Settings</a>
-  <a href="saeed.game.html">🎮 Saeed's Game</a>
+  <main>
+    <div class="chat-shell">
+      <section class="chat-card">
+        <div class="chat-header-row">
+          <div class="title-block">
+            <h1 id="chat-title">Cyber Safety & UAE Law Assistant</h1>
+            <p id="chat-subtitle">
+              Ask anything about hacking, online threats, privacy, social media, cyberbullying and more.
+            </p>
+          </div>
+          <div id="status-label">
+            <span class="status-dot"></span>
+            <span>Online</span>
+          </div>
+        </div>
 
-  <button id="en">EN</button><button id="ar">AR</button>
-</nav>
+        <div class="labels-row">
+          <span class="chip">Understands slang & typos</span>
+          <span class="chip">UAE cyber safety context</span>
+          <span class="chip">AI powered</span>
+        </div>
 
-<div id="container">
-  <h2>Cyber Safety & UAE Law Assistant</h2>
-  <p style="opacity:.7">Ask anything related to hacking, blackmail, privacy or UAE cyber laws.</p>
+        <div id="messages" class="messages-box"></div>
 
-  <div class="messages" id="messages"></div>
+        <form id="chat-form" class="input-row">
+          <input
+            id="chat-input"
+            type="text"
+            autocomplete="off"
+            placeholder="Example: my snap got hacked wallah what should I do?">
+          <button id="mic-btn" type="button">🎙</button>
+          <button id="send-btn" type="submit">Send</button>
+        </form>
 
-  <div class="input-box">
-    <input type="text" id="input" placeholder="Example: my insta got hacked wallah help" />
-    <button class="mic" id="mic">🎤</button>
-    <button class="speak" id="speak">🔊</button>
-    <button class="send" id="send">Send</button>
-  </div>
-</div>
+        <p class="helper" id="chat-helper">
+          You can write in English or Arabic, with or without slang. I’ll still try to understand you 😌
+        </p>
+      </section>
+    </div>
+  </main>
 
-<script>
-// LANGUAGE
-let lang = "en";
-document.getElementById("en").onclick = ()=> lang="en";
-document.getElementById("ar").onclick = ()=> lang="ar";
+  <p class="footer-sign">Created by Mariam – 2025</p>
 
-// ADD MESSAGE
-function add(text,type){
-  let d=document.createElement("div");
-  d.className="msg "+type;
-  d.textContent=text;
-  document.getElementById("messages").appendChild(d);
-  d.scrollIntoView({behavior:"smooth",block:"end"});
-}
+  <script>
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("chat-input");
+    const messagesBox = document.getElementById("messages");
+    const statusLabel = document.getElementById("status-label");
+    const sendBtn = document.getElementById("send-btn");
+    const micBtn = document.getElementById("mic-btn");
+    const themeToggle = document.getElementById("theme-toggle");
+    const langEnBtn = document.getElementById("lang-en");
+    const langArBtn = document.getElementById("lang-ar");
+    const chatTitle = document.getElementById("chat-title");
+    const chatSubtitle = document.getElementById("chat-subtitle");
+    const chatHelper = document.getElementById("chat-helper");
 
-// SEND
-async function send(){
-  const input=document.getElementById("input");
-  const t=input.value.trim();
-  if(!t)return;
-  add(t,"user");
-  input.value="";
+    const NAME_KEY = "cyber_user_name";
+    const HISTORY_KEY = "cyber_chat_history_v2";
+    const THEME_KEY = "cyber_theme";
+    const LANG_KEY = "cyber_lang";
 
-  const res = await fetch("/api/chat",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({message:t,language:lang})
-  });
-  const data = await res.json();
-  add(data.reply,"bot");
-}
-document.getElementById("send").onclick = send;
-document.getElementById("input").onkeydown = e=>{
-  if(e.key==="Enter") send();
-};
+    let userName = localStorage.getItem(NAME_KEY) || "User";
+    let currentLang = localStorage.getItem(LANG_KEY) || "en";
+    let recognition = null;
+    let recognizing = false;
 
-// 🎤 Voice Input
-document.getElementById("mic").onclick = ()=>{
-  if(!("webkitSpeechRecognition" in window)) return alert("not supported");
-  let rec=new webkitSpeechRecognition();
-  rec.lang=lang==="ar"?"ar":"en-US";
-  rec.start();
-  rec.onresult = e=> document.getElementById("input").value = e.results[0][0].transcript;
-};
+    // THEME
+    function applyTheme() {
+      const saved = localStorage.getItem(THEME_KEY) || "dark";
+      if (saved === "light") {
+        document.body.classList.add("light-mode");
+        themeToggle.textContent = "☀️";
+      } else {
+        document.body.classList.remove("light-mode");
+        themeToggle.textContent = "🌙";
+      }
+    }
+    themeToggle.addEventListener("click", () => {
+      const isLight = document.body.classList.toggle("light-mode");
+      localStorage.setItem(THEME_KEY, isLight ? "light" : "dark");
+      themeToggle.textContent = isLight ? "☀️" : "🌙";
+    });
+    applyTheme();
 
-// 🔊 Speak Reply
-document.getElementById("speak").onclick = ()=>{
-  let last=[...document.querySelectorAll(".bot")].pop();
-  if(!last)return;
-  let s=new SpeechSynthesisUtterance(last.textContent);
-  s.lang=lang==="ar"?"ar":"en-US";
-  speechSynthesis.speak(s);
-};
-</script>
+    // LANGUAGE
+    function applyLanguage() {
+      if (currentLang === "ar") {
+        chatTitle.textContent = "مساعد الأمن السيبراني والقانون الإلكتروني";
+        chatSubtitle.textContent = "اسأل عن التهكير، التهديدات، الخصوصية، التنمر الإلكتروني، الاحتيال وأكثر.";
+        chatHelper.textContent = "تقدر تكتب عربي أو إنجليزي، حتى لو في أخطاء أو سلانج. بحاول أفهمك وأساعدك 😌";
+        input.placeholder = "مثال: تهكر حسابي في سناب شات، شو أسوي؟";
+        langArBtn.style.background = "rgba(34,197,94,0.2)";
+        langEnBtn.style.background = "transparent";
+      } else {
+        chatTitle.textContent = "Cyber Safety & UAE Law Assistant";
+        chatSubtitle.textContent = "Ask anything about hacking, online threats, privacy, social media, cyberbullying and more.";
+        chatHelper.textContent = "You can write in English or Arabic, with or without slang. I’ll still try to understand you 😌";
+        input.placeholder = "Example: my snap got hacked wallah what should I do?";
+        langEnBtn.style.background = "rgba(34,197,94,0.2)";
+        langArBtn.style.background = "transparent";
+      }
+    }
+    langEnBtn.addEventListener("click", () => {
+      currentLang = "en";
+      localStorage.setItem(LANG_KEY, "en");
+      applyLanguage();
+    });
+    langArBtn.addEventListener("click", () => {
+      currentLang = "ar";
+      localStorage.setItem(LANG_KEY, "ar");
+      applyLanguage();
+    });
+    applyLanguage();
+
+    // HISTORY
+    function saveHistoryItem(text, type) {
+      let arr = [];
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        if (raw) arr = JSON.parse(raw) || [];
+      } catch {
+        arr = [];
+      }
+      arr.push({ text, type, ts: Date.now() });
+      if (arr.length > 50) arr = arr.slice(arr.length - 50);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
+    }
+
+    function addBubble(text, type, save = true) {
+      const div = document.createElement("div");
+      div.className = "msg " + (type === "user" ? "user-msg" : "ai-msg");
+      div.textContent = text;
+      messagesBox.appendChild(div);
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+      if (save) saveHistoryItem(text, type);
+    }
+
+    function addTyping() {
+      const div = document.createElement("div");
+      div.className = "msg ai-msg";
+      div.id = "typing";
+      div.innerHTML = '<span class="typing-msg"><span>Thinking</span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';
+      messagesBox.appendChild(div);
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+    }
+
+    function removeTyping() {
+      const el = document.getElementById("typing");
+      if (el) el.remove();
+    }
+
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        if (!raw) return;
+        const arr = JSON.parse(raw);
+        arr.forEach(item => addBubble(item.text, item.type, false));
+      } catch (e) {
+        console.error("History parse error", e);
+      }
+    }
+
+    window.addEventListener("load", () => {
+      loadHistory();
+      if (!localStorage.getItem(HISTORY_KEY)) {
+        addBubble(
+          `Hey ${userName}! I’m your cyber safety assistant.\nYou can talk to me normally, even with slang, mistakes, or mixed Arabic/English.\nExamples:\n- "my snap got hacked wallah help"\n- "حد يهددني بصوري شو أسوي؟"\n- "how to make my insta more secure"\nI’ll guide you with practical steps and UAE cyber safety context when needed.\n⚠️ This is general information only, not official legal advice.`,
+          "ai",
+          true
+        );
+      }
+    });
+
+    // CHAT
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      let messageToSend = text;
+      if (currentLang === "ar") {
+        messageToSend = "[USER PREFERS ARABIC ANSWERS] " + text;
+      }
+
+      addBubble(text, "user", true);
+      input.value = "";
+      sendBtn.disabled = true;
+      statusLabel.innerHTML = '<span class="status-dot"></span><span>Thinking…</span>';
+      addTyping();
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: messageToSend, username: userName })
+        });
+
+        const data = await res.json();
+        removeTyping();
+
+        if (data.answer) {
+          addBubble(data.answer, "ai", true);
+          statusLabel.innerHTML = '<span class="status-dot"></span><span>Online</span>';
+        } else if (data.error) {
+          addBubble("⚠️ AI error: " + data.error, "ai", true);
+          statusLabel.innerHTML =
+            '<span class="status-dot" style="background:#f97316; box-shadow:none;"></span><span>Error</span>';
+        } else {
+          addBubble("⚠️ Unexpected AI response.", "ai", true);
+          statusLabel.innerHTML =
+            '<span class="status-dot" style="background:#f97316; box-shadow:none;"></span><span>Error</span>';
+        }
+      } catch (err) {
+        console.error(err);
+        removeTyping();
+        addBubble("⚠️ Network error, please try again.", "ai", true);
+        statusLabel.innerHTML =
+          '<span class="status-dot" style="background:#f97316; box-shadow:none;"></span><span>Error</span>';
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+
+    // VOICE INPUT
+    function setupSpeech() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        micBtn.addEventListener("click", () => {
+          alert("Voice input is not supported in this browser. Try using Chrome.");
+        });
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = currentLang === "ar" ? "ar-AE" : "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        recognizing = true;
+        micBtn.textContent = "🎙…";
+      };
+      recognition.onend = () => {
+        recognizing = false;
+        micBtn.textContent = "🎙";
+      };
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        input.value = transcript;
+        input.focus();
+      };
+
+      micBtn.addEventListener("click", () => {
+        if (recognizing) {
+          recognition.stop();
+          return;
+        }
+        recognition.lang = currentLang === "ar" ? "ar-AE" : "en-US";
+        recognition.start();
+      });
+    }
+    setupSpeech();
+  </script>
 </body>
 </html>
