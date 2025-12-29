@@ -79,27 +79,44 @@
   </footer>
 
   <script>
-    // Save name + gender and go to chat
-    const loginForm = document.getElementById('login-form');
-    const guestBtn  = document.getElementById('guest-btn');
+  const loginForm = document.getElementById('login-form');
+  const guestBtn  = document.getElementById('guest-btn');
+  const nameInput = document.getElementById('name');
+  const genderSelect = document.getElementById('gender');
 
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name   = document.getElementById('name').value.trim() || 'Guest';
-      const gender = document.getElementById('gender').value || 'other';
+  // 🚫 Prevent Guest without name
+  guestBtn.addEventListener('click', () => {
+    const name = nameInput.value.trim();
+    if (!name) {
+      alert("⚠️ Please enter your name first!");
+      nameInput.focus();
+      return;
+    }
+    localStorage.setItem('cyber_user_name', name);
+    localStorage.setItem('cyber_user_gender', 'other');
+    window.location.href = 'chat.html';
+  });
 
-      localStorage.setItem('cyber_user_name', name);
-      localStorage.setItem('cyber_user_gender', gender);
+  // 🚫 Prevent Login without name & gender
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const gender = genderSelect.value;
 
-      window.location.href = 'chat.html';
-    });
+    if (!name) {
+      alert("⚠️ Name is required!");
+      nameInput.focus();
+      return;
+    }
+    if (!gender) {
+      alert("⚠️ Please select a gender!");
+      genderSelect.focus();
+      return;
+    }
 
-    guestBtn.addEventListener('click', () => {
-      const name = document.getElementById('name').value.trim() || 'Guest';
-      localStorage.setItem('cyber_user_name', name);
-      localStorage.setItem('cyber_user_gender', 'other');
-      window.location.href = 'chat.html';
-    });
-  </script>
-</body>
-</html>
+    localStorage.setItem('cyber_user_name', name);
+    localStorage.setItem('cyber_user_gender', gender);
+    window.location.href = 'chat.html';
+  });
+</script>
+
