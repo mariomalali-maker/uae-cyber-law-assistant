@@ -162,4 +162,6 @@ function drop(icons){
     document.body.appendChild(e);
     setTimeout(()=>e.remove(),3000);
   }
+  <script src="scripts/quiz.js?v=10000"></script>
+
 }
