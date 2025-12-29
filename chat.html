@@ -282,11 +282,11 @@
       main { padding: 10px 6px 60px; }
       .chat-card { border-radius: 18px; }
     }
-   
-<link rel="stylesheet" href="styles/style.css?v=7">
-<script defer src="scripts/chat.js?v=7"></script>
 
   </style>
+  <link rel="stylesheet" href="styles/style.css?v=7">
+<script defer src="scripts/chat.js?v=7"></script>
+
 </head>
 <body>
   <nav class="top-nav">
@@ -302,10 +302,14 @@
       <button id="lang-en" class="toggle-btn">EN</button>
       <button id="lang-ar" class="toggle-btn">AR</button>
       <button id="theme-toggle" class="toggle-btn">🌙</button>
-      <button id="delete-all-history-btn" style="margin-top:10px; background:#b91c1c;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;">
-     <button id="clear-chat" style="margin-top:10px; background:#444;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;width:100%;">
- Clear Chat
+     <button id="clear-chat" style="background:#444;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;">
+  ✨ Clear Chat
 </button>
+
+<button id="delete-all-history-btn" style="background:#b91c1c;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;">
+  🗑️ Delete All History
+</button>
+
 
 
   🗑️ Delete All History
@@ -370,6 +374,8 @@
     const chatTitle = document.getElementById("chat-title");
     const chatSubtitle = document.getElementById("chat-subtitle");
     const chatHelper = document.getElementById("chat-helper");
+    const clearChatBtn = document.getElementById("clear-chat");
+
 
     const NAME_KEY = "cyber_user_name";
     const HISTORY_KEY = "cyber_chat_history_v2";
@@ -476,6 +482,24 @@
         console.error("History parse error", e);
       }
     }
+    if (!localStorage.getItem(HISTORY_KEY)) {
+  if(currentLang === "ar"){
+    addBubble(`مرحبا ${userName}! أنا مساعدك للأمن السيبراني.
+تقدر تكلمني طبيعي حتى لو في سلانج أو أخطاء.
+- تهكر حسابي شو أسوي؟
+- واحد يهددني بصوري كيف أتصرف؟
+بعطيك خطوات واضحة وسياق قانوني إماراتي حسب الحاجة.
+⚠️ للتوضيح فقط وليس استشارة قانونية رسمية.`, "ai", true);
+  } else {
+    addBubble(`Hey ${userName}! I’m your cyber safety assistant.
+You can talk like normal, slang or mistakes is fine.
+- my snap got hacked wallah help
+- someone is threatening me with pics
+I’ll give steps and UAE law context if needed.
+⚠️ Not legal advice, just guidance.`, "ai", true);
+  }
+}
+
 
     window.addEventListener("load", () => {
       loadHistory();
@@ -613,6 +637,14 @@ clearChatBtn.addEventListener("click", () => {
     addBubble(`Chat cleared ✨\nHow can I help you now, ${userName}?`, "ai", false);
   }
 });
+    // 🧹 CLEAR CHAT BUTTON
+document.getElementById("clear-chat-btn")?.addEventListener("click", () => {
+  if (!confirm("Clear chat?")) return;
+  localStorage.removeItem(HISTORY_KEY);
+  messagesBox.innerHTML = "";
+  showGreeting(); // show greeting again after clearing
+});
+
 
   </script>
 </body>
