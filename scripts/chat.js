@@ -1,5 +1,6 @@
 // scripts/chat.js
 
+// ELEMENTS
 const form = document.getElementById("chat-form");
 const input = document.getElementById("chat-input");
 const messagesBox = document.getElementById("messages");
@@ -9,26 +10,41 @@ const newChatBtn = document.getElementById("new-chat-btn");
 const clearChatBtn = document.getElementById("clear-chat-btn");
 const speakBtn = document.getElementById("speak-btn");
 const micBtn = document.getElementById("mic-btn");
+const deleteAllBtn = document.getElementById("delete-all-history-btn"); // ← زر جديد لمسح كل شيء
 
+// USER INFO
 const userName = localStorage.getItem("cyber_user_name") || "User";
 const userGender = localStorage.getItem("cyber_user_gender") || "other";
 
 let lastAiText = "";
 let currentConversation = [];
 
-// Helpers
+// SPEECH OUTPUT 🔊
+function speak(text) {
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = /[ء-ي]/.test(text) ? "ar-AE" : "en-US";  // Arabic detection
+  utter.rate = 1;
+  utter.pitch = 1;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+// ADD MESSAGE
 function addBubble(text, type) {
   const div = document.createElement("div");
   div.className = type === "user" ? "msg user-msg" : "msg ai-msg";
   div.textContent = text;
 
   if (type === "ai") {
-    const readSpan = document.createElement("span");
-    readSpan.textContent = "  🔊 Read";
-    readSpan.className = "read-btn";
-    readSpan.addEventListener("click", () => speak(text));
+    // READ BUTTON
+    const readBtn = document.createElement("button");
+    readBtn.textContent = "🔊 Listen";
+    readBtn.className = "read-btn";
+    readBtn.onclick = () => speak(text);
+
     div.appendChild(document.createElement("br"));
-    div.appendChild(readSpan);
+    div.appendChild(readBtn);
+
     lastAiText = text;
   }
 
@@ -38,17 +54,7 @@ function addBubble(text, type) {
   currentConversation.push({ role: type, content: text, time: Date.now() });
 }
 
-function speak(text) {
-  if (!window.speechSynthesis) {
-    alert("Speech not supported on this browser.");
-    return;
-  }
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = /[ء-ي]/.test(text) ? "ar-SA" : "en-US";
-  speechSynthesis.cancel();
-  speechSynthesis.speak(utter);
-}
-
+// SAVE HISTORY
 function saveConversationToHistory() {
   if (!currentConversation.length) return;
   const history = JSON.parse(localStorage.getItem("cyber_history") || "[]");
@@ -56,26 +62,31 @@ function saveConversationToHistory() {
   localStorage.setItem("cyber_history", JSON.stringify(history));
 }
 
-// Greeting on load
+// GREETING
 function greetUser() {
-  const genderWord =
-    userGender === "female" ? "sister" :
-    userGender === "male"   ? "brother" :
-                              "friend";
+  const relation =
+    userGender === "female" ? "أختي 🌸" :
+    userGender === "male"   ? "أخوي 🤝" :
+                              "صاحبي 🤍";
 
-  const text = `Hi ${userName}! I’m your cyber safety assistant. You can ask things like:
-- "My Snapchat was hacked, what should I do?"
-- "Someone is threatening me with my photos, what are my options in the UAE?"
-- "How can I protect my data and avoid scams?"
+  const text = `مرحباً ${userName} ${relation}✨
+أنا مساعدك للأمن السيبراني في الإمارات 🇦🇪  
+اكتب مشكلتك أو سؤالك:
 
-I’ll give clear steps, mention UAE cybercrime laws when they apply, and add references to official UAE sources when possible. This is general information only, not official legal advice.`;
+🟢 أمثلة:
+- تهكر السناب شات، شو أسوي؟
+- حد يهددني بصوري، وين أشتكي؟
+- كيف أحمي حسابي من الاختراق؟
+
+⚠️ المعلومات عامة وليست استشارة قانونية رسمية.
+🎯 سأحاول إعطائك خطوات + قوانين إماراتية + روابط رسمية.`;
 
   addBubble(text, "ai");
 }
 
 greetUser();
 
-// Chat submit
+// SEND MESSAGE
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = input.value.trim();
@@ -84,81 +95,68 @@ form.addEventListener("submit", async (e) => {
   addBubble(text, "user");
   input.value = "";
   typingHint.style.display = "block";
-  statusLabel.textContent = "Thinking…";
+  statusLabel.textContent = "Thinking...";
 
   try {
-    const res = await fetch("/api/chat", {
+    const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: text,
         username: userName,
-        gender: userGender,
-        mode: "chat"
+        gender: userGender
       })
     });
 
-    const data = await res.json();
-
-    if (data.answer) {
-      addBubble(data.answer, "ai");
-      statusLabel.textContent = "Online";
-    } else if (data.error) {
-      addBubble("⚠️ AI error: " + data.error, "ai");
-      statusLabel.textContent = "Error";
-    } else {
-      addBubble("⚠️ Unexpected AI response.", "ai");
-      statusLabel.textContent = "Error";
-    }
-  } catch (err) {
-    console.error(err);
-    addBubble("⚠️ Network error, please try again.", "ai");
-    statusLabel.textContent = "Error";
-  } finally {
+    const data = await response.json();
     typingHint.style.display = "none";
+
+    if (data.answer) addBubble(data.answer, "ai");
+    else addBubble("⚠️ Error: " + data.error, "ai");
+
+    statusLabel.textContent = "Online";
+  } catch {
+    typingHint.style.display = "none";
+    addBubble("⚠️ Network error", "ai");
   }
 });
 
-// New chat: save old, clear current
-newChatBtn.addEventListener("click", () => {
+// NEW CHAT
+newChatBtn.onclick = () => {
   if (currentConversation.length) saveConversationToHistory();
   currentConversation = [];
   messagesBox.innerHTML = "";
   greetUser();
-});
+};
 
-// Clear chat: no saving
-clearChatBtn.addEventListener("click", () => {
-  if (confirm("Clear this conversation? It will not be saved to history.")) {
-    currentConversation = [];
-    messagesBox.innerHTML = "";
-    greetUser();
-  }
-});
+// CLEAR CURRENT CHAT
+clearChatBtn.onclick = () => {
+  if (!confirm("Clear chat without saving?")) return;
+  currentConversation = [];
+  messagesBox.innerHTML = "";
+  greetUser();
+};
 
-// Speak last answer
-speakBtn.addEventListener("click", () => {
-  if (!lastAiText) {
-    alert("No answer yet to read.");
-    return;
-  }
+// DELETE ALL HISTORY 🗑️
+deleteAllBtn.onclick = () => {
+  if (!confirm("⚠️ Delete all chat history? Not reversible!")) return;
+  localStorage.removeItem("cyber_history");
+  alert("History deleted successfully ✨");
+};
+
+// READ LAST ANSWER
+speakBtn.onclick = () => {
+  if (!lastAiText) return alert("No AI reply to read yet!");
   speak(lastAiText);
-});
+};
 
-// Simple speech-to-text for input (optional)
-micBtn.addEventListener("click", () => {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    alert("Voice input not supported in this browser.");
-    return;
-  }
-  const rec = new SpeechRecognition();
-  rec.lang = "en-US";
-  rec.interimResults = false;
-  rec.maxAlternatives = 1;
-  rec.onresult = (ev) => {
-    const text = ev.results[0][0].transcript;
-    input.value = text;
-  };
+// MIC SPEECH TO TEXT
+micBtn.onclick = () => {
+  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Rec) return alert("🎙 Browser not supported for voice input");
+
+  const rec = new Rec();
+  rec.lang = /[ء-ي]/.test(input.placeholder) ? "ar-AE" : "en-US";
+  rec.onresult = e => input.value = e.results[0][0].transcript;
   rec.start();
-});
+};
