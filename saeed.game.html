@@ -163,7 +163,7 @@ background-image: repeating-linear-gradient(to right,rgba(248,250,252,0.9),rgba(
 opacity: .7;
 }
 
-/* SAEED CHARACTER (SVG) */
+/* SAEED CHARACTER */
 #saeed-wrapper {
 position: absolute;
 bottom: 82px;
@@ -180,9 +180,7 @@ z-index: 3;
 50% { transform: translateY(-6px); }
 }
 
-#saeed svg { width: 100%; height: 100%; }
 .eye { animation: blink 4s infinite; }
-
 @keyframes blink {
 0%,92%,100% { transform: scaleY(1); }
 95% { transform: scaleY(0.15); }
@@ -191,10 +189,10 @@ z-index: 3;
 .mouth-happy { transform: translateY(0); }
 .mouth-worried { transform: translateY(2px); }
 
-/* PHONE */
 .choice-safe { background: #22c55e; color: #022c22; }
 .choice-risk { background: #fee2e2; color: #7f1d1d; }
 
+/* OVERLAYS */
 .overlay {
 position:absolute;
 inset:0;
@@ -204,7 +202,6 @@ align-items:center;
 justify-content:center;
 z-index:6;
 }
-
 .panel {
 width:min(420px,92vw);
 background:#020617;
@@ -212,6 +209,10 @@ border-radius:20px;
 padding:18px;
 text-align:center;
 }
+
+/* ➕ FIXED: PHONE SHOW CLASS */
+#phone { display:none; }
+#phone.show { display:block; }
 </style>
 </head>
 
@@ -227,6 +228,18 @@ text-align:center;
 
 <main>
 <div id="game-shell">
+
+<!-- 🟩🟩🟩 INTRO ADDED HERE -->
+<div class="overlay" id="intro-overlay">
+<div class="panel">
+<h2>🎧 Welcome to Saeed's Story</h2>
+<p>Press Play to listen before starting the game.</p>
+<audio id="intro-audio" src="intro-voice.mp3"></audio>
+<button id="intro-btn">▶️ Play Audio</button>
+<p id="intro-status" style="margin-top:10px; display:none;">🎙️ Playing now... listen carefully</p>
+</div>
+</div>
+<!-- 🟩 END INTRO -->
 
 <div class="hud">
 <div class="hearts" id="hearts">❤️❤️❤️</div>
@@ -249,7 +262,6 @@ text-align:center;
 <div class="road"><div class="lane"></div></div>
 
 <div id="saeed-wrapper">
-<div id="saeed">
 <svg viewBox="0 0 120 220">
 <ellipse cx="60" cy="208" rx="26" ry="7" fill="#020617" opacity="0.7"></ellipse>
 <rect x="40" y="94" width="40" height="90" rx="18" fill="#f9fafb"></rect>
@@ -267,10 +279,8 @@ text-align:center;
 <circle class="eye" cx="70" cy="66" r="3" fill="#020617"></circle>
 <path d="M44 60 Q50 58 56 60" stroke="#020617"></path>
 <path d="M64 60 Q70 58 76 60" stroke="#020617"></path>
-<path id="mouth" class="mouth mouth-happy" d="M50 76 Q60 82 70 76" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
-<rect x="78" y="122" width="10" height="18" rx="2" fill="#0f172a"></rect>
+<path id="mouth" d="M50 76 Q60 82 70 76" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
 </svg>
-</div>
 </div>
 
 <div id="phone">
@@ -282,27 +292,22 @@ text-align:center;
 </div>
 <span style="font-size:0.7rem;">online</span>
 </div>
-
 <div class="phone-screen">
 <div class="msg-bubble msg-in" id="phone-msg"> ... </div>
 </div>
-
 <div class="choice-row">
 <button class="choice-btn choice-safe" id="btn-safe"></button>
 <button class="choice-btn choice-risk" id="btn-risk"></button>
 </div>
-
 <div class="phone-tip" id="phone-tip"></div>
 </div>
 </div>
 </section>
 
-
-<!-- LANGUAGE OVERLAY -->
-<div class="overlay" id="lang-overlay">
+<!-- LANGUAGE AFTER INTRO -->
+<div class="overlay" id="lang-overlay" style="display:none;">
 <div class="panel">
 <h2>Choose language</h2>
-<p>Select how you want to help Saeed stay safe online.</p>
 <div class="lang-row">
 <button class="primary" id="lang-en">English</button>
 <button class="ghost" id="lang-ar">العربية</button>
@@ -318,45 +323,108 @@ text-align:center;
 </main>
 
 <script>
-/* GAME DATA */
+/* 🎧 INTRO LOGIC */
+const introOverlay = document.getElementById("intro-overlay");
+const introAudio = document.getElementById("intro-audio");
+const introBtn = document.getElementById("intro-btn");
+const introStatus = document.getElementById("intro-status");
+introBtn.onclick = ()=>{
+introBtn.style.display="none";
+introStatus.style.display="block";
+introAudio.play();
+introAudio.onended = ()=>{
+introOverlay.style.display="none";
+document.getElementById("lang-overlay").style.display="flex";
+};
+};
+
+/* GAME DATA — ORIGINAL + 5 NEW */
 const scenarios = [
+/* ---------- OLD 3 ---------- */
 {
 type:"dm", icon:"📱",
 title:{en:"Instagram DM",ar:"رسالة خاصة"},
 msg:{en:"Hey, I found your account. Can you send me a private picture? 😉",ar:"هاي، شفت حسابك. تقدرين ترسلين لي صورة خاصة؟ 😉"},
 safe:{en:"Block & report this account",ar:"حظر و إبلاغ عن الحساب"},
 risky:{en:"Send them a photo",ar:"أرسل لهم صورة"},
-tipBad:{en:"Never send personal photos to strangers. Block & report instead.",ar:"لا ترسل صور شخصية للغرباء. الأفضل الحظر و الإبلاغ."},
+tipBad:{en:"Never send personal photos to strangers. Block & report instead.",ar:"لا ترسل صور شخصية للغرباء."},
 levelLabel:{en:"Level 1 · DMs",ar:"المستوى ١ · الرسائل الخاصة"}
 },
-
 {
 type:"email", icon:"✉️",
 title:{en:"Suspicious Email",ar:"إيميل مشبوه"},
-msg:{en:"URGENT: Your bank account is frozen! Click this link now to unlock it.",ar:"مهم: تم تجميد حسابك البنكي! اضغط على هذا الرابط فوراً لفك التجميد."},
-safe:{en:"Ignore & check using the official bank app",ar:"تجاهل وافتح تطبيق البنك الرسمي فقط"},
-risky:{en:"Click the link in the email",ar:"اضغط على الرابط الموجود في الإيميل"},
-tipBad:{en:"Banks do not ask you to click random links by email. Use the official app or call the bank.",ar:"البنوك ما تطلب منك تضغط روابط غريبة من الإيميل. استخدم التطبيق الرسمي أو اتصل بالبنك."},
+msg:{en:"URGENT: Your bank account is frozen! Click this link now to unlock it.",ar:"مهم: تم تجميد حسابك البنكي!"},
+safe:{en:"Ignore & check using the official bank app",ar:"تجاهل وادخل تطبيق البنك"},
+risky:{en:"Click the link",ar:"اضغط الرابط"},
+tipBad:{en:"Never open banking links from emails.",ar:"لا تفتح روابط بنكية من الإيميل."},
 levelLabel:{en:"Level 2 · Emails",ar:"المستوى ٢ · الإيميلات"}
 },
-
 {
 type:"game", icon:"🎮",
 title:{en:"Game Chat",ar:"شات اللعبة"},
-msg:{en:"Which school do you go to and which city in the UAE do you live in?",ar:"أي مدرسة تدرس فيها؟ وفي أي مدينة في الإمارات ساكن؟"},
-safe:{en:"Keep it private and don’t answer",ar:"خلك خاص ولا تجاوب"},
-risky:{en:"Tell them your school and city",ar:"قل لهم اسم المدرسة والمدينة"},
-tipBad:{en:"Never share your school, city, or age with strangers online.",ar:"لا تشارك اسم مدرستك أو مدينتك أو عمرك مع غرباء أونلاين."},
+msg:{en:"Which school do you go to? And where do you live?",ar:"في أي مدرسة تدرس؟ وأين تسكن؟"},
+safe:{en:"Don’t answer",ar:"لا تجاوب"},
+risky:{en:"Tell them everything",ar:"أخبرهم"},
+tipBad:{en:"Never share your school or location.",ar:"لا تشارك مدرستك أو موقعك."},
 levelLabel:{en:"Level 3 · Game Chats",ar:"المستوى ٣ · شات الألعاب"}
+},
+
+/* ---------- NEW 5 ---------- */
+{
+type:"wifi", icon:"📶",
+title:{en:"Public WiFi",ar:"واي فاي عام"},
+msg:{en:"Free airport WiFi asks you to log in with Instagram. Continue?",ar:"واي فاي مجاني يطلب تسجيل دخول بحساب انستغرام؟"},
+safe:{en:"Use mobile data instead",ar:"استخدم بيانات الهاتف"},
+risky:{en:"Login with Instagram",ar:"تسجيل الدخول بانستغرام"},
+tipBad:{en:"Public WiFi that asks for login is dangerous.",ar:"الواي فاي العام خطير لو طلب تسجيل دخول."},
+levelLabel:{en:"Level 4 · Public WiFi",ar:"المستوى ٤ · واي فاي عام"}
+},
+
+{
+type:"file", icon:"📁",
+title:{en:"Downloaded File",ar:"ملف تحميل"},
+msg:{en:"You won a prize! Download file to claim!",ar:"ربحت جائزة! حمل الملف الآن!"},
+safe:{en:"Delete it immediately",ar:"احذف فوراً"},
+risky:{en:"Download the file",ar:"حمل الملف"},
+tipBad:{en:"Unknown downloads can install malware.",ar:"التحميلات المجهولة قد تنشر فايروسات."},
+levelLabel:{en:"Level 5 · Downloads",ar:"المستوى ٥ · تحميلات"}
+},
+
+{
+type:"voice", icon:"🎤",
+title:{en:"Voice Message",ar:"رسالة صوتية"},
+msg:{en:"Click here to hear a message from your bank.",ar:"اضغط لسماع رسالة من البنك"},
+safe:{en:"Contact bank using official app",ar:"اتصل بالبنك عبر التطبيق"},
+risky:{en:"Click audio link",ar:"اضغط الرابط"},
+tipBad:{en:"Banks never send links in DMs.",ar:"البنوك ما ترسل روابط برسائل خاصة."},
+levelLabel:{en:"Level 6 · Audio Scam",ar:"المستوى ٦ · احتيال صوتي"}
+},
+
+{
+type:"friend", icon:"👤",
+title:{en:"Friend Request",ar:"طلب صداقة"},
+msg:{en:"This person says they know you. They ask for your number.",ar:"يقول يعرفك ويطلب رقمك."},
+safe:{en:"Ask a parent / block them",ar:"اطلب مساعدة أو احظر"},
+risky:{en:"Give the number",ar:"اعطي الرقم"},
+tipBad:{en:"Never share phone numbers online.",ar:"لا تشارك رقمك أبداً."},
+levelLabel:{en:"Level 7 · Safety",ar:"المستوى ٧ · الأمان"}
+},
+
+{
+type:"link", icon:"🔗",
+title:{en:"Random Link",ar:"رابط غريب"},
+msg:{en:"Your friend: click this link to see funny video 🤣",ar:"صديقك: شوف هذا الرابط 🤣"},
+safe:{en:"Ask them if they really sent it",ar:"اسألهم أول"},
+risky:{en:"Click it immediately",ar:"اضغط فوراً"},
+tipBad:{en:"Accounts can be hacked and send malware links.",ar:"يمكن يكون حسابه مخترق."},
+levelLabel:{en:"Level 8 · Links",ar:"المستوى ٨ · الروابط"}
 }
 ];
-
 
 /* GAME LOGIC */
 let currentScenarioIndex = 0;
 let hearts = 3;
 let currentLang = "en";
-let gameActive = false;
 
 const heartsEl = document.getElementById("hearts");
 const levelLabelEl = document.getElementById("level-label");
@@ -385,23 +453,22 @@ levelLabelEl.textContent=sc.levelLabel[currentLang];
 setMouthHappy();
 }
 
-function showPhone(){ phoneEl.classList.add("show"); }
-
 function startGame(){
-gameActive=true;
 hearts=3;
 currentScenarioIndex=0;
 updateHearts();
 loadScenario(0);
-showPhone();
+phoneEl.classList.add("show");
 }
 
 /* END / GAME OVER */
 function handleWin(){
-alert("You win!");
+document.getElementById("end-overlay").style.display="flex";
+document.getElementById("end-panel").innerHTML = `<h2>${currentLang==="en"?"🎉 You kept Saeed safe!":"🎉 حميت سعيد!"}</h2><button onclick="location.reload()">Restart</button>`;
 }
 function handleGameOver(){
-alert("Game Over");
+document.getElementById("end-overlay").style.display="flex";
+document.getElementById("end-panel").innerHTML = `<h2>${currentLang==="en"?"💔 Saeed is unsafe":"💔 سعيد في خطر"}</h2><button onclick="location.reload()">Try Again</button>`;
 }
 
 function handleChoice(isSafe){
@@ -423,8 +490,16 @@ if(hearts <= 0){ handleGameOver(); }
 btnSafe.onclick=()=>handleChoice(true);
 btnRisk.onclick=()=>handleChoice(false);
 
-document.getElementById("lang-en").onclick=()=>{currentLang="en";document.getElementById("lang-overlay").style.display="none";startGame();};
-document.getElementById("lang-ar").onclick=()=>{currentLang="ar";document.getElementById("lang-overlay").style.display="none";startGame();};
+document.getElementById("lang-en").onclick=()=>{
+currentLang="en";
+document.getElementById("lang-overlay").style.display="none";
+startGame();
+};
+document.getElementById("lang-ar").onclick=()=>{
+currentLang="ar";
+document.getElementById("lang-overlay").style.display="none";
+startGame();
+};
 </script>
 
 </body>
