@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Saeed's Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #020617;
+      --phone-bg: #020617;
+      --card: #020617;
+      --accent-green: #16a34a;
+      --accent-red: #b91c1c;
+      --border-subtle: #1e293b;
+      --text-muted: #9ca3af;
+      --skin: #fde7c6;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: #020617;
+      color: #f9fafb;
+      overflow: hidden;
+    }
+
+    .page-body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #111827, #020617);
+      color: #f9fafb;
+    }
+
+    /* ---------- NAV ---------- */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #1e293b;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .top-nav a {
+      color: #e5e7eb;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+
+    .top-nav a.brand {
+      font-weight: 700;
+      margin-right: 10px;
+    }
+
+    .top-nav a.active {
+      background: #16a34a;
+      color: white;
+    }
+
+    .top-nav a:hover {
+      background: rgba(148, 163, 184, 0.15);
+    }
+
+    /* ---------- GAME SHELL ---------- */
+    .game-shell-wrapper {
+      width: 100vw;
+      height: calc(100vh - 56px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 12px;
+    }
+
+    .game-shell {
+      width: 900px;
+      height: 520px;
+      border-radius: 24px;
+      background: radial-gradient(circle at top, #0b1220, #020617);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+      position: relative;
+      overflow: hidden;
+      padding: 16px;
+      transition: filter 0.3s ease;
+    }
+
+    .game-shell.blurred {
+      filter: blur(6px);
+      pointer-events: none;
+    }
+
+    .game-area {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #020617;
+    }
+
+    /* ---------- BACKGROUND ---------- */
+    .game-bg-sky {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 60px;
+      height: 200px;
+      background: linear-gradient(#020617, #020617);
+    }
+
+    .building {
+      position: absolute;
+      bottom: 210px;
+      width: 70px;
+      height: 140px;
+      background: #111827;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    }
+    .b1 { left: 200px; }
+    .b2 { left: 360px; }
+    .b3 { left: 520px; }
+
+    .sidewalk {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 210px;
+      height: 30px;
+      background: #020617;
+    }
+
+    .tree {
+      position: absolute;
+      bottom: 210px;
+      width: 30px;
+      height: 80px;
+    }
+    .tree-trunk {
+      width: 8px;
+      height: 26px;
+      margin: 0 auto;
+      background: #6b3f1f;
+      border-radius: 4px;
+    }
+    .tree-top {
+      width: 34px;
+      height: 34px;
+      background: #16a34a;
+      border-radius: 999px;
+      margin: -6px auto 0;
+      box-shadow: 0 0 10px rgba(22, 163, 74, 0.6);
+    }
+    .t1 { left: 120px; }
+    .t2 { left: 310px; }
+    .t3 { left: 500px; }
+
+    .road {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 90px;
+      height: 120px;
+      background: linear-gradient(#020617, #020617 40%, #020617 41%, #020617);
+    }
+
+    .road-line {
+      position: absolute;
+      left: 60px;
+      right: 60px;
+      top: 55px;
+      height: 4px;
+      background: repeating-linear-gradient(
+        to right,
+        #e5e7eb 0 40px,
+        transparent 40px 70px
+      );
+    }
+
+    /* ---------- HUD ---------- */
+    .hearts {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      font-size: 22px;
+      z-index: 5;
+    }
+
+    .level-label {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: #065f46;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      z-index: 5;
+    }
+
+    .language-toggle {
+      position: absolute;
+      top: 12px;
+      right: 120px;
+      background: #1f2937;
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 12px;
+      z-index: 7;
+      user-select: none;
+    }
+
+    /* ---------- SAEED (round cute) ---------- */
+    #saeed {
+      position: absolute;
+      left: 180px;
+      bottom: 110px;
+      width: 90px;
+      height: 190px;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      z-index: 4;
+      animation: saeed-bob 2.4s ease-in-out infinite;
+    }
+
+    @keyframes saeed-bob {
+      0%,100% { transform: translateX(-3px); }
+      50%     { transform: translateX(3px); }
+    }
+
+    .head {
+      width: 80px;
+      height: 82px;
+      border-radius: 26px;
+      background: var(--skin);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      margin-bottom: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ghutra {
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      top: -10px;
+      height: 32px;
+      background: #f9fafb;
+      border-radius: 28px 28px 16px 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+    }
+
+    .igal {
+      position: absolute;
+      left: 7px;
+      right: 7px;
+      top: 2px;
+      height: 10px;
+      border-radius: 999px;
+      border: 3px solid #020617;
+    }
+
+    .face-inner {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 20px;
+      bottom: 10px;
+    }
+
+    .eyes {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 4px;
+    }
+
+    .eye {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #020617;
+      transform-origin: center;
+      transition: transform 0.2s ease;
+    }
+
+    .mouth {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 6px;
+      height: 6px;
+      border-radius: 0 0 999px 999px;
+      background: #111827;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .body {
+      width: 46px;
+      height: 90px;
+      border-radius: 22px;
+      background: #f9fafb;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+      position: relative;
+    }
+
+    .body::before {
+      content:'';
+      position:absolute;
+      left:-10px; right:-10px; top:24px;
+      height:18px;
+      border-radius: 999px;
+      border-top:2px solid #e5e7eb;
+      opacity:0.8;
+    }
+
+    .feet {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .foot {
+      width: 26px;
+      height: 10px;
+      border-radius: 999px;
+      background: #020617;
+      position: relative;
+    }
+
+    .foot::after {
+      content:'';
+      position:absolute;
+      left:4px; right:4px; top:3px; bottom:1px;
+      border-radius:999px;
+      background:#f1f5f9;
+    }
+
+    /* ---------- PHONE ---------- */
+    .phone {
+      position: absolute;
+      right: 150px;
+      bottom: 95px;
+      width: 270px;
+      background: var(--phone-bg);
+      border-radius: 26px;
+      padding: 10px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--border-subtle);
+      z-index: 6;
+    }
+
+    .phone-inner {
+      border-radius: 22px;
+      background: var(--phone-bg);
+      padding: 10px;
+      border: 1px solid #1f2937;
+    }
+
+    .app-header {
+      font-size: 13px;
+      background: var(--card);
+      padding: 6px 10px;
+      border-radius: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #1f2937;
+    }
+
+    .app-header-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .app-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      background: radial-gradient(circle at 30% 30%, #22d3ee, #4f46e5);
+    }
+
+    .app-name {
+      font-weight: 600;
+    }
+
+    .app-status {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .question-box {
+      font-size: 13px;
+      padding: 10px 10px 12px;
+      background: var(--card);
+      border-radius: 16px;
+      min-height: 60px;
+      border: 1px solid #1f2937;
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      margin-top: 6px;
+      padding: 9px;
+      border-radius: 14px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      position: relative;
+      z-index: 10;
+      pointer-events: auto;
+      user-select: none;
+    }
+
+    .btn.correct {
+      background: var(--accent-green);
+      color: #f9fafb;
+    }
+
+    .btn.wrong {
+      background: #f97373;
+      color: #111827;
+    }
+
+    .btn:hover {
+      filter: brightness(1.07);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    /* ---------- INTRO OVERLAY ---------- */
+    #introScreen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      pointer-events: auto;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.88), #020617);
+    }
+
+    #introCard {
+      max-width: 420px;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 24px;
+      padding: 22px 22px 18px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
+
+    #introSaeed {
+      width: 110px;
+      height: 180px;
+      background: #f9fafb;
+      border-radius: 26px;
+      margin: 0 auto 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 14px;
+      position: relative;
+    }
+
+    #introEyes {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+
+    .introEye {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #020617;
+    }
+
+    #introMouth {
+      width: 28px;
+      height: 5px;
+      border-radius: 0 0 10px 10px;
+      background: #111827;
+    }
+
+    #introText {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    #introButtons {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .introBtn {
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    #playIntroBtn {
+      background: #16a34a;
+      color: white;
+    }
+
+    #startGameBtn {
+      background: #0f172a;
+      color: white;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    #startGameBtn.ready {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #introHint {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    #introLangToggle {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: #111827;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      cursor: pointer;
+      color: #e5e7eb;
+    }
+  </style>
+</head>
+<body class="page-body">
+  <nav class="top-nav">
+    <a href="index.html" class="brand">🏠 Home</a>
+    <a href="chat.html">💬 Chat</a>
+    <a href="history.html">📄 History</a>
+    <a href="quiz.html">🎯 Cyber Quiz</a>
+    <a href="scam.html">⚠️ Scam Detector</a>
+    <a href="saeed.game.html" class="active">🎮 Saeed's Game</a>
+  </nav>
+
+  <!-- INTRO OVERLAY -->
+  <div id="introScreen">
+    <div id="introLangToggle">EN</div>
+    <div id="introCard">
+      <div id="introSaeed">
+        <div id="introEyes">
+          <div class="introEye"></div>
+          <div class="introEye"></div>
+        </div>
+        <div id="introMouth"></div>
+      </div>
+
+      <div id="introText">
+        Meet Saeed 👦🏻<br>
+        He doesn’t know much about online safety yet.<br>
+        Listen to the short intro, then help him stay safe from scams and bad messages.
+      </div>
+
+      <div id="introButtons">
+        <button id="playIntroBtn" class="introBtn">▶️ Play introduction</button>
+        <button id="startGameBtn" class="introBtn">
+          ✅ Yes, let's start the game
+        </button>
+        <div id="introHint">
+          On phones, tap “Play introduction” once so the sound can start.
+        </div>
+        <!-- OPTIONAL: small test sound button while building -->
+        <!-- <button id="testAudio" class="introBtn" style="background:#1f2937;color:#e5e7eb;">🔊 Test sound</button> -->
+      </div>
+
+      <!-- your voice file -->
+      <audio id="introAudio" src="intro-voice.mp3" preload="auto"></audio>
+    </div>
+  </div>
+
+  <div class="game-shell-wrapper">
+    <div class="game-shell blurred" id="gameShell">
+      <div class="game-area">
+        <div class="game-bg-sky"></div>
+        <div class="building b1"></div>
+        <div class="building b2"></div>
+        <div class="building b3"></div>
+        <div class="sidewalk"></div>
+
+        <div class="tree t1">
+          <div class="tree-trunk"></div>
+          <div class="tree-top"></div>
+        </div>
+        <div class="tree t2">
+          <div class="tree-trunk"></div>
+          <div class="tree-top"></div>
+        </div>
+        <div class="tree t3">
+          <div class="tree-trunk"></div>
+          <div class="tree-top"></div>
+        </div>
+
+        <div class="road">
+          <div class="road-line"></div>
+        </div>
+
+        <div class="language-toggle" id="gameLangToggle">EN</div>
+        <div class="hearts" id="hearts">❤️❤️❤️</div>
+        <div class="level-label" id="levelLabel">Level 1 • DMs</div>
+
+        <div id="saeed">
+          <div class="head">
+            <div class="ghutra"></div>
+            <div class="igal"></div>
+            <div class="face-inner">
+              <div class="eyes">
+                <div class="eye" id="eyeL"></div>
+                <div class="eye" id="eyeR"></div>
+              </div>
+              <div class="mouth" id="mouth"></div>
+            </div>
+          </div>
+          <div class="body"></div>
+          <div class="feet">
+            <div class="foot"></div>
+            <div class="foot"></div>
+          </div>
+        </div>
+
+        <div class="phone">
+          <div class="phone-inner">
+            <div class="app-header">
+              <div class="app-header-left">
+                <div class="app-avatar"></div>
+                <div class="app-name" id="appName">Instagram DM</div>
+              </div>
+              <div class="app-status" id="appStatus">online</div>
+            </div>
+
+            <div class="question-box" id="questionText">Loading...</div>
+
+            <div class="btn correct" id="opt1"></div>
+            <div class="btn wrong" id="opt2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let lang = "EN";
+    const gameShell = document.getElementById("gameShell");
+    const gameLangToggle = document.getElementById("gameLangToggle");
+    const introLangToggle = document.getElementById("introLangToggle");
+
+    function setLanguage(newLang) {
+      lang = newLang;
+      gameLangToggle.textContent = lang;
+      introLangToggle.textContent = lang;
+
+      const introText = document.getElementById("introText");
+      const playIntroBtn = document.getElementById("playIntroBtn");
+      const startGameBtn = document.getElementById("startGameBtn");
+      const introHint = document.getElementById("introHint");
+      const appName = document.getElementById("appName");
+
+      if (lang === "EN") {
+        introText.innerHTML =
+          "Meet Saeed 👦🏻<br>He doesn’t know much about online safety yet.<br>Listen to the short intro, then help him stay safe from scams and bad messages.";
+        playIntroBtn.textContent = "▶️ Play introduction";
+        startGameBtn.textContent = "✅ Yes, let's start the game";
+        introHint.textContent =
+          "On phones, tap “Play introduction” once so the sound can start.";
+        appName.textContent = "Instagram DM";
+      } else {
+        introText.innerHTML =
+          "تعرف على سعيد 👦🏻<br>لسه ما يعرف كثير عن الأمان الرقمي.<br>اسمع المقدمة القصيرة، وبعدها ساعده يتجنب الاحتيال والرسائل المزعجة.";
+        playIntroBtn.textContent = "▶️ تشغيل المقدمة";
+        startGameBtn.textContent = "✅ نعم، لنبدأ اللعبة";
+        introHint.textContent =
+          "في الجوال، اضغط على زر تشغيل المقدمة مرة واحدة عشان يشتغل الصوت.";
+        appName.textContent = "رسائل إنستغرام";
+      }
+
+      showQuestion();
+    }
+
+    gameLangToggle.addEventListener("click", () =>
+      setLanguage(lang === "EN" ? "AR" : "EN")
+    );
+    introLangToggle.addEventListener("click", () =>
+      setLanguage(lang === "EN" ? "AR" : "EN")
+    );
+
+    setLanguage("EN");
+
+    const introAudio = document.getElementById("introAudio");
+    const playIntroBtn = document.getElementById("playIntroBtn");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const introScreen = document.getElementById("introScreen");
+
+    let introPlayed = false;
+    let startReady = false;
+
+    function makeStartReady() {
+      if (startReady) return;
+      startReady = true;
+      startGameBtn.classList.add("ready");
+      startGameBtn.textContent =
+        lang === "EN"
+          ? "✅ Yes, let's start the game"
+          : "✅ نعم، لنبدأ اللعبة";
+    }
+
+    // play intro voice
+    playIntroBtn.addEventListener("click", () => {
+      introAudio.currentTime = 0;
+      introAudio.play().catch((err) => {
+        console.log("Audio play error:", err);
+      });
+
+      introPlayed = true;
+      playIntroBtn.disabled = true;
+      playIntroBtn.textContent =
+        lang === "EN" ? "▶️ Playing..." : "▶️ يتم التشغيل...";
+
+      // safety: unlock start even if onended doesn't fire
+      setTimeout(makeStartReady, 21000);
+    });
+
+    introAudio.addEventListener("ended", () => {
+      makeStartReady();
+    });
+
+    // start game after intro
+    startGameBtn.addEventListener("click", () => {
+      if (!introPlayed || !startReady) return;
+      introScreen.style.display = "none";
+      gameShell.classList.remove("blurred");
+      showQuestion();
+    });
+
+    // OPTIONAL test button (uncomment in HTML if needed)
+    /*
+    const testBtn = document.getElementById("testAudio");
+    if (testBtn) {
+      testBtn.addEventListener("click", () => {
+        introAudio.currentTime = 0;
+        introAudio.play().catch(err => {
+          alert("Audio error: " + err.message);
+        });
+      });
+    }
+    */
+
+    /* ---------- QUESTIONS ---------- */
+    const questions = [
+      {
+        type: "dm",
+        en: "A stranger says: “I found your account, send me a private picture, I won’t show anyone 😉”",
+        ar: "شخص غريب يقول: «لقيت حسابك، ارسل لي صورة خاصة، ما بوريها لأحد 😉»",
+        o1: { en: "Block & report this account", ar: "حظر + إبلاغ عن الحساب", correct: true },
+        o2: { en: "Send them a photo",          ar: "أرسل له الصورة",          correct: false }
+      },
+      {
+        type: "link",
+        en: "You get a DM with a link: “Free iPhone for the first 100 people, just login with Instagram!”",
+        ar: "تجيك رسالة مع رابط: «آيفون مجاني لأول ١٠٠ شخص، بس سجل دخول بحسابك في إنستغرام!»",
+        o1: { en: "Delete the message and ignore it", ar: "أحذف الرسالة وأتجاهلها", correct: true },
+        o2: { en: "Login using the link quickly",     ar: "أسجل دخول من الرابط بسرعة", correct: false }
+      },
+      {
+        type: "email",
+        en: "Email: “Your bank account will be closed today. Click here and enter your card number to keep it active.”",
+        ar: "إيميل: «راح نقفل حسابك البنكي اليوم، اضغط هنا واكتب رقم بطاقتك عشان يظل شغال.»",
+        o1: { en: "Ignore email & check from the bank app or official number",
+              ar: "أتجاهل الإيميل وأتأكد من تطبيق البنك أو الرقم الرسمي", correct: true },
+        o2: { en: "Click the link and type full card details",
+              ar: "أضغط الرابط وأحط بيانات البطاقة كاملة", correct: false }
+      },
+      {
+        type: "qr",
+        en: "Someone at the mall shows you a QR code: “Scan it to get a free gift, no need to ask your parents.”",
+        ar: "واحد في المول يوريك QR ويقول: «أمسح الكود وخذ هدية مجانية، ما تحتاج تخبر أهلك.»",
+        o1: { en: "Don’t scan and walk away", ar: "ما أمسح الكود وأمشي", correct: true },
+        o2: { en: "Scan it and follow the instructions", ar: "أمسح الكود وأتبع التعليمات", correct: false }
+      },
+      {
+        type: "threat",
+        en: "Message: “I have your pictures, if you don’t send money I will post them.”",
+        ar: "رسالة: «عندي صورك، لو ما حولت فلوس رح أنشرها.»",
+        o1: { en: "Keep evidence & tell family / police (don’t pay)",
+              ar: "أحفظ الأدلة وأخبر أهلي / الشرطة (وما أدفع)", correct: true },
+        o2: { en: "Send money so they stop", ar: "أحول له فلوس عشان يوقف", correct: false }
+      },
+      {
+        type: "friend-link",
+        en: "Your close friend sends a strange link with no text.",
+        ar: "صديقك المقرب يرسل لك رابط غريب بدون أي كلام.",
+        o1: { en: "Ask them on another app if they really sent it",
+              ar: "أسأل صديقي في تطبيق ثاني إذا فعلًا أرسل الرابط", correct: true },
+        o2: { en: "Click it immediately because you trust them",
+              ar: "أضغط الرابط فورًا لأني أثق فيه", correct: false }
+      },
+      {
+        type: "hack",
+        en: "Someone says: “I hacked your account. If you pay me, I’ll give it back.”",
+        ar: "شخص يقول: «اخترقت حسابك، لو دفعت لي أرجعه لك.»",
+        o1: { en: "Report to the platform & enable 2FA, don’t pay",
+              ar: "أبلغ المنصة وأفعل التحقق بخطوتين، وما أدفع", correct: true },
+        o2: { en: "Pay them and hope they are honest",
+              ar: "أدفع له وأتمنى يكون صادق", correct: false }
+      },
+      {
+        type: "extension",
+        en: "Pop-up on your browser: “Install this free extension to get crypto rewards every day.”",
+        ar: "نافذة في المتصفح: «ثبت هذه الإضافة المجانية وخذ عملات رقمية كل يوم.»",
+        o1: { en: "Close the pop-up, don’t install anything",
+              ar: "أغلق النافذة وما أثبت أي شيء", correct: true },
+        o2: { en: "Install it because it sounds cool",
+              ar: "أثبتها لأنها شكلها حلو", correct: false }
+      },
+      {
+        type: "otp",
+        en: "Someone calls: “I’m from Etisalat, tell me the OTP we sent to your phone.”",
+        ar: "اتصال: «معك من الاتصالات، عطيني رمز التحقق اللي وصلك.»",
+        o1: { en: "Never share OTP with anyone", ar: "ما أعطي الرمز لأي أحد", correct: true },
+        o2: { en: "Tell them the OTP to be helpful", ar: "أعطيه الرمز عشان أساعد", correct: false }
+      },
+      {
+        type: "wifi",
+        en: "You see public Wi-Fi: “FREE_Internet_No_Password” in a café.",
+        ar: "تشوف واي فاي عام اسمه: «FREE_Internet_No_Password» في كافيه.",
+        o1: { en: "Avoid connecting or use VPN only for simple browsing",
+              ar: "ما أتصل، أو أستخدم VPN فقط لأشياء بسيطة", correct: true },
+        o2: { en: "Use it for banking and passwords",
+              ar: "أستخدمه للبنك وكلمات السر", correct: false }
+      }
+    ];
+
+    let current = 0;
+    let hearts = 3;
+
+    function showQuestion() {
+      const q = questions[current];
+      if (!q) return;
+
+      const questionText = document.getElementById("questionText");
+      const opt1 = document.getElementById("opt1");
+      const opt2 = document.getElementById("opt2");
+      const levelLabel = document.getElementById("levelLabel");
+
+      questionText.textContent = lang === "EN" ? q.en : q.ar;
+      opt1.textContent = lang === "EN" ? q.o1.en : q.o1.ar;
+      opt2.textContent = lang === "EN" ? q.o2.en : q.o2.ar;
+
+      levelLabel.textContent =
+        lang === "EN"
+          ? "Level " + (current + 1) + " • DMs"
+          : "المستوى " + (current + 1) + " • الرسائل";
+
+      opt1.onclick = () => choose(q.o1.correct);
+      opt2.onclick = () => choose(q.o2.correct);
+    }
+
+    function setFace(correct) {
+      const mouth = document.getElementById("mouth");
+      const eyeL = document.getElementById("eyeL");
+      const eyeR = document.getElementById("eyeR");
+
+      if (correct) {
+        mouth.style.transform = "scaleY(1)";
+        mouth.style.background = "#16a34a";
+        eyeL.style.transform = "scale(1)";
+        eyeR.style.transform = "scale(1)";
+      } else {
+        mouth.style.transform = "scaleY(-1)";
+        mouth.style.background = "#b91c1c";
+        eyeL.style.transform = "scaleY(0.6)";
+        eyeR.style.transform = "scaleY(0.6)";
+      }
+
+      setTimeout(() => {
+        mouth.style.transform = "scaleY(1)";
+        mouth.style.background = "#111827";
+        eyeL.style.transform = "scale(1)";
+        eyeR.style.transform = "scale(1)";
+      }, 600);
+    }
+
+    function choose(isCorrect) {
+      setFace(isCorrect);
+
+      if (isCorrect) {
+        if (navigator.vibrate) navigator.vibrate(120);
+        current++;
+        if (current >= questions.length) {
+          win();
+        } else {
+          setTimeout(showQuestion, 650);
+        }
+      } else {
+        if (navigator.vibrate) navigator.vibrate([80, 70, 80]);
+        hearts--;
+        document.getElementById("hearts").textContent =
+          "❤️".repeat(Math.max(0, hearts));
+        if (hearts <= 0) {
+          lose();
+        }
+      }
+    }
+
+    function win() {
+      alert(
+        lang === "EN"
+          ? "✨ You helped Saeed stay safe online! \nNice job, security expert 😎"
+          : "✨ أحسنت! ساعدت سعيد يكون آمنًا على الإنترنت 😎"
+      );
+    }
+
+    function lose() {
+      alert(
+        lang === "EN"
+          ? "⚠️ Saeed is in danger! Try again and be even more careful."
+          : "⚠️ سعيد في خطر! حاول مرة ثانية وكن أكثر حذرًا."
+      );
+      location.reload();
+    }
+
+    // blink animation
+    setInterval(() => {
+      const eyeL = document.getElementById("eyeL");
+      const eyeR = document.getElementById("eyeR");
+      eyeL.style.transform = "scaleY(0.1)";
+      eyeR.style.transform = "scaleY(0.1)";
+      setTimeout(() => {
+        eyeL.style.transform = "scaleY(1)";
+        eyeR.style.transform = "scaleY(1)";
+      }, 120);
+    }, 3500);
+  </script>
+</body>
+</html>
