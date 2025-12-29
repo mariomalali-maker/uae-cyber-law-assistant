@@ -568,6 +568,67 @@
       });
     }
     setupSpeech();
+    /* ------------- 🔊 SIRI STYLE AUTO VOICE READING ------------- */
+function speakAI(text) {
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = /[ء-ي]/.test(text) ? "ar-SA" : "en-US"; // auto language detect
+  utter.rate = 1.05;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+/* 👇 Modify addBubble so AI messages get spoken */
+const originalAddBubble = addBubble;
+addBubble = function(text, type, save = true) {
+  originalAddBubble(text, type, save);
+  if (type === "ai") speakAI(text);
+};
+
+/* ------------------------------------------------------------- */
+
+
+
+/* --------------- 🧹 CLEAR CHAT ONLY (NO SAVE) ---------------- */
+const clearBtn = document.createElement("button");
+clearBtn.textContent = "🧼 Clear Chat";
+clearBtn.style.cssText = `
+  margin-top:10px;background:#6b7280;color:white;
+  border:none;padding:8px 12px;border-radius:6px;cursor:pointer;
+  width:100%;font-size:14px;
+`;
+document.querySelector(".chat-card").appendChild(clearBtn);
+
+clearBtn.addEventListener("click", () => {
+  messagesBox.innerHTML = "";
+  addBubble("✨ Chat cleared (not saved to history).", "ai", false);
+});
+/* ------------------------------------------------------------- */
+
+
+
+/* --------------- 🗑 DELETE *ALL* HISTORY FIX ----------------- */
+document.getElementById("delete-all-history-btn").addEventListener("click", () => {
+  localStorage.removeItem("cyber_chat_history_v2");
+  alert("🗑️ All chat history deleted successfully!");
+});
+/* ------------------------------------------------------------- */
+
+
+
+/* --------------- 🤖 NICER 'THINKING...' STYLE ---------------- */
+function addTyping() {
+  const div = document.createElement("div");
+  div.className = "msg ai-msg";
+  div.id = "typing";
+  div.style.opacity = "0.8";
+  div.innerHTML = `
+    <span>🤖 thinking<span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+  `;
+  messagesBox.appendChild(div);
+  messagesBox.scrollTop = messagesBox.scrollHeight;
+}
+/* ------------------------------------------------------------- */
+
   </script>
 </body>
 </html>
