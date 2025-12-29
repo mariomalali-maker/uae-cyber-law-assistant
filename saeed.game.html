@@ -7,9 +7,10 @@
 
 <style>
 body {
-  background: #0a0f1f;
+  background: #020617;
   color: #fff;
-  margin: 0; font-family: Arial, sans-serif;
+  margin: 0;
+  font-family: Arial, sans-serif;
   overflow: hidden;
 }
 
@@ -41,49 +42,153 @@ body {
 #startGameBtn{background:#0f172a;color:white;display:none;}
 #introHint{font-size:11px;opacity:.7;margin-top:8px;}
 
+/* ---------- GAME AREA ---------- */
 .container {
   width: 100vw; height: 100vh;
   display: flex; justify-content: center; align-items: center;
 }
 .game-area {
   width: 880px; height: 480px;
-  background: linear-gradient(#0F1627, #0B1522);
+  background: #020617;
   border-radius: 16px; padding: 20px; position: relative;
   overflow: hidden;
+  box-shadow:0 18px 40px rgba(0,0,0,0.7);
 }
-.hearts { position:absolute; top:10px; left:10px; font-size:22px; }
-.level-label{position:absolute;top:10px;right:10px;background:#0d3f27;padding:6px 12px;border-radius:12px;}
 
-#saeed {
-  position:absolute; left:180px; bottom:100px;
-  width:100px; height:180px;
-  background:white; border-radius:14px;
-  display:flex; justify-content:center; align-items:center;
-  flex-direction:column;
-  transition: transform 0.2s, filter 0.2s;
+/* sky + city */
+.game-bg-sky{
+  position:absolute;left:0;top:60px;right:0;height:200px;
+  background:linear-gradient(#020617,#020617,#020617);
 }
-.eyes { display:flex;justify-content:center;gap:10px; }
-.eye { width:10px;height:10px;background:black;border-radius:50%; }
-.mouth { margin-top:6px;width:24px;height:6px;background:black;border-radius:4px; }
+.building{
+  position:absolute;bottom:210px;width:70px;height:140px;
+  background:#111827;border-radius:10px;
+  box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+.b1{left:200px;}
+.b2{left:360px;}
+.b3{left:520px;}
+
+/* road */
+.road{
+  position:absolute;left:0;right:0;bottom:90px;height:120px;
+  background:linear-gradient(#020617,#020617 40%,#020617 41%,#020617);
+}
+.road-line{
+  position:absolute;left:60px;right:60px;top:55px;height:4px;
+  background:repeating-linear-gradient(to right, #e5e7eb 0 40px, transparent 40px 70px);
+}
+
+/* sidewalk */
+.sidewalk{
+  position:absolute;left:0;right:0;bottom:210px;height:30px;
+  background:#020617;
+}
+
+/* trees */
+.tree{
+  position:absolute;bottom:210px;width:30px;height:80px;
+}
+.tree-trunk{
+  width:8px;height:26px;margin:0 auto;background:#6b3f1f;border-radius:4px;
+}
+.tree-top{
+  width:34px;height:34px;background:#16a34a;border-radius:999px;
+  margin:-6px auto 0;box-shadow:0 0 10px rgba(22,163,74,0.6);
+}
+.t1{left:120px;}
+.t2{left:310px;}
+.t3{left:500px;}
+
+/* HUD */
+.hearts { position:absolute; top:10px; left:10px; font-size:22px; }
+.level-label{
+  position:absolute;top:10px;right:10px;background:#065f46;
+  padding:6px 12px;border-radius:12px;font-size:13px;
+}
+
+/* Saeed */
+#saeed {
+  position:absolute; left:180px; bottom:110px;
+  width:80px; height:160px;
+  background:white; border-radius:14px;
+  display:flex; justify-content:flex-start; align-items:center;
+  flex-direction:column;
+  padding-top:16px;
+  box-shadow:0 8px 16px rgba(0,0,0,0.6);
+}
+.head{
+  width:60px;height:60px;border-radius:16px;background:white;
+  box-shadow:0 0 0 4px #e5e7eb;margin-bottom:8px;position:relative;
+}
+.ghutra{
+  position:absolute;left:-2px;right:-2px;top:-8px;height:26px;
+  background:white;border-radius:18px 18px 10px 10px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.18);
+}
+.igal{
+  position:absolute;left:6px;right:6px;top:0;height:8px;border-radius:99px;
+  border:3px solid #020617;
+}
+.face-inner{position:absolute;left:10px;right:10px;top:16px;bottom:8px;}
+.eyes{display:flex;justify-content:space-between;}
+.eye{
+  width:8px;height:8px;border-radius:50%;background:#020617;
+}
+.mouth{
+  position:absolute;left:16px;right:16px;bottom:4px;
+  height:5px;border-radius:0 0 10px 10px;background:#111827;
+  transition:transform .2s, background .2s;
+}
+.body{
+  width:40px;height:70px;border-radius:10px;background:white;
+}
+.feet{
+  display:flex;gap:10px;margin-top:4px;
+}
+.foot{
+  width:24px;height:8px;border-radius:10px;background:#020617;
+}
 
 .phone {
-  position:absolute; right:160px; bottom:70px;
-  width:260px; background:#0f1b31; border:2px solid #1c2d4a;
-  border-radius:20px; padding:10px;
+  position:absolute; right:150px; bottom:95px;
+  width:270px; background:#020617;
+  border-radius:26px; padding:10px;
+  box-shadow:0 12px 28px rgba(0,0,0,0.7);
+  border:1px solid #1e293b;
 }
-.app-header { font-size:14px; background:#0d1a2c; padding:6px; border-radius:10px; margin-bottom:8px; }
-.question-box { font-size:14px;padding:8px;background:#091222;border-radius:10px;min-height:60px; }
+.phone-inner{
+  border-radius:22px;background:#020617;padding:10px;border:1px solid #1f2937;
+}
+.app-header {
+  font-size:13px; background:#020617;
+  padding:6px 10px; border-radius:14px;
+  margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;
+  border:1px solid #1f2937;
+}
+.app-header-left{display:flex;align-items:center;gap:6px;}
+.app-avatar{
+  width:18px;height:18px;border-radius:6px;
+  background:radial-gradient(circle at 30% 30%,#22d3ee,#4f46e5);
+}
+.app-name{font-weight:bold;}
+.app-status{font-size:11px;opacity:.7;}
+.question-box {
+  font-size:13px;padding:10px 10px 12px;
+  background:#020617;border-radius:16px;min-height:60px;
+  border:1px solid #1f2937;margin-bottom:6px;
+}
 .btn {
-  margin-top:8px;padding:10px;border-radius:10px;text-align:center;cursor:pointer;font-size:14px;
+  margin-top:6px;padding:9px;border-radius:14px;text-align:center;
+  cursor:pointer;font-size:13px;font-weight:600;
 }
-.correct { background:#0b7a3c; }
-.wrong { background:#7a0b0b; }
-.correct:hover, .wrong:hover { filter:brightness(1.2); }
-.hidden{display:none;}
+.btn.correct { background:#16a34a; }
+.btn.wrong { background:#b91c1c; }
+.btn:hover { filter:brightness(1.1); }
 
 .language-toggle {
-  position:absolute; top:15px; right:15px; background:#1c2d4a;
-  padding:6px 10px;border-radius:10px;cursor:pointer;
+  position:absolute; top:15px; right:15px; background:#1f2937;
+  padding:6px 10px;border-radius:10px;cursor:pointer;font-size:12px;
 }
 </style>
 </head>
@@ -91,7 +196,6 @@ body {
 
 <!-- INTRO with audio -->
 <div id="introScreen">
-  <!-- Saeed in the middle -->
   <div id="introSaeed">
     <div id="introEyes">
       <div class="introEye"></div>
@@ -110,31 +214,72 @@ body {
     <div id="introHint">On phones, tap “Play introduction” once so the sound can start.</div>
   </div>
 
-  <!-- audio file (must be in same folder) -->
+  <!-- audio file (same folder) -->
   <audio id="introAudio" src="intro-voice.mp3"></audio>
 </div>
 
 <div class="container" id="gameWrapper" style="display:none;">
   <div class="game-area">
 
-    <div class="language-toggle" onclick="toggleLanguage()">EN</div>
-    <div class="hearts" id="hearts">❤️❤️❤️</div>
-    <div class="level-label" id="levelLabel">Level 1</div>
-
-    <div id="saeed">
-      <div class="eyes">
-        <div class="eye" id="eyeL"></div>
-        <div class="eye" id="eyeR"></div>
-      </div>
-      <div class="mouth" id="mouth"></div>
+    <!-- background -->
+    <div class="game-bg-sky"></div>
+    <div class="building b1"></div>
+    <div class="building b2"></div>
+    <div class="building b3"></div>
+    <div class="sidewalk"></div>
+    <div class="tree t1">
+      <div class="tree-trunk"></div><div class="tree-top"></div>
+    </div>
+    <div class="tree t2">
+      <div class="tree-trunk"></div><div class="tree-top"></div>
+    </div>
+    <div class="tree t3">
+      <div class="tree-trunk"></div><div class="tree-top"></div>
+    </div>
+    <div class="road">
+      <div class="road-line"></div>
     </div>
 
-    <div class="phone">
-      <div class="app-header" id="appHeader">Instagram DM</div>
-      <div class="question-box" id="questionText">Loading...</div>
+    <div class="language-toggle" onclick="toggleLanguage()">EN</div>
+    <div class="hearts" id="hearts">❤️❤️❤️</div>
+    <div class="level-label" id="levelLabel">Level 1 • DMs</div>
 
-      <div class="btn" id="opt1"></div>
-      <div class="btn" id="opt2"></div>
+    <!-- Saeed -->
+    <div id="saeed">
+      <div class="head">
+        <div class="ghutra"></div>
+        <div class="igal"></div>
+        <div class="face-inner">
+          <div class="eyes">
+            <div class="eye" id="eyeL"></div>
+            <div class="eye" id="eyeR"></div>
+          </div>
+          <div class="mouth" id="mouth"></div>
+        </div>
+      </div>
+      <div class="body"></div>
+      <div class="feet">
+        <div class="foot"></div>
+        <div class="foot"></div>
+      </div>
+    </div>
+
+    <!-- Phone / DM -->
+    <div class="phone">
+      <div class="phone-inner">
+        <div class="app-header">
+          <div class="app-header-left">
+            <div class="app-avatar"></div>
+            <div class="app-name">Instagram DM</div>
+          </div>
+          <div class="app-status" id="appStatus">online</div>
+        </div>
+
+        <div class="question-box" id="questionText">Loading...</div>
+
+        <div class="btn correct" id="opt1"></div>
+        <div class="btn wrong" id="opt2"></div>
+      </div>
     </div>
 
   </div>
@@ -155,7 +300,6 @@ const startGameBtn = document.getElementById("startGameBtn");
 const introScreen = document.getElementById("introScreen");
 const gameWrapper = document.getElementById("gameWrapper");
 
-// user taps to start audio (needed for mobile)
 playIntroBtn.addEventListener("click", () => {
   introAudio.play().catch(()=>{});
   playIntroBtn.disabled = true;
@@ -167,7 +311,6 @@ playIntroBtn.addEventListener("click", () => {
   });
 });
 
-// after user clicks start
 startGameBtn.addEventListener("click", () => {
   introScreen.style.display = "none";
   gameWrapper.style.display = "flex";
@@ -225,8 +368,8 @@ const questions = [
   o2:{en:"Install it",ar:"أثبتها",correct:false}
 },
 {
-  en:"Phone call: 'I'm from Etisalat give me your OTP'",
-  ar:"اتصال: انا من الاتصالات عطيني OTP",
+  en:"Phone call: 'I'm from Etisalat. Give me your OTP'",
+  ar:"اتصال: أنا من الاتصالات، عطيني OTP",
   o1:{en:"Never share OTP",ar:"ما أعطيه",correct:true},
   o2:{en:"Give OTP",ar:"أعطيه",correct:false}
 },
@@ -249,17 +392,19 @@ function showQuestion(){
 
   document.getElementById("opt1").onclick = ()=> choose(q.o1.correct);
   document.getElementById("opt2").onclick = ()=> choose(q.o2.correct);
-  document.getElementById("levelLabel").innerText = `Level ${current+1}`;
+  document.getElementById("levelLabel").innerText = lang==="EN"
+    ? `Level ${current+1} • DMs`
+    : `المستوى ${current+1} • الرسائل`;
 }
 
 function reaction(correct){
   let mouth = document.getElementById("mouth");
   if(correct){ 
     mouth.style.transform="scaleY(1)";
-    mouth.style.background="black";
+    mouth.style.background="#111827";
   } else {
     mouth.style.transform="scaleY(-1)";
-    mouth.style.background="red";
+    mouth.style.background="#b91c1c";
   }
 }
 
@@ -280,10 +425,14 @@ function choose(correct){
 }
 
 function win(){
-  alert(lang==="EN" ? "✨ You helped Saeed stay safe online!" : "✨ لقد ساعدت سعيد ليكون آمنًا على الإنترنت!");
+  alert(lang==="EN"
+    ? "✨ You helped Saeed stay safe online!"
+    : "✨ لقد ساعدت سعيد ليكون آمنًا على الإنترنت!");
 }
 function lose(){
-  alert(lang==="EN" ? "⚠️ Saeed is in danger! Try again." : "⚠️ سعيد في خطر! حاول مرة أخرى.");
+  alert(lang==="EN"
+    ? "⚠️ Saeed is in danger! Try again."
+    : "⚠️ سعيد في خطر! حاول مرة أخرى.");
   location.reload();
 }
 </script>
