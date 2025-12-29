@@ -10,7 +10,7 @@ const newChatBtn = document.getElementById("new-chat-btn");
 const clearChatBtn = document.getElementById("clear-chat-btn");
 const speakBtn = document.getElementById("speak-btn");
 const micBtn = document.getElementById("mic-btn");
-const deleteAllBtn = document.getElementById("delete-all-history-btn"); // ← زر جديد لمسح كل شيء
+const deleteAllBtn = document.getElementById("delete-all-history-btn"); ء
 
 // USER INFO
 const userName = localStorage.getItem("cyber_user_name") || "User";
@@ -36,7 +36,7 @@ function addBubble(text, type) {
   div.textContent = text;
 
   if (type === "ai") {
-    // READ BUTTON
+    
     const readBtn = document.createElement("button");
     readBtn.textContent = "🔊 Listen";
     readBtn.className = "read-btn";
@@ -70,10 +70,10 @@ function greetUser() {
                               "صاحبي 🤍";
 
   const text = `مرحباً ${userName} ${relation}✨
-أنا مساعدك للأمن السيبراني في الإمارات 🇦🇪  
+أنا مساعدك للأمن السيبراني في الإمارات   
 اكتب مشكلتك أو سؤالك:
 
-🟢 أمثلة:
+ أمثلة:
 - تهكر السناب شات، شو أسوي؟
 - حد يهددني بصوري، وين أشتكي؟
 - كيف أحمي حسابي من الاختراق؟
