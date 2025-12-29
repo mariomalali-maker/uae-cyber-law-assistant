@@ -1,206 +1,106 @@
-/* ======================================================
-   🎯 CYBER QUIZ (EN + AR)
-   Author: Mariam - 2025
-   Features:
-   - English & Arabic UI + Questions
-   - Timer
-   - Score + Restart
-====================================================== */
+/* ==========================================
+   🎯 Cyber Quiz by Mariam
+   - 10 Questions
+   - EN / AR switch
+   - Kahoot style
+   - Confetti on Win
+========================================== */
 
-const content = document.getElementById("content");
+let q = 0, score = 0, time = 15, timer, LANG = "EN";
+
+const box = document.getElementById("quizBox");
 const timerEl = document.getElementById("timer");
-const nextBtn = document.getElementById("next");
+const nextBtn = document.getElementById("nextBtn");
 const progressBar = document.getElementById("progress");
-const bodyEl = document.getElementById("pageBody");
-const titleEl = document.getElementById("title");
-const subEl = document.getElementById("subText");
-const enBtn = document.getElementById("enBtn");
-const arBtn = document.getElementById("arBtn");
+const langBtn = document.getElementById("langBtn");
+const body = document.getElementById("body");
+const title = document.getElementById("title");
+const sub = document.getElementById("sub");
 
-let lang = "EN"; // default
-let index = 0;
-let score = 0;
-let timeLeft = 10;
-let timer;
-
-/* ===========================
-   QUESTIONS (BILINGUAL)
-=========================== */
-const questions = [
-  {
-    en: {
-      q: "If someone hacks your Snapchat in the UAE, what should you do first?",
-      options: ["Ignore it", "Post about it", "Change password & enable 2FA", "Give hacker access"]
-    },
-    ar: {
-      q: "إذا تم اختراق حساب سناب شات الخاص بك في الإمارات، ما أول خطوة تقوم بها؟",
-      options: ["تجاهل الأمر", "نشر الموضوع للناس", "تغيير كلمة السر وتفعيل التحقق بخطوتين", "إعطاء المخترق الوصول للحساب"]
-    },
-    correct: 2
-  },
-  {
-    en: {
-      q: "Sharing someone's private photos without consent is:",
-      options: ["Fine", "A joke", "Illegal & cybercrime", "Allowed if friends"]
-    },
-    ar: {
-      q: "مشاركة صور خاصة لشخص بدون إذنه تعتبر:",
-      options: ["شيء عادي", "مزحة فقط", "جريمة إلكترونية يعاقب عليها القانون", "مسموح إذا كنتم أصدقاء"]
-    },
-    correct: 2
-  },
-  {
-    en: {
-      q: "Message: 'You won a prize, enter card info' → This is:",
-      options: ["Safe offer", "Scam / Phishing", "Bank alert", "Normal"]
-    },
-    ar: {
-      q: "رسالة: 'ربحت جائزة، أدخل بيانات بطاقتك' → هذا يعتبر:",
-      options: ["عرض آمن", "احتيال / تصيد", "تنبيه من البنك", "شيء طبيعي"]
-    },
-    correct: 1
-  }
+const DATA = [
+  {en:"Snapchat hacked! First step?", ar:"تم اختراق سنابك! أول خطوة؟", o:["Cry","Post it","Change password + 2FA","Ignore"], c:2},
+  {en:"Sharing private photos is:", ar:"مشاركة صور خاصة تعتبر:", o:["A joke","Legal","Cybercrime","Fine"], c:2},
+  {en:"'You won! Enter card info' →", ar:"'ربحت! ادخل بيانات بطاقتك' →", o:["Real","Safe","Phishing","Bank"], c:2},
+  {en:"Strong password?", ar:"أقوى كلمة مرور؟", o:["mariam123","@M!r1am_2025#","password","qwerty"], c:1},
+  {en:"Blackmail → UAE?", ar:"ابتزاز → الإمارات؟", o:["Pay","Ignore","Report ecrime.ae","Delete chat"], c:2},
+  {en:"2FA means:", ar:"التحقق بخطوتين يعني:", o:["VPN","Two phones","Password + code","Daily change"], c:2},
+  {en:"Rumors online:", ar:"نشر الشائعات:", o:["Fun","Free speech","Punishable","Normal"], c:2},
+  {en:"Best Wi-Fi?", ar:"أفضل واي فاي؟", o:["Public mall","Friend hotspot","Random open","Airport free"], c:1},
+  {en:"Never share:", ar:"لا تشارك:", o:["Coffee pics","Travel live","Emirates ID","Sunset"], c:2},
+  {en:"Friend sends weird link:", ar:"صديق يرسل رابط غريب:", o:["Click","Share","Warn them","Login"], c:2}
 ];
 
-/* ===========================
-   UI TEXT
-=========================== */
-const UI = {
-  EN: {
-    title: "🎯 Cyber Safety Quiz",
-    subtitle: "Quick questions • Test yourself",
-    start: "Start Quiz 🚀",
-    next: "Next ➜",
-    correct: "Correct! ✔️",
-    wrong: "Wrong ❌",
-    timesUp: "Time’s up ⏳",
-    finished: "Quiz Finished 🎉",
-    restart: "Restart 🔁"
-  },
-  AR: {
-    title: "🎯 اختبار السلامة الإلكترونية",
-    subtitle: "أسئلة سريعة • اختبر معرفتك",
-    start: "ابدأ الاختبار 🚀",
-    next: "التالي ➜",
-    correct: "إجابة صحيحة ✔️",
-    wrong: "إجابة خاطئة ❌",
-    timesUp: "انتهى الوقت ⏳",
-    finished: "انتهى الاختبار 🎉",
-    restart: "إعادة المحاولة 🔁"
-  }
-};
-
-/* ===========================
-   LANGUAGE SWITCH
-=========================== */
-function switchLang(l) {
-  lang = l;
-  bodyEl.className = l === "AR" ? "lang-ar" : "lang-en";
-  titleEl.textContent = UI[l].title;
-  subEl.textContent = UI[l].subtitle;
-  enBtn.classList.toggle("active", l==="EN");
-  arBtn.classList.toggle("active", l==="AR");
-}
-enBtn.onclick = ()=>switchLang("EN");
-arBtn.onclick = ()=>switchLang("AR");
-
-/* ===========================
-   START SCREEN
-=========================== */
-content.innerHTML = `<button class="quiz-option" onclick="startQuiz()">${UI.EN.start}</button>`;
-timerEl.style.display = "none";
-
-function startQuiz(){
-  index = 0;
-  score = 0;
-  showQuestion();
-  timerEl.style.display = "block";
+function load(){
+  const item = DATA[q];
+  progressBar.style.width = (q/DATA.length*100)+"%";
+  box.innerHTML = `
+    <h2>${LANG==="EN"?item.en:item.ar}</h2>
+    ${item.o.map((a,i)=>`<button class="opt" onclick="answer(${i})">${a}</button>`).join("")}
+    <p id="feed"></p>
+  `;
+  nextBtn.style.display="none";
+  startTime();
 }
 
-/* ===========================
-   TIMER
-=========================== */
-function startTimer(){
-  clearInterval(timer);
-  timeLeft = 10;
+function startTime(){
+  clearInterval(timer); time = 15; timerEl.textContent = time;
   timer = setInterval(()=>{
-    timeLeft--;
-    timerEl.innerHTML = `⏳ ${timeLeft}s`;
-    if(timeLeft <= 0){
-      clearInterval(timer);
-      lockOptions(UI[lang].timesUp);
-    }
+    time--; timerEl.textContent = time;
+    if(time<=0){ check(-1); }
   },1000);
 }
 
-/* ===========================
-   SHOW QUESTION
-=========================== */
-function showQuestion(){
-  const q = questions[index][lang.toLowerCase()];
-  progressBar.style.width = `${(index/questions.length)*100}%`;
+function answer(i){ check(i); }
 
-  content.innerHTML = `
-    <h3>${q.q}</h3>
-    ${q.options.map((o,i)=>`
-      <button class="quiz-option" data-i="${i}" onclick="answer(this)">${o}</button>
-    `).join("")}
-    <p id="feedback"></p>
-  `;
-  nextBtn.style.display = "none";
-  startTimer();
-}
-
-/* ===========================
-   ANSWER
-=========================== */
-function answer(btn){
+function check(i){
   clearInterval(timer);
-  const choice = Number(btn.dataset.i);
-  const correct = questions[index].correct;
-  const feedback = document.getElementById("feedback");
-  const all = document.querySelectorAll(".quiz-option");
+  const item = DATA[q];
+  const feed = document.getElementById("feed");
+  const opts = document.querySelectorAll(".opt");
 
-  all.forEach(b=>b.disabled = true);
+  opts.forEach((btn,n)=>{
+    btn.disabled=true;
+    if(n===item.c) btn.classList.add("correct");
+    if(n===i && n!==item.c) btn.classList.add("wrong");
+  });
 
-  if(choice === correct){
-    score++;
-    btn.classList.add("correct");
-    feedback.textContent = UI[lang].correct;
-  } else {
-    btn.classList.add("wrong");
-    all[correct].classList.add("correct");
-    feedback.textContent = UI[lang].wrong;
+  if(i===item.c){ score++; feed.textContent = LANG==="EN"?"Correct! ✔️":"صحيح ✔️"; }
+  else{ feed.textContent = LANG==="EN"?"Wrong ❌":"خطأ ❌"; }
+
+  nextBtn.style.display="block";
+  nextBtn.onclick = ()=>{
+    q++;
+    if(q>=DATA.length) finish();
+    else load();
   }
-  nextBtn.textContent = UI[lang].next;
-  nextBtn.style.display = "block";
-  nextBtn.onclick = nextQuestion;
 }
 
-/* ===========================
-   NEXT
-=========================== */
-function nextQuestion(){
-  index++;
-  if(index >= questions.length){ finishQuiz(); return; }
-  showQuestion();
-}
+function finish(){
+  progressBar.style.width="100%";
+  timerEl.style.display="none";
 
-/* ===========================
-   FINISH
-=========================== */
-function finishQuiz(){
-  timerEl.style.display = "none";
-  progressBar.style.width = "100%";
-  content.innerHTML = `
-    <h2>${UI[lang].finished}</h2>
-    <p>${score} / ${questions.length}</p>
-    <button class="quiz-option" onclick="location.reload()">${UI[lang].restart}</button>
+  if(score>=8) confettiExplosion();
+
+  box.innerHTML=`
+    <h2>${LANG==="EN"?"🎉 Finished!":"🎉 انتهى!"}</h2>
+    <p>${LANG==="EN"?"Score:":"النتيجة:"} <strong>${score}/${DATA.length}</strong></p>
+    <button class="opt" onclick="location.reload()">${LANG==="EN"?"Restart 🔁":"إعادة 🔁"}</button>
   `;
+  nextBtn.style.display="none";
 }
 
-/* export */
-window.startQuiz = startQuiz;
-window.answer = answer;
-window.nextQuestion = nextQuestion;
+function confettiExplosion(){
+  confetti({particleCount:200,spread:90,origin:{y:0.6}});
+}
 
+/* LANGUAGE */
+langBtn.onclick=()=>{
+  LANG = LANG==="EN"?"AR":"EN";
+  body.className = LANG==="AR"?"lang-ar":"";
+  langBtn.textContent = LANG==="EN"?"🇬🇧 EN":"🇦🇪 عربي";
+  title.textContent = LANG==="EN"?"🎯 Cyber Safety Quiz":"🎯 اختبار السلامة الإلكترونية";
+  sub.textContent = LANG==="EN"?"10 questions • Kahoot style":"١٠ أسئلة • كاهوت ستايل";
+  load();
+};
+
+load();
