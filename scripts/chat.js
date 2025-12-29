@@ -1,6 +1,4 @@
-// scripts/chat.js
 
-// ELEMENTS
 const form = document.getElementById("chat-form");
 const input = document.getElementById("chat-input");
 const messagesBox = document.getElementById("messages");
@@ -12,14 +10,14 @@ const speakBtn = document.getElementById("speak-btn");
 const micBtn = document.getElementById("mic-btn");
 const deleteAllBtn = document.getElementById("delete-all-history-btn"); ء
 
-// USER INFO
+
 const userName = localStorage.getItem("cyber_user_name") || "User";
 const userGender = localStorage.getItem("cyber_user_gender") || "other";
 
 let lastAiText = "";
 let currentConversation = [];
 
-// SPEECH OUTPUT 🔊
+
 function speak(text) {
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = /[ء-ي]/.test(text) ? "ar-AE" : "en-US";  // Arabic detection
@@ -29,7 +27,7 @@ function speak(text) {
   speechSynthesis.speak(utter);
 }
 
-// ADD MESSAGE
+
 function addBubble(text, type) {
   const div = document.createElement("div");
   div.className = type === "user" ? "msg user-msg" : "msg ai-msg";
@@ -78,15 +76,15 @@ function greetUser() {
 - حد يهددني بصوري، وين أشتكي؟
 - كيف أحمي حسابي من الاختراق؟
 
-⚠️ المعلومات عامة وليست استشارة قانونية رسمية.
-🎯 سأحاول إعطائك خطوات + قوانين إماراتية + روابط رسمية.`;
+ المعلومات عامة وليست استشارة قانونية رسمية.
+ سأحاول إعطائك خطوات + قوانين إماراتية + روابط رسمية.`;
 
   addBubble(text, "ai");
 }
 
 greetUser();
 
-// SEND MESSAGE
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = input.value.trim();
@@ -129,7 +127,7 @@ newChatBtn.onclick = () => {
   greetUser();
 };
 
-// CLEAR CURRENT CHAT
+
 clearChatBtn.onclick = () => {
   if (!confirm("Clear chat without saving?")) return;
   currentConversation = [];
@@ -137,20 +135,20 @@ clearChatBtn.onclick = () => {
   greetUser();
 };
 
-// DELETE ALL HISTORY 🗑️
+
 deleteAllBtn.onclick = () => {
   if (!confirm("⚠️ Delete all chat history? Not reversible!")) return;
   localStorage.removeItem("cyber_history");
   alert("History deleted successfully ✨");
 };
 
-// READ LAST ANSWER
+
 speakBtn.onclick = () => {
   if (!lastAiText) return alert("No AI reply to read yet!");
   speak(lastAiText);
 };
 
-// MIC SPEECH TO TEXT
+
 micBtn.onclick = () => {
   const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!Rec) return alert("🎙 Browser not supported for voice input");
