@@ -32,6 +32,7 @@
       color: #f9fafb;
     }
 
+    /* ---------- NAV ---------- */
     .top-nav {
       display: flex;
       align-items: center;
@@ -67,6 +68,7 @@
       background: rgba(148, 163, 184, 0.15);
     }
 
+    /* ---------- GAME SHELL ---------- */
     .game-shell-wrapper {
       width: 100vw;
       height: calc(100vh - 56px);
@@ -102,6 +104,7 @@
       background: #020617;
     }
 
+    /* ---------- BACKGROUND ---------- */
     .game-bg-sky {
       position: absolute;
       left: 0;
@@ -120,7 +123,6 @@
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
     }
-
     .b1 { left: 200px; }
     .b2 { left: 360px; }
     .b3 { left: 520px; }
@@ -181,6 +183,7 @@
       );
     }
 
+    /* ---------- HUD ---------- */
     .hearts {
       position: absolute;
       top: 12px;
@@ -213,7 +216,7 @@
       user-select: none;
     }
 
-    /* ---------- Saeed (cuter, rounder) ---------- */
+    /* ---------- SAEED (round cute) ---------- */
     #saeed {
       position: absolute;
       left: 180px;
@@ -309,7 +312,6 @@
       position: relative;
     }
 
-    /* sleeves hint */
     .body::before {
       content:'';
       position:absolute;
@@ -342,8 +344,7 @@
       background:#f1f5f9;
     }
 
-    /* ---------- Phone ---------- */
-
+    /* ---------- PHONE ---------- */
     .phone {
       position: absolute;
       right: 150px;
@@ -425,6 +426,7 @@
 
     .btn.correct {
       background: var(--accent-green);
+      color: #f9fafb;
     }
 
     .btn.wrong {
@@ -441,7 +443,6 @@
     }
 
     /* ---------- INTRO OVERLAY ---------- */
-
     #introScreen {
       position: fixed;
       inset: 0;
@@ -595,9 +596,12 @@
         <div id="introHint">
           On phones, tap “Play introduction” once so the sound can start.
         </div>
+        <!-- OPTIONAL: small test sound button while building -->
+        <!-- <button id="testAudio" class="introBtn" style="background:#1f2937;color:#e5e7eb;">🔊 Test sound</button> -->
       </div>
 
-      <audio id="introAudio" src="intro-voice.mp3"></audio>
+      <!-- your voice file -->
+      <audio id="introAudio" src="intro-voice.mp3" preload="auto"></audio>
     </div>
   </div>
 
@@ -735,18 +739,19 @@
           : "✅ نعم، لنبدأ اللعبة";
     }
 
+    // play intro voice
     playIntroBtn.addEventListener("click", () => {
       introAudio.currentTime = 0;
-
-      // try to play audio (if it fails, we still allow start after 21s)
-      introAudio.play().catch(() => {});
+      introAudio.play().catch((err) => {
+        console.log("Audio play error:", err);
+      });
 
       introPlayed = true;
       playIntroBtn.disabled = true;
       playIntroBtn.textContent =
         lang === "EN" ? "▶️ Playing..." : "▶️ يتم التشغيل...";
 
-      // safety: unlock start after ~21 seconds even if onended doesn't fire
+      // safety: unlock start even if onended doesn't fire
       setTimeout(makeStartReady, 21000);
     });
 
@@ -754,6 +759,7 @@
       makeStartReady();
     });
 
+    // start game after intro
     startGameBtn.addEventListener("click", () => {
       if (!introPlayed || !startReady) return;
       introScreen.style.display = "none";
@@ -761,6 +767,20 @@
       showQuestion();
     });
 
+    // OPTIONAL test button (uncomment in HTML if needed)
+    /*
+    const testBtn = document.getElementById("testAudio");
+    if (testBtn) {
+      testBtn.addEventListener("click", () => {
+        introAudio.currentTime = 0;
+        introAudio.play().catch(err => {
+          alert("Audio error: " + err.message);
+        });
+      });
+    }
+    */
+
+    /* ---------- QUESTIONS ---------- */
     const questions = [
       {
         type: "dm",
