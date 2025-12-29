@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<title>🎯 Saeed’s Cyber Game | UAE Safety Quiz</title>
+<title>🎮 Saeed’s Cyber Game | UAE Quiz</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
@@ -10,75 +10,61 @@
 
 <style>
 body{
-  margin:0;padding:0;
-  background:linear-gradient(135deg,#050b17,#0e1628,#050b17);
+  margin:0;background:linear-gradient(135deg,#050b17,#111827);
   font-family:'Poppins',sans-serif;color:white;text-align:center;
   overflow-x:hidden;
 }
 
-/* 🎛 NAV */
-nav{
-  display:flex;gap:14px;padding:12px;
-  background:#09101f;border-bottom:1px solid #1f2937;
-}
-nav a{
-  color:#d1d5db;text-decoration:none;font-size:14px;
-  padding:8px 14px;border-radius:8px;transition:.3s;
-}
-nav a:hover,nav a.active{background:#1f2937;color:white;}
+/* NAV */
+nav{display:flex;gap:12px;padding:12px;background:#0b1220;}
+nav a{color:#eee;text-decoration:none;padding:8px 14px;border-radius:10px;}
+nav a.active,nav a:hover{background:#1f2937;color:white;}
 
-/* 🚀 WELCOME SCREEN */
-#welcome{
-  padding:80px 20px;
-  animation:fadeIn .8s ease;
-}
-#welcome img{width:160px;animation:float 3s infinite ease;}
-@keyframes float{0%{transform:translateY(0);}50%{transform:translateY(-10px);}100%{transform:translateY(0);}}
+/* WELCOME */
+#welcome{padding:70px 20px;animation:fade .8s}
+@keyframes fade{from{opacity:0;transform:translateY(20px)}}
+#welcome img{width:160px;animation:float 3s infinite}
+@keyframes float{50%{transform:translateY(-12px)}}
 
 /* BUTTONS */
 .btn{
-  background:linear-gradient(135deg,#22c55e,#06b6d4);
-  border:none;padding:15px 30px;border-radius:40px;
-  color:#001;font-weight:600;font-size:18px;
-  margin:10px;cursor:pointer;transition:.3s;
+background:linear-gradient(135deg,#22c55e,#06b6d4);
+border:none;padding:14px 24px;margin:6px;
+border-radius:40px;font-weight:600;cursor:pointer;font-size:17px;
+transition:.3s;
 }
-.btn:hover{transform:scale(1.06);}
+.btn:hover{transform:scale(1.06)}
 
-/* 🎯 QUIZ CARD */
+/* QUIZ CARD */
 #quiz{
-  display:none;width:90%;max-width:480px;margin:40px auto;
-  background:#142037;padding:25px;border-radius:18px;
-  box-shadow:0 10px 40px rgba(0,0,0,.6);
-  animation:slideIn .8s ease;
+display:none;width:92%;max-width:500px;margin:40px auto;
+background:#1a2438;padding:25px;border-radius:20px;
+box-shadow:0 0 45px rgba(0,255,204,.2);
+animation:fade 0.8s;
 }
-@keyframes slideIn{from{opacity:0;transform:translateY(20px);}}
 
-/* 🔥 TIMER BAR */
-#progressBar{background:#1e293b;width:100%;height:10px;border-radius:8px;margin-bottom:8px;}
-#progress{background:#22c55e;width:0;height:10px;border-radius:8px;transition:.5s;}
+/* PROGRESS BAR */
+#progressBar{height:10px;background:#333;border-radius:10px;margin-bottom:10px;}
+#progress{height:10px;background:#22c55e;width:0;border-radius:10px;transition:.5s}
 
 /* OPTIONS */
 .opt{
-  display:block;width:100%;padding:14px;margin:10px 0;
-  border:none;background:#1e293b;border-radius:10px;
-  color:white;font-size:16px;cursor:pointer;transition:.3s;
+width:100%;padding:14px;margin:10px 0;
+background:#233044;border:none;border-radius:12px;
+color:white;font-size:16px;cursor:pointer;
+transition:.2s;
 }
-.opt:hover{background:#364156;transform:scale(1.02);}
-.correct{background:#22c55e!important;color:black!important;}
+.opt:hover{background:#31405A;transform:scale(1.02)}
+.correct{background:#22c55e!important;color:#000!important;}
 .wrong{background:#b91c1c!important;}
 
-/* 🎉 END */
-#end{
-  display:none;padding:60px 20px;
-}
-#end h1{font-size:40px;margin-bottom:10px;}
-.fall{
-  position:fixed;top:-10px;animation:fall 3s linear forwards;
-}
-@keyframes fall{
-  to{transform:translateY(110vh) rotate(360deg);}
-}
-footer{margin:40px 0;font-size:12px;opacity:.6;}
+/* END */
+#end{display:none;padding:80px 20px;}
+#end h1{font-size:38px;margin-bottom:10px;}
+.fall{position:fixed;top:-10px;animation:fall 3s linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(360deg)}}
+
+footer{margin:40px 0;opacity:.5;font-size:12px}
 </style>
 </head>
 
@@ -92,34 +78,33 @@ footer{margin:40px 0;font-size:12px;opacity:.6;}
 </nav>
 
 <div id="welcome">
-  <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png"/>
-  <h1>🎯 Cyber Security Quiz</h1>
-  <p>Learn, protect, and level up your digital safety in the UAE.</p>
+<img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png"/>
+<h1>🎯 Cyber Security Quiz</h1>
+<p>Real UAE situations. Learn to protect yourself.</p>
 
-  <h3>Choose Language / اختار اللغة</h3>
-  <button class="btn" onclick="setLang('EN')">🇬🇧 English</button>
-  <button class="btn" onclick="setLang('AR')">🇦🇪 العربية</button>
+<h3>Choose Language / اختار اللغة</h3>
+<button class="btn" onclick="setLang('EN')">🇬🇧 English</button>
+<button class="btn" onclick="setLang('AR')">🇦🇪 العربية</button>
 
-  <button id="startBtn" class="btn" style="display:none;">🚀 Start</button>
+<button id="startBtn" class="btn" style="display:none;">🚀 Start</button>
 </div>
 
 <div id="quiz">
-  <h2 id="q"></h2>
-  <div id="timer">⏳ 15s</div>
-  <div id="progressBar"><div id="progress"></div></div>
-  <div id="options"></div>
-  <button class="btn" id="next">Next ➜</button>
+<h2 id="q"></h2>
+<div id="timer">⏳ 15s</div>
+<div id="progressBar"><div id="progress"></div></div>
+<div id="options"></div>
+<button class="btn" id="next" style="display:none;">Next ➜</button>
 </div>
 
 <div id="end">
-  <h1 id="endHead"></h1>
-  <h2 id="score"></h2>
-  <button class="btn" onclick="location.reload()">🔁 Play Again</button>
+<h1 id="endHead"></h1>
+<h2 id="score"></h2>
+<button class="btn" onclick="location.reload()">🔁 Play Again</button>
 </div>
 
 <footer>Created by Mariam — 2025</footer>
 
-<script src="scripts/quiz.js?v=100"></script>
+<script src="scripts/quiz.js?v=2025"></script>
 </body>
 </html>
-
