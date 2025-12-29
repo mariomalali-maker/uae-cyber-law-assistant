@@ -1,87 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title> Cyber Security Challenge - Test Your Self| By Mariam</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="UTF-8"/>
+  <title>🎯 Cyber Security Quiz | Mariam</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
   <style>
-    body {
-      margin:0;
-      background:radial-gradient(circle at top, #0d1628, #020617);
-      font-family:'Poppins',sans-serif;
-      color:white;
-      text-align:center;
+    body{
+      margin:0;background:radial-gradient(circle at top,#0e1628,#000);
+      font-family:'Poppins',sans-serif;color:white;text-align:center;
     }
+    nav{
+      display:flex;gap:12px;padding:10px;background:#09101f;
+      border-bottom:1px solid #1f2937;position:sticky;top:0;
+    }
+    nav a{color:#d1d5db;text-decoration:none;padding:6px 10px;border-radius:6px;font-size:14px;}
+    nav a.active{background:#1f2937;}
 
-    nav {
-      display:flex; gap:10px; align-items:center;
-      padding:10px; background:#0b1220; border-bottom:1px solid #1e293b;
-      position:sticky; top:0;
-    }
-    nav a {
-      text-decoration:none;color:#d1d5db;padding:8px 14px;font-size:14px;
-      border-radius:8px;
-    }
-    nav a.active {background:#1e293b;}
+    #welcome{padding:60px 20px;}
+    #welcome img{width:150px;margin-bottom:20px;animation:float 3s infinite ease-in-out;}
+    @keyframes float{0%{transform:translateY(0);}50%{transform:translateY(-10px);}100%{transform:translateY(0);}}
 
-    #welcomeScreen {
-      padding:60px 20px;
-      display:flex;flex-direction:column;align-items:center;
-    }
-    #welcomeScreen img {
-      width:150px;animation:float 3s infinite ease-in-out;
-    }
-
-    @keyframes float {
-      0%{transform:translateY(0);}50%{transform:translateY(-8px);}100%{transform:translateY(0);}
-    }
-
-    #startBtn {
-      margin-top:25px;
+    .main-btn{
       background:linear-gradient(135deg,#22c55e,#06b6d4);
-      color:#020617;font-weight:600;
-      padding:14px 28px;border-radius:30px;
-      font-size:18px;border:none;cursor:pointer;
-      animation:pulse 1.8s infinite;
+      border:none;padding:15px 30px;border-radius:40px;color:#001;font-weight:600;
+      font-size:18px;margin:10px;cursor:pointer;animation:pulse 2s infinite;
     }
+    @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
 
-    @keyframes pulse {
-      0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}
+    #quiz{
+      display:none;width:90%;max-width:450px;margin:40px auto;
+      background:#142037;padding:25px;border-radius:18px;
+      box-shadow:0 10px 40px rgba(0,0,0,.5);
+      animation:float 3s infinite ease-in-out;
     }
-
-    #quizBox {
-      display:none;
-      margin:60px auto;
-      width:90%;max-width:450px;
-      background:#131f33;padding:28px;
-      border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.6);
-    }
-
-    .opt {
-      display:block;width:100%;padding:12px;margin:10px 0;
-      background:#1e293b;border:none;border-radius:10px;
-      color:white;font-size:16px;
+    .opt{
+      display:block;width:100%;padding:14px;margin:10px 0;border:none;
+      background:#1e293b;border-radius:10px;color:white;font-size:16px;
       cursor:pointer;transition:.2s;
     }
-    .opt:hover{background:#334155;}
+    .opt:hover{background:#344256;}
+    .correct{background:#22c55e!important;color:#000!important;}
+    .wrong{background:#b91c1c!important;}
 
-    .correct{background:#22c55e!important;}
-    .wrong{background:#e11d48!important;}
+    #timer{font-weight:600;font-size:18px;color:#38bdf8;margin-bottom:10px;}
+    #progressBar{width:100%;height:8px;background:#1e293b;border-radius:4px;}
+    #progress{width:0;height:8px;background:#22c55e;border-radius:4px;transition:0.4s;}
 
-    #timer{font-size:18px;color:#38bdf8;font-weight:600;margin-bottom:10px;}
-    #progressBar{height:8px;background:#1e293b;border-radius:4px;margin:12px 0;}
-    #progress{height:8px;width:0;background:#22c55e;border-radius:4px;}
-
-    #nextBtn {
-      padding:10px 20px;background:#3b82f6;border:none;
-      border-radius:10px;color:white;margin-top:12px;cursor:pointer;
-      display:none;
-    }
-
-    #endScreen {
-      display:none;margin-top:80px;
-    }
+    #next{display:none;margin-top:12px;background:#3b82f6;border:none;color:white;padding:10px 20px;border-radius:10px;cursor:pointer;}
+    #end{display:none;margin:70px auto;}
+    footer{margin:40px 0;opacity:.6;font-size:12px;}
   </style>
 </head>
 
@@ -90,39 +58,40 @@
 <nav>
   <a href="index.html">🏠</a>
   <a href="chat.html">💬</a>
+  <a href="history.html">📁</a>
   <a href="quiz.html" class="active">🎯</a>
   <a href="scam.html">🛡</a>
-  <a href="saeed.game.html">🛡</a>
+  <a href="saeed.game.html">Saeeds Cyber Game </a>
 </nav>
 
-<!-- ⭐ START PAGE ⭐ -->
-<div id="welcomeScreen">
-  <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png">
-  <h1>🎯 Cyber Security Challenge</h1>
-  <p style="max-width:340px;opacity:.8;">
-    Test your cyber safety skills with realistic scenarios used in the UAE 🚨  
-  </p>
-  <button id="startBtn">🚀 Start The Challenge</button>
+<div id="welcome">
+  <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png"/>
+  <h1 id="w-title">🎯 Cyber Security Quiz</h1>
+  <p id="w-desc">Test your cyber safety awareness with real UAE situations.</p>
+
+  <h3>Choose Language / اختار اللغة</h3>
+  <button class="main-btn" onclick="setLang('EN')">🇬🇧 English</button>
+  <button class="main-btn" onclick="setLang('AR')">🇦🇪 العربية</button>
+
+  <button id="startBtn" class="main-btn" style="display:none;">🚀 Start</button>
 </div>
 
-<!-- ⭐ QUIZ PAGE ⭐ -->
-<div id="quizBox">
-  <h2 id="qText"></h2>
-  <div id="timer"></div>
+<div id="quiz">
+  <h2 id="q"></h2>
+  <div id="timer">⏳ 15s</div>
   <div id="progressBar"><div id="progress"></div></div>
   <div id="options"></div>
-  <button id="nextBtn">Next ➜</button>
+  <button id="next">Next ➜</button>
 </div>
 
-<!-- ⭐ END PAGE ⭐ -->
-<div id="endScreen">
-  <h2>🎉 Finished!</h2>
-  <p id="scoreText"></p>
-  <button onclick="location.reload()">🔁 Try Again</button>
+<div id="end">
+  <h2 id="endHead"></h2>
+  <h3 id="score"></h3>
+  <button class="main-btn" onclick="location.reload()">🔁 Restart</button>
 </div>
 
+<footer>Created by Mariam — 2025</footer>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
 <script src="scripts/quiz.js"></script>
-
 </body>
 </html>
