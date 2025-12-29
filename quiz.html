@@ -1,41 +1,133 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport"content="width=device-width,initial-scale=1">
-<title>Cyber Quiz</title>
-<style>
-body{margin:0;font-family:system-ui,sans-serif;background:#050816;color:white;}
-nav{display:flex;gap:16px;padding:14px 20px;background:#0f1629;border-bottom:1px solid rgba(255,255,255,.12);overflow-x:auto;}
-nav a{color:white;text-decoration:none;font-size:.9rem;padding:6px 10px;border-radius:8px;}
-nav a:hover{background:#1f2937;}nav .active{background:#22c55e;color:#000}
-#card{width:100%;max-width:760px;margin:40px auto;background:#111827;border-radius:14px;height:220px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:.6s;cursor:pointer}
-.flip{transform:rotateY(180deg);}
-</style></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cyber Quiz | Cyber Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827, #020617);
+      color:white;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .top-nav {
+      display:flex;
+      gap:16px;
+      align-items:center;
+      padding:8px 14px;
+      background:rgba(15,23,42,0.95);
+      border-bottom:1px solid #1f2937;
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .top-nav a {
+      color:#e5e7eb;
+      text-decoration:none;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:14px;
+    }
+    .top-nav a.active,
+    .top-nav a:hover {
+      background:rgba(55,65,81,0.8);
+    }
+    .quiz-body {
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      padding:20px 10px 60px;
+    }
+    .quiz-box {
+      background:#1b2538;
+      padding:20px;
+      border-radius:18px;
+      width:360px;
+      max-width:90vw;
+      text-align:center;
+      box-shadow:0 18px 40px rgba(0,0,0,0.7);
+      animation: float 3s infinite ease-in-out;
+    }
+    @keyframes float {
+      0% { transform:translateY(0); }
+      50% { transform:translateY(-8px); }
+      100% { transform:translateY(0); }
+    }
+    .quiz-btn {
+      display:block;
+      width:100%;
+      background:#2d3f52;
+      border:none;
+      padding:10px;
+      margin:6px 0;
+      border-radius:8px;
+      color:#fff;
+      cursor:pointer;
+      font-size:15px;
+      transition:background 0.2s, transform 0.1s;
+    }
+    .quiz-btn:hover {
+      background:#4d6f9a;
+      transform:translateY(-1px);
+    }
+    #timer {
+      font-size:16px;
+      margin:10px 0;
+    }
+    #scoreBox {
+      margin-top:10px;
+      font-size:16px;
+    }
+    .footer {
+      text-align:center;
+      font-size:12px;
+      opacity:0.7;
+      margin:10px 0 14px;
+    }
+    .start-btn {
+      background:linear-gradient(135deg,#22c55e,#06b6d4);
+      color:#020617;
+      font-weight:600;
+    }
+    .tagline {
+      font-size:13px;
+      opacity:0.85;
+      margin-bottom:10px;
+    }
+  </style>
+</head>
 <body>
 
-<nav>
-<a href="index.html">🏠 Home</a>
-<a href="chat.html">💬 Chat</a>
-<a class="active" href="quiz.html">🧠 Cyber Quiz</a>
-<a href="scam.html">🛑 Scam Detector</a>
-<a href="settings.html">⚙️ Settings</a>
- <a href="saeed.game.html">🎮 Saeed's Game</a>
+<nav class="top-nav">
+  <a href="index.html">🏠 Home</a>
+  <a href="chat.html">💬 Chat</a>
+  <a href="history.html">📁 History</a>
+  <a href="quiz.html" class="active">🎯 Cyber Quiz</a>
+  <a href="detector.html">🛡 Scam Detector</a>
 </nav>
 
-<div id="card"></div>
+<div class="quiz-body">
+  <h2>🎯 Cyber Safety Quiz</h2>
+  <p class="tagline">10 quick questions. Get 8+ to earn a Cyber Guardian badge 🛡</p>
 
-<script>
-const quiz=[{q:"Legal to share photo w/out permission in UAE?",a:"No"},{q:"Where to report scams?",a:"ecrime.ae"},{q:"Share OTP?",a:"No"}];
-let i=0,showA=false;
+  <p id="timer">Time Left: <strong>10</strong>s</p>
 
-function render(){
- card.textContent = showA? quiz[i].a : quiz[i].q;
-}
-card.onclick=()=>{showA=!showA;card.classList.toggle("flip");setTimeout(()=>{render();if(showA){i++;showA=false;if(i>=quiz.length){card.textContent="🎉 Done!"}}},300)}
-render();
-</script>
-</body></html>
+  <div class="quiz-box" id="quiz-box"></div>
 
-  <script src="scripts/quiz.js"></script>
+  <button id="nextBtn" style="display:none; margin-top:15px;">Next ➜</button>
+
+  <h3 id="scoreBox" style="display:none;"></h3>
+  <p id="leaderBoard" style="display:none; font-size:13px; opacity:0.9;"></p>
+
+  <p class="footer">Created by Mariam – 2025</p>
+</div>
+
+<script src="scripts/quiz.js"></script>
 </body>
 </html>
-
