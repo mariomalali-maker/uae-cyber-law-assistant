@@ -1,18 +1,15 @@
-// scripts/quiz.js
+// ================================
+// 🎯 Cyber Safety Quiz - Kahoot Style
+// by Mariam (2025)
+// ================================
 
-const quizBox = document.getElementById("quiz-box");
+// HTML Elements
+const content = document.getElementById("content");
 const timerEl = document.getElementById("timer");
-const nextBtn = document.getElementById("nextBtn");
-const scoreBox = document.getElementById("scoreBox");
-const leaderBoard = document.getElementById("leaderBoard");
+const nextBtn = document.getElementById("next");
+const progressBar = document.getElementById("progress");
 
-let currentIndex = -1;
-let score = 0;
-let timeLeft = 10;
-let timerId = null;
-
-const QUIZ_KEY = "cyber_quiz_best_score";
-
+// QUIZ DATA
 const questions = [
   {
     q: "If someone hacks your Snapchat in the UAE, what is the safest first step?",
@@ -35,32 +32,22 @@ const questions = [
     correct: 2
   },
   {
-    q: "A message says: 'You won a free iPhone, click this link and enter your card details.' What is this?",
-    options: [
-      "Normal offer",
-      "Phishing / scam",
-      "Safe promotion",
-      "Bank message"
-    ],
+    q: "A message says: 'You won a free iPhone, click this link and enter your card details.' This is:",
+    options: ["Normal offer","Phishing / scam","Safe promotion","Bank message"],
     correct: 1
   },
   {
     q: "Which password is strongest?",
-    options: [
-      "mariam123",
-      "Password2024",
-      "@M!r1am_2025#",
-      "qwerty"
-    ],
+    options: ["Omar123","Password2024","@M!r1am_2025#","qwerty"],
     correct: 2
   },
   {
-    q: "If someone is blackmailing you with your photos online in the UAE, you should:",
+    q: "If someone is blackmailing you online in the UAE:",
     options: [
       "Send them more pictures",
-      "Delete all chats so no evidence",
-      "Keep screenshots and report to ecrime.ae",
-      "Pay them once"
+      "Delete messages (evidence)",
+      "Screenshot & report via ecrime.ae",
+      "Pay them one time"
     ],
     correct: 2
   },
@@ -68,18 +55,18 @@ const questions = [
     q: "Two-factor authentication (2FA) means:",
     options: [
       "Using two phones",
-      "Logging in from two countries",
-      "Using password plus extra code / app / SMS",
-      "Changing password daily"
+      "Login with extra code / app / SMS",
+      "Changing password daily",
+      "Different browser"
     ],
-    correct: 2
+    correct: 1
   },
   {
     q: "Posting rumours and fake news about others online in the UAE is:",
     options: [
       "Harmless fun",
       "Protected free speech",
-      "Punishable under UAE cybercrime laws",
+      "Illegal (cybercrime law)",
       "Only wrong on WhatsApp"
     ],
     correct: 2
@@ -95,195 +82,168 @@ const questions = [
     correct: 1
   },
   {
-    q: "What should you NEVER share on social media publicly?",
+    q: "What should you NEVER share publicly?",
     options: [
-      "Cute coffee pictures",
-      "Travel photos after you return",
-      "Your full Emirates ID details",
-      "Sunset views"
+      "Sunset photos",
+      "Cute coffee pics",
+      "Full Emirates ID details",
+      "Vacation photos"
     ],
     correct: 2
   },
   {
-    q: "If you receive a suspicious link from a 'friend' account that was probably hacked, you should:",
+    q: "If you receive a suspicious link from a 'friend' account that looks hacked:",
     options: [
       "Click it quickly",
       "Forward it to everyone",
-      "Ignore it and warn your friend on another channel",
-      "Type your password to log in"
+      "Ignore & warn them on another app",
+      "Reset your phone"
     ],
     correct: 2
   }
 ];
 
-function showStartScreen() {
-  quizBox.innerHTML = `
-    <h3>Ready to start the quiz?</h3>
-    <p>You have 10 seconds for each question. Try to score as high as you can!</p>
-    <p style="font-size:13px; opacity:0.8;">تقدر تجاوب وانت مرتاح، الهدف أنك تتعلم كيف تحمي نفسك إلكترونياً 💻🛡</p>
-    <button class="quiz-btn start-btn" id="startQuizBtn">Start Quiz</button>
-  `;
-  timerEl.style.display = "none";
-  nextBtn.style.display = "none";
-  scoreBox.style.display = "none";
-  leaderBoard.style.display = "none";
+// QUIZ STATE
+let index = -1;
+let score = 0;
+let timeLeft = 10;
+let timer;
 
-  const btn = document.getElementById("startQuizBtn");
-  btn.addEventListener("click", () => {
-    currentIndex = -1;
-    score = 0;
-    timerEl.style.display = "block";
-    nextQuestion();
-  });
-}
+// 🎉 Confetti Animation
+function confettiBurst(){
+  const c = document.getElementById("confetti");
+  const ctx = c.getContext("2d");
+  c.style.display = "block";
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
 
-function startTimer() {
-  clearInterval(timerId);
-  timeLeft = 10;
-  updateTimerText();
-  timerId = setInterval(() => {
-    timeLeft--;
-    updateTimerText();
-    if (timeLeft <= 0) {
-      clearInterval(timerId);
-      lockOptions();
-      nextBtn.style.display = "block";
-    }
-  }, 1000);
-}
+  const pieces = Array.from({length:180}, () => ({
+    x: Math.random()*c.width,
+    y: Math.random()*c.height,
+    r: Math.random()*8+4,
+    c: `hsl(${Math.random()*360},100%,50%)`,
+    s: Math.random()*3+1
+  }));
 
-function updateTimerText() {
-  timerEl.innerHTML = `Time Left: <strong>${timeLeft}</strong>s`;
-}
-
-function nextQuestion() {
-  currentIndex++;
-  if (currentIndex >= questions.length) {
-    endQuiz();
-    return;
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    pieces.forEach(p =>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+      ctx.fillStyle = p.c;
+      ctx.fill();
+      p.y += p.s;
+      if(p.y>c.height)p.y=0;
+    });
+    requestAnimationFrame(draw);
   }
 
-  const qObj = questions[currentIndex];
-  quizBox.innerHTML = `
-    <h3>Question ${currentIndex + 1} of ${questions.length}</h3>
-    <p style="margin-top:8px; margin-bottom:12px;">${qObj.q}</p>
-    <div id="options"></div>
-    <p id="feedback" style="margin-top:10px; font-size:14px;"></p>
+  draw();
+  setTimeout(()=> c.style.display="none", 3500);
+}
+
+// 🟢 Start Screen
+function startScreen(){
+  content.innerHTML = `
+    <h3>Ready to Start?</h3>
+    <p style="opacity:.8;">10 questions • 10s each • UAE safety focused</p>
+    <button class="quiz-option" style="background:#22c55e;font-weight:700;">
+      Start Quiz 🚀
+    </button>
+  `;
+  document.querySelector(".quiz-option").onclick = nextQuestion;
+  timerEl.style.display = "none";
+  nextBtn.style.display = "none";
+}
+startScreen();
+
+// ⏳ Timer
+function startTimer(){
+  clearInterval(timer);
+  timeLeft = 10;
+  timerEl.innerHTML = `Time Left: <strong>${timeLeft}</strong>s`;
+
+  timer = setInterval(()=>{
+    timeLeft--;
+    timerEl.innerHTML = `Time Left: <strong>${timeLeft}</strong>s`;
+    if(timeLeft<=0){ clearInterval(timer); lock(); }
+  },1000);
+}
+
+// 👉 Next Question
+function nextQuestion(){
+  index++;
+  if(index >= questions.length) return finishQuiz();
+
+  const q = questions[index];
+  progressBar.style.width = `${((index)/questions.length)*100}%`;
+  timerEl.style.display = "block";
+
+  content.innerHTML = `
+    <h3>Q ${index+1} / ${questions.length}</h3>
+    <p style="margin:10px 0 18px;">${q.q}</p>
+    ${q.options.map((o,i)=>`<button class="quiz-option" data-i="${i}">${o}</button>`).join("")}
+    <p id="feedback" style="margin-top:10px;"></p>
   `;
 
-  const optionsDiv = document.getElementById("options");
-  qObj.options.forEach((opt, idx) => {
-    const btn = document.createElement("button");
-    btn.className = "quiz-btn";
-    btn.textContent = opt;
-    btn.dataset.index = idx;
-    btn.addEventListener("click", () => handleAnswer(idx));
-    optionsDiv.appendChild(btn);
+  document.querySelectorAll(".quiz-option").forEach(btn=>{
+    btn.onclick = ()=> answer(btn);
   });
 
-  nextBtn.style.display = "none";
+  nextBtn.style.display="none";
   startTimer();
 }
 
-function handleAnswer(choiceIndex) {
-  clearInterval(timerId);
-  const qObj = questions[currentIndex];
-  const feedback = document.getElementById("feedback");
-  const optionsDiv = document.getElementById("options");
-  const buttons = optionsDiv.querySelectorAll("button");
+// ✔ Check Answer
+function answer(btn){
+  clearInterval(timer);
+  const choice = Number(btn.dataset.i);
+  const correct = questions[index].correct;
+  const all = document.querySelectorAll(".quiz-option");
 
-  buttons.forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === qObj.correct) {
-      btn.style.background = "#16a34a";
-    }
-    if (i === choiceIndex && i !== qObj.correct) {
-      btn.style.background = "#b91c1c";
-    }
-  });
+  all.forEach(b=>b.disabled = true);
 
-  if (choiceIndex === qObj.correct) {
+  if(choice === correct){
     score++;
-    feedback.textContent = "✅ Correct! Nice job.";
-    feedback.style.color = "#22c55e";
+    btn.classList.add("correct");
+    document.getElementById("feedback").innerHTML = "✅ Correct! Good job!";
   } else {
-    feedback.textContent = "❌ Wrong. It’s okay, you’re learning.";
-    feedback.style.color = "#f97316";
+    btn.classList.add("wrong");
+    all[correct].classList.add("correct");
+    document.getElementById("feedback").innerHTML = "❌ Wrong — You're learning!";
   }
 
   nextBtn.style.display = "block";
 }
+nextBtn.onclick = nextQuestion;
 
-function lockOptions() {
-  const optionsDiv = document.getElementById("options");
-  if (!optionsDiv) return;
-  const buttons = optionsDiv.querySelectorAll("button");
-  const qObj = questions[currentIndex];
-
-  buttons.forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === qObj.correct) {
-      btn.style.background = "#16a34a";
-    }
-  });
-
-  const feedback = document.getElementById("feedback");
-  if (feedback && !feedback.textContent) {
-    feedback.textContent = "⏰ Time is up! The correct answer is highlighted in green.";
-    feedback.style.color = "#f97316";
-  }
+// 🚩 Lock if time ends
+function lock(){
+  const correct = questions[index].correct;
+  document.querySelectorAll(".quiz-option")[correct].classList.add("correct");
+  document.querySelectorAll(".quiz-option").forEach(b=>b.disabled = true);
+  document.getElementById("feedback").innerHTML = "⏰ Time's up!";
+  nextBtn.style.display = "block";
 }
 
-function endQuiz() {
-  quizBox.innerHTML = `
-    <h3>Quiz Finished 🎉</h3>
-    <p>You answered <strong>${score}</strong> out of <strong>${questions.length}</strong> correctly.</p>
-  `;
+// 🎉 Finish
+function finishQuiz(){
+  progressBar.style.width = "100%";
   timerEl.style.display = "none";
   nextBtn.style.display = "none";
-  scoreBox.style.display = "block";
 
-  let message;
-  let badge = "";
-  if (score === questions.length) {
-    message = "Perfect! You’re a true Cyber Guardian 🛡🔥";
-    badge = "🏅 Platinum Cyber Guardian";
-  } else if (score >= 8) {
-    message = "Amazing! You’re very aware of cyber safety.";
-    badge = "🥇 Gold Cyber Guardian";
-  } else if (score >= 5) {
-    message = "Good start! You know some key points, keep learning.";
-    badge = "🥈 Silver Cyber Guardian";
-  } else {
-    message = "It’s okay. The goal is to learn and get safer online. Try again!";
-    badge = "🥉 Cyber Learner";
-  }
+  let msg = "";
+  if(score === 10) msg = "🏆 Perfect! CYBER LEGEND!";
+  else if(score >= 8) msg = "✨ Amazing! Cyber Guardian!";
+  else if(score >= 5) msg = "🛡 Good! Keep practicing!";
+  else msg = "📚 You got this — Try again!";
 
-  scoreBox.textContent = message + "  " + badge;
+  content.innerHTML = `
+    <h2>Quiz Complete 🎉</h2>
+    <p>You scored: <strong>${score}/10</strong></p>
+    <h3>${msg}</h3>
+    <button class="quiz-option" onclick="location.reload()">Restart 🔁</button>
+  `;
 
-  const prevBest = parseInt(localStorage.getItem(QUIZ_KEY) || "0", 10);
-  if (score > prevBest) {
-    localStorage.setItem(QUIZ_KEY, String(score));
-  }
-
-  const best = Math.max(score, prevBest);
-  leaderBoard.style.display = "block";
-  leaderBoard.textContent = `🏆 Your best score so far: ${best} / ${questions.length}`;
-
-  const restartBtn = document.createElement("button");
-  restartBtn.className = "quiz-btn start-btn";
-  restartBtn.textContent = "Restart Quiz 🔁";
-  restartBtn.addEventListener("click", () => {
-    currentIndex = -1;
-    score = 0;
-    timerEl.style.display = "block";
-    nextQuestion();
-  });
-  quizBox.appendChild(restartBtn);
+  confettiBurst();
 }
-
-nextBtn.addEventListener("click", () => {
-  nextQuestion();
-});
-
-showStartScreen();
