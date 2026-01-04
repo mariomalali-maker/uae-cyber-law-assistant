@@ -9,187 +9,261 @@
 /* ================= RESET ================= */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
+button{font-family:inherit}
 
-/* ================= BASE ================= */
+/* ================= COLORS ================= */
+:root{
+--bg:#020617;
+--panel:#0f172a;
+--accent:#22c55e;
+--danger:#ef4444;
+--text:#e5e7eb;
+--muted:#9ca3af;
+}
+
+/* ================= PAGE ================= */
 body{
-  font-family:system-ui,-apple-system,Segoe UI,sans-serif;
-  background:#020617;
-  color:#e5e7eb;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+background:radial-gradient(circle at top,#020617,#000);
+color:var(--text);
+font-family:system-ui,Segoe UI,sans-serif;
+display:flex;
+flex-direction:column;
+}
+
+/* ================= NAV ================= */
+nav{
+display:flex;
+gap:12px;
+padding:12px 18px;
+background:#020617;
+border-bottom:1px solid #1f2937;
+}
+nav a{
+color:var(--text);
+text-decoration:none;
+font-size:.9rem;
+padding:6px 10px;
+border-radius:999px;
+}
+nav a.active{
+background:var(--accent);
+color:#022c22;
 }
 
 /* ================= GAME SHELL ================= */
-#game{
-  width:100%;
-  max-width:1000px;
-  height:100%;
-  max-height:680px;
-  background:linear-gradient(180deg,#020617,#000);
-  border-radius:24px;
-  border:1px solid rgba(255,255,255,.08);
-  position:relative;
-  overflow:hidden;
+main{
+flex:1;
+display:flex;
+justify-content:center;
+padding:16px;
 }
-
-/* ================= BACKGROUND ================= */
-#bg{
-  position:absolute; inset:0;
-  background:
-    radial-gradient(circle at 15% 10%, rgba(56,189,248,.12), transparent 40%),
-    radial-gradient(circle at 85% 20%, rgba(244,114,182,.1), transparent 45%),
-    linear-gradient(#020617,#000);
+#game{
+width:100%;
+max-width:960px;
+background:rgba(15,23,42,.95);
+border-radius:24px;
+border:1px solid #1f2937;
+box-shadow:0 25px 80px rgba(0,0,0,.7);
+overflow:hidden;
+position:relative;
 }
 
 /* ================= HUD ================= */
-#hud{
-  position:absolute;
-  top:12px; left:12px; right:12px;
-  display:flex; justify-content:space-between;
-  z-index:20;
+.hud{
+position:absolute;
+top:12px;
+left:12px;
+right:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:5;
 }
-.pill{
-  background:rgba(15,23,42,.8);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:999px;
-  padding:6px 14px;
-  font-size:.85rem;
+#hearts{font-size:1.1rem}
+#level{
+background:#059669;
+padding:4px 10px;
+border-radius:999px;
+font-size:.8rem;
 }
-#dangerBar{
-  width:100px; height:8px;
-  background:#111827;
-  border-radius:999px;
-  overflow:hidden;
+
+/* Danger meter */
+.danger-bar{
+width:140px;
+height:8px;
+background:#111827;
+border-radius:999px;
+overflow:hidden;
+margin-left:10px;
 }
-#dangerFill{
-  height:100%;
-  width:0%;
-  background:#ef4444;
-  transition:.3s;
+#danger-fill{
+height:100%;
+width:0%;
+background:var(--danger);
+transition:.3s;
+}
+
+/* ================= SCENE ================= */
+#scene{
+height:min(70vh,520px);
+min-height:420px;
+background:linear-gradient(#0f172a,#020617);
+position:relative;
+overflow:hidden;
+}
+
+/* Road */
+.road{
+position:absolute;
+bottom:40px;
+left:0;
+right:0;
+height:80px;
+background:#020617;
+box-shadow:0 -14px 40px rgba(0,0,0,.8) inset;
+}
+.lane{
+position:absolute;
+top:50%;
+left:0;
+right:0;
+height:4px;
+transform:translateY(-50%);
+background-image:repeating-linear-gradient(
+to right,#fff,#fff 24px,transparent 24px,transparent 48px);
+opacity:.5;
 }
 
 /* ================= CHARACTER ================= */
 #saeed{
-  position:absolute;
-  bottom:110px;
-  left:18%;
-  width:230px;
-  z-index:10;
-  animation:float 1.6s ease-in-out infinite;
+position:absolute;
+bottom:82px;
+left:15%;
+width:180px;
+z-index:3;
+animation:idle 2.4s ease-in-out infinite;
 }
-@keyframes float{50%{transform:translateY(-6px)}}
-
+@keyframes idle{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-6px)}
+}
 .eye{animation:blink 4s infinite}
-@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes blink{
+0%,92%,100%{transform:scaleY(1)}
+95%{transform:scaleY(.1)}
+}
 #mouth{transition:.2s}
 
 /* ================= PHONE ================= */
 #phone{
-  position:absolute;
-  right:6%;
-  top:120px;
-  width:330px;
-  background:rgba(15,23,42,.95);
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.1);
-  padding:16px;
-  z-index:30;
+position:absolute;
+top:20%;
+right:6%;
+width:300px;
+display:none;
+z-index:4;
+}
+#phone.show{
+display:block;
+animation:phoneIn .5s ease forwards;
+}
+@keyframes phoneIn{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:translateY(0)}
+}
+.phone-inner{
+background:#111827;
+border-radius:22px;
+padding:16px;
+border:1px solid #1f2937;
 }
 .phone-top{
-  display:flex; justify-content:space-between;
-  font-size:.8rem; opacity:.8;
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+font-size:.85rem;
 }
-.bubble{
-  background:#1e293b;
-  padding:12px;
-  border-radius:14px;
-  margin:12px 0;
+.msg{
+background:#1e293b;
+padding:12px;
+border-radius:14px;
+margin-bottom:12px;
 }
-.buttons{display:flex; gap:10px}
-button{
-  flex:1; padding:10px;
-  border:none; border-radius:12px;
-  font-weight:700; cursor:pointer;
+.choice-row{
+display:flex;
+gap:10px;
+}
+.choice-btn{
+flex:1;
+border:none;
+padding:12px;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
+touch-action:manipulation;
 }
 .safe{background:#22c55e;color:#022c22}
-.risky{background:#fee2e2;color:#7f1d1d}
+.risk{background:#fee2e2;color:#7f1d1d}
+.tip{margin-top:6px;font-size:.8rem;color:#f87171}
 
 /* ================= OVERLAYS ================= */
 .overlay{
-  position:absolute; inset:0;
-  background:rgba(2,6,23,.9);
-  display:flex; justify-content:center; align-items:center;
-  z-index:50;
+position:absolute;
+inset:0;
+background:rgba(2,6,23,.75);
+backdrop-filter:blur(8px);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:10;
 }
 .panel{
-  background:#0f172a;
-  border-radius:20px;
-  padding:22px;
-  max-width:440px;
-  text-align:center;
-  border:1px solid rgba(255,255,255,.1);
+background:#0f172a;
+padding:22px;
+border-radius:22px;
+width:min(420px,92vw);
+text-align:center;
 }
-
-/* ================= MOBILE ================= */
-@media(max-width:760px){
-  #saeed{left:50%;transform:translateX(-50%);bottom:300px}
-  #phone{left:50%;right:auto;top:auto;bottom:20px;transform:translateX(-50%);width:90%}
+.panel button{
+margin-top:10px;
+padding:10px 16px;
+border-radius:999px;
+border:none;
+font-weight:600;
+cursor:pointer;
+background:var(--accent);
+color:#022c22;
 }
 </style>
 </head>
 
 <body>
+
+<nav>
+<a href="index.html">🏠 Home</a>
+<a href="chat.html">💬 Chat</a>
+<a href="quiz.html">🧠 Quiz</a>
+<a class="active">🎮 Saeed Game</a>
+</nav>
+
+<main>
 <div id="game">
-<div id="bg"></div>
-
-<!-- HUD -->
-<div id="hud">
-  <div class="pill" id="level">Level 1 / 8</div>
-  <div class="pill">❤️ <span id="hearts">3</span></div>
-  <div id="dangerBar"><div id="dangerFill"></div></div>
-</div>
-
-<!-- CHARACTER -->
-<div id="saeed">
-<svg viewBox="0 0 200 300">
-  <circle cx="100" cy="70" r="40" fill="#fde68a"/>
-  <circle class="eye" cx="88" cy="68" r="4"/>
-  <circle class="eye" cx="112" cy="68" r="4"/>
-  <path id="mouth" d="M85 90 Q100 100 115 90" stroke="#b91c1c" stroke-width="4" fill="none"/>
-  <rect x="60" y="120" width="80" height="120" rx="28" fill="#f9fafb"/>
-</svg>
-</div>
-
-<!-- PHONE -->
-<div id="phone">
-  <div class="phone-top">
-    <span>📱 Chat</span>
-    <span>online</span>
-  </div>
-  <div class="bubble" id="question"></div>
-  <div class="buttons">
-    <button class="safe" id="safeBtn"></button>
-    <button class="risky" id="riskBtn"></button>
-  </div>
-</div>
 
 <!-- INTRO -->
 <div class="overlay" id="intro">
 <div class="panel">
-  <h2 id="introTitle">Meet Saeed</h2>
-  <p id="introText">Help Saeed survive the internet.</p>
-  <audio id="introAudio" src="intro-voice.mp3"></audio>
-  <button class="safe" onclick="playStory()">▶ Play Story</button>
+<h2>👦 This is Saeed</h2>
+<p>You will help him survive the internet.<br>Choose wisely.</p>
+<button onclick="startLang()">Start</button>
 </div>
 </div>
 
 <!-- LANGUAGE -->
 <div class="overlay" id="lang" style="display:none">
 <div class="panel">
-  <h2>Choose Language</h2>
-  <button class="safe" onclick="setLang('en')">English</button><br><br>
-  <button class="safe" onclick="setLang('ar')">العربية</button>
+<h2>Choose language</h2>
+<button onclick="setLang('en')">English</button>
+<button onclick="setLang('ar')">العربية</button>
 </div>
 </div>
 
@@ -198,76 +272,149 @@ button{
 <div class="panel" id="endBox"></div>
 </div>
 
+<!-- HUD -->
+<div class="hud">
+<div id="hearts">❤️❤️❤️</div>
+<div style="display:flex;align-items:center">
+<div id="level">Level 1</div>
+<div class="danger-bar"><div id="danger-fill"></div></div>
+</div>
 </div>
 
+<section id="scene">
+<div class="road"><div class="lane"></div></div>
+
+<!-- SAEED -->
+<div id="saeed">
+<svg viewBox="0 0 220 360" width="100%">
+<ellipse cx="110" cy="340" rx="40" ry="10" fill="#020617" opacity=".6"/>
+<rect x="70" y="140" width="80" height="130" rx="30" fill="#f9fafb"/>
+<circle cx="110" cy="80" r="44" fill="#fde68a"/>
+<circle class="eye" cx="95" cy="75" r="4"/>
+<circle class="eye" cx="125" cy="75" r="4"/>
+<path id="mouth" d="M95 95 Q110 105 125 95"
+stroke="#b91c1c" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>
+</div>
+
+<!-- PHONE -->
+<div id="phone">
+<div class="phone-inner">
+<div class="phone-top">
+<span id="icon">📱</span>
+<span id="title"></span>
+</div>
+<div id="msg" class="msg"></div>
+<div class="choice-row">
+<button class="choice-btn safe" id="safe"></button>
+<button class="choice-btn risk" id="risk"></button>
+</div>
+<div id="tip" class="tip"></div>
+</div>
+</div>
+
+</section>
+</div>
+</main>
+
 <script>
-let lang="en",idx=0,hearts=3,danger=0;
-
-const text={
-en:{
-introTitle:"Meet Saeed",
-introText:"Help Saeed survive the internet.",
-win:"You kept Saeed safe!",
-lose:"Game Over"
-},
-ar:{
-introTitle:"هذا سعيد",
-introText:"ساعد سعيد على النجاة في الإنترنت",
-win:"حميت سعيد!",
-lose:"انتهت اللعبة"
-}
-};
-
-const levels=[
-{q:{en:"A stranger asks for a private photo.",ar:"شخص غريب يطلب صورة خاصة"},s:{en:"Block & report",ar:"حظر وتبليغ"},r:{en:"Send photo",ar:"إرسال"},lose:true},
-{q:{en:"Someone asks your school name.",ar:"شخص يسأل عن مدرستك"},s:{en:"Keep private",ar:"عدم الإجابة"},r:{en:"Tell them",ar:"إخبارهم"},lose:false},
-{q:{en:"Bank email with a link.",ar:"إيميل بنك فيه رابط"},s:{en:"Use official app",ar:"استخدم التطبيق"},r:{en:"Click link",ar:"اضغط الرابط"},lose:true},
-{q:{en:"Friend sends weird link.",ar:"صديق يرسل رابط غريب"},s:{en:"Ask first",ar:"اسأل أولاً"},r:{en:"Click",ar:"اضغط"},lose:false},
-{q:{en:"Free WiFi asks login.",ar:"واي فاي يطلب تسجيل دخول"},s:{en:"Use mobile data",ar:"بيانات الهاتف"},r:{en:"Login",ar:"تسجيل"},lose:false},
-{q:{en:"You won a prize popup.",ar:"نافذة ربح جائزة"},s:{en:"Close it",ar:"إغلاق"},r:{en:"Download",ar:"تحميل"},lose:true},
-{q:{en:"New account wants your number.",ar:"حساب جديد يطلب رقمك"},s:{en:"Say no",ar:"رفض"},r:{en:"Give number",ar:"إعطاء"},lose:false},
-{q:{en:"Someone threatens you.",ar:"شخص يهددك"},s:{en:"Save & tell adult",ar:"حفظ وإبلاغ"},r:{en:"Reply angrily",ar:"الرد"},lose:true}
+/* ================= GAME DATA ================= */
+const data=[
+{t:{en:"Instagram DM",ar:"رسالة انستغرام"},
+m:{en:"Send me a private photo.",ar:"ارسل صورة خاصة."},
+s:{en:"Block & report",ar:"حظر و تبليغ"},
+r:{en:"Send photo",ar:"إرسال"},
+bad:{en:"Never send photos.",ar:"لا ترسل صور."}},
+{t:{en:"Game Chat",ar:"شات لعبة"},
+m:{en:"Where do you live?",ar:"أين تسكن؟"},
+s:{en:"Keep private",ar:"تجاهل"},
+r:{en:"Tell them",ar:"أخبرهم"},
+bad:{en:"Location is dangerous.",ar:"الموقع خطر."}},
+{t:{en:"Free WiFi",ar:"واي فاي"},
+m:{en:"Login with Instagram?",ar:"سجل بانستغرام؟"},
+s:{en:"Use mobile data",ar:"بيانات الهاتف"},
+r:{en:"Login",ar:"تسجيل"},
+bad:{en:"Public WiFi is risky.",ar:"واي فاي عام خطر."}},
+{t:{en:"Friend Request",ar:"طلب صداقة"},
+m:{en:"I know you. Give number.",ar:"اعطني رقمك."},
+s:{en:"Ask parent",ar:"اسأل شخص بالغ"},
+r:{en:"Give number",ar:"اعطاء"},
+bad:{en:"Never share numbers.",ar:"لا تشارك الرقم."}},
+{t:{en:"Email",ar:"إيميل"},
+m:{en:"Click to unlock bank.",ar:"اضغط لفتح البنك."},
+s:{en:"Use bank app",ar:"تطبيق البنك"},
+r:{en:"Click link",ar:"اضغط"},
+bad:{en:"Banks don’t send links.",ar:"البنوك لا ترسل روابط."}},
+{t:{en:"Link",ar:"رابط"},
+m:{en:"Funny video 😂",ar:"فيديو مضحك"},
+s:{en:"Ask sender",ar:"اسأل المرسل"},
+r:{en:"Open link",ar:"افتح"},
+bad:{en:"Links can hack.",ar:"الرابط قد يخترق."}},
+{t:{en:"Voice Msg",ar:"صوت"},
+m:{en:"Bank voice message.",ar:"رسالة من البنك."},
+s:{en:"Call bank",ar:"اتصل بالبنك"},
+r:{en:"Play it",ar:"تشغيل"},
+bad:{en:"Scam alert.",ar:"احتيال."}},
+{t:{en:"Final Choice",ar:"القرار الأخير"},
+m:{en:"Stranger wants meeting.",ar:"غريب يريد لقاء."},
+s:{en:"Say no",ar:"ارفض"},
+r:{en:"Agree",ar:"وافق"},
+bad:{en:"Never meet strangers.",ar:"لا تقابل الغرباء."}}
 ];
 
-function playStory(){
-  const a=document.getElementById("introAudio");
-  a.play();
-  a.onended=()=>{document.getElementById("intro").style.display="none";document.getElementById("lang").style.display="flex";}
-}
+/* ================= LOGIC ================= */
+let i=0,lang="en",hearts=3,danger=0;
 
+const phone=document.getElementById("phone");
+const mouth=document.getElementById("mouth");
+
+function startLang(){
+document.getElementById("intro").style.display="none";
+document.getElementById("lang").style.display="flex";
+}
 function setLang(l){
-  lang=l;
-  document.getElementById("lang").style.display="none";
-  start();
+lang=l;
+document.getElementById("lang").style.display="none";
+startGame();
 }
-
-function start(){
-  idx=0; hearts=3; danger=0;
-  render();
+function startGame(){
+i=0;hearts=3;danger=0;
+phone.classList.add("show");
+update();
 }
-
-function render(){
-  const L=levels[idx];
-  document.getElementById("question").textContent=L.q[lang];
-  document.getElementById("safeBtn").textContent=L.s[lang];
-  document.getElementById("riskBtn").textContent=L.r[lang];
-  document.getElementById("level").textContent=`Level ${idx+1} / 8`;
-  document.getElementById("hearts").textContent=hearts;
-  document.getElementById("dangerFill").style.width=`${danger}%`;
+function update(){
+const s=data[i];
+document.getElementById("level").textContent="Level "+(i+1);
+document.getElementById("title").textContent=s.t[lang];
+document.getElementById("msg").textContent=s.m[lang];
+document.getElementById("safe").textContent=s.s[lang];
+document.getElementById("risk").textContent=s.r[lang];
+document.getElementById("tip").textContent="";
+document.getElementById("hearts").textContent="❤️".repeat(hearts)+"🖤".repeat(3-hearts);
+document.getElementById("danger-fill").style.width=danger+"%";
+mouth.setAttribute("d","M95 95 Q110 105 125 95");
 }
-
-safeBtn.onclick=()=>{idx++; idx>=8?end(true):render();};
-riskBtn.onclick=()=>{
-  danger+=12;
-  if(levels[idx].lose){hearts--;}
-  if(hearts<=0){end(false);return;}
-  idx++; idx>=8?end(true):render();
-};
-
+function bad(){
+mouth.setAttribute("d","M95 100 Q110 90 125 100");
+}
 function end(win){
-  document.getElementById("end").style.display="flex";
-  endBox.innerHTML=`<h2>${text[lang][win?"win":"lose"]}</h2><button onclick="location.reload()">Restart</button>`;
+document.getElementById("end").style.display="flex";
+document.getElementById("endBox").innerHTML=
+win?`<h2>🎉 ${lang==="en"?"You saved Saeed!":"حميت سعيد!"}</h2>`
+:`<h2>💔 ${lang==="en"?"Game Over":"انتهت اللعبة"}</h2>`;
 }
+safe.onclick=()=>{
+danger=Math.max(0,danger-10);
+i++; i>=data.length?end(true):update();
+};
+risk.onclick=()=>{
+bad();
+hearts--; danger+=20;
+document.getElementById("tip").textContent=data[i].bad[lang];
+if(hearts<=0||danger>=100){end(false);return}
+document.getElementById("danger-fill").style.width=danger+"%";
+};
 </script>
+
 </body>
 </html>
