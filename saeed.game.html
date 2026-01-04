@@ -1,212 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Saeed's Cyber Safety Game</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saeed’s Cyber Quest</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
---bg:#020617;--accent:#22c55e;--danger:#ef4444;
---text:#e5e7eb;--panel:#0f172a;--blur:rgba(2,6,23,.65)
-}
 body{
-font-family:system-ui,Segoe UI,sans-serif;
+font-family:system-ui,-apple-system,Segoe UI,sans-serif;
 background:radial-gradient(circle at top,#020617,#000);
-color:var(--text);min-height:100vh;display:flex;flex-direction:column;
+color:#e5e7eb;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
 }
-nav{
-display:flex;gap:12px;padding:12px 18px;background:#020617;
-border-bottom:1px solid rgba(15,23,42,.8);position:sticky;top:0;z-index:20;
+
+/* GAME FRAME */
+#game{
+width:100%;
+max-width:900px;
+height:540px;
+background:#020617;
+border-radius:22px;
+box-shadow:0 30px 80px rgba(0,0,0,.8);
+position:relative;
+overflow:hidden;
+border:1px solid #1f2937;
 }
-nav a{
-color:var(--text);text-decoration:none;font-size:.9rem;
-padding:6px 10px;border-radius:999px;border:1px solid transparent;
+
+/* HUD */
+#hud{
+position:absolute;
+top:12px;left:12px;right:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:5;
+font-size:.9rem;
 }
-nav a.active{background:var(--accent);color:#022c22}
-main{flex:1;display:flex;justify-content:center;padding:20px}
-#game-shell{
-width:100%;max-width:960px;background:rgba(15,23,42,.92);
-border-radius:24px;border:1px solid rgba(31,41,55,.8);
-box-shadow:0 25px 60px rgba(0,0,0,.6);position:relative;overflow:hidden;
+#hearts{font-size:1.1rem}
+#level{
+background:#22c55e;
+color:#022c22;
+padding:4px 10px;
+border-radius:999px;
+font-weight:600;
 }
-.hud{
-position:absolute;top:12px;left:12px;right:12px;
-display:flex;justify-content:space-between;z-index:3;
+
+/* BACKGROUND ANIMATION */
+#bg{
+position:absolute;
+inset:0;
+background:linear-gradient(#0f172a,#000);
+overflow:hidden;
 }
-.level-label{
-background:#059669;padding:4px 10px;border-radius:999px;font-size:.8rem
+.star{
+position:absolute;
+width:2px;height:2px;
+background:#fff;
+opacity:.6;
+animation:twinkle 3s infinite alternate;
 }
-#scene{
-height:min(70vh,520px);min-height:380px;
-background:linear-gradient(#0f172a,#000);position:relative;
+@keyframes twinkle{to{opacity:.2}}
+
+/* GROUND */
+#ground{
+position:absolute;
+bottom:0;left:0;right:0;
+height:100px;
+background:#020617;
+box-shadow:0 -20px 40px rgba(0,0,0,.8) inset;
 }
-.road{
-position:absolute;bottom:40px;left:0;right:0;height:80px;background:#020617;
+
+/* SAEED */
+#saeed{
+position:absolute;
+bottom:100px;
+left:50%;
+transform:translateX(-50%);
+width:120px;
+transition:.3s;
+animation:bounce 1.2s infinite ease-in-out;
 }
-#saeed-wrapper{
-position:absolute;bottom:80px;left:18%;width:180px;
-animation:bounce 1.4s infinite ease-in-out;
+@keyframes bounce{
+50%{transform:translate(-50%,-6px)}
 }
-@keyframes bounce{50%{transform:translateY(-6px)}}
 .eye{animation:blink 4s infinite}
-@keyframes blink{95%{transform:scaleY(.1)}}
-#phone{
-display:none;position:absolute;top:22%;right:8%;width:300px;
+@keyframes blink{
+95%{transform:scaleY(.1)}
 }
-#phone.show{display:block}
-.phone-inner{
-background:#111827;border-radius:20px;padding:16px;border:1px solid #1f2937;
+#mouth{transition:.25s}
+
+/* PHONE CARD */
+#card{
+position:absolute;
+top:90px;
+left:50%;
+transform:translateX(-50%) scale(.8);
+width:320px;
+background:#111827;
+border-radius:18px;
+padding:16px;
+border:1px solid #1f2937;
+opacity:0;
+pointer-events:none;
+transition:.4s;
 }
-.msg-in{background:#1e293b;padding:10px;border-radius:12px;margin-bottom:10px}
-.choice-row{display:flex;gap:10px}
-.choice-btn{
-flex:1;border:none;padding:10px;border-radius:10px;
-font-weight:600;cursor:pointer
+#card.show{
+opacity:1;
+transform:translateX(-50%) scale(1);
+pointer-events:auto;
 }
-.choice-safe{background:#22c55e;color:#022c22}
-.choice-risk{background:#fee2e2;color:#7f1d1d}
+#card h3{
+font-size:.95rem;
+margin-bottom:8px;
+}
+#message{
+background:#1e293b;
+padding:10px;
+border-radius:12px;
+font-size:.9rem;
+margin-bottom:12px;
+}
+
+/* BUTTONS */
+.btns{
+display:flex;
+gap:10px;
+}
+button{
+flex:1;
+padding:10px;
+border-radius:12px;
+border:none;
+font-weight:700;
+font-size:.85rem;
+cursor:pointer;
+transition:.2s;
+}
+.safe{
+background:#22c55e;color:#022c22;
+}
+.safe:hover{box-shadow:0 0 12px #22c55e}
+.risk{
+background:#fee2e2;color:#7f1d1d;
+}
+.risk:hover{box-shadow:0 0 12px #ef4444}
+
+/* OVERLAYS */
 .overlay{
-position:absolute;inset:0;background:var(--blur);
-backdrop-filter:blur(10px);display:flex;
-align-items:center;justify-content:center;z-index:50;
+position:absolute;
+inset:0;
+background:rgba(2,6,23,.7);
+backdrop-filter:blur(8px);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:10;
 }
 .panel{
-background:var(--panel);padding:22px;border-radius:20px;
-width:min(420px,92vw);text-align:center;
+background:#020617;
+border-radius:20px;
+padding:24px;
+width:min(420px,90%);
+text-align:center;
+box-shadow:0 0 40px rgba(0,0,0,.6);
+animation:pop .4s ease;
 }
+@keyframes pop{
+from{transform:scale(.8);opacity:0}
+to{transform:scale(1);opacity:1}
+}
+.panel h2{margin-bottom:10px}
+.panel p{font-size:.9rem;margin-bottom:14px;color:#9ca3af}
+
+/* END */
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<nav>
-<a href="index.html">🏠 Home</a>
-<a href="chat.html">💬 Chat</a>
-<a href="quiz.html">🧠 Cyber Quiz</a>
-<a href="scam.html">⚠️ Scam Detector</a>
-<a class="active">🎮 Saeed's Game</a>
-</nav>
+<div id="game">
 
-<main>
-<div id="game-shell">
+<!-- HUD -->
+<div id="hud">
+<div id="hearts">❤️❤️❤️</div>
+<div id="level">Level 1</div>
+</div>
 
-<!-- 🎧 INTRO -->
-<div class="overlay" id="intro">
-<div class="panel">
-<h2>🎧 Welcome to Saeed's Story</h2>
-<p>Press play to listen before starting.</p>
-<audio id="introAudio" src="intro-voice.mp3" preload="auto"></audio>
-<button id="playBtn">▶️ Play Audio</button>
-<p id="introStatus" style="display:none;margin-top:10px;">🎙 Playing...</p>
+<!-- BACKGROUND -->
+<div id="bg"></div>
+<div id="ground"></div>
+
+<!-- SAEED -->
+<div id="saeed">
+<svg viewBox="0 0 120 200" width="100%">
+<circle cx="60" cy="50" r="26" fill="#fde68a"/>
+<circle class="eye" cx="50" cy="50" r="3"/>
+<circle class="eye" cx="70" cy="50" r="3"/>
+<path id="mouth" d="M48 64 Q60 70 72 64" stroke="#b91c1c" stroke-width="3" fill="none"/>
+<rect x="40" y="78" width="40" height="80" rx="18" fill="#fff"/>
+</svg>
+</div>
+
+<!-- CARD -->
+<div id="card">
+<h3 id="title">📱 Message</h3>
+<div id="message"></div>
+<div class="btns">
+<button class="safe" id="safeBtn"></button>
+<button class="risk" id="riskBtn"></button>
 </div>
 </div>
 
-<!-- 🌍 LANGUAGE -->
-<div class="overlay" id="lang" style="display:none;">
+<!-- START -->
+<div class="overlay" id="start">
 <div class="panel">
-<h2>Choose Language</h2>
-<button onclick="setLang('en')">English</button>
-<button onclick="setLang('ar')">العربية</button>
+<h2>🎮 Saeed’s Cyber Quest</h2>
+<p>Help Saeed stay safe online.<br>Tap to begin.</p>
+<button class="safe" onclick="startGame()">START</button>
 </div>
 </div>
 
 <!-- END -->
-<div class="overlay" id="end" style="display:none;">
-<div class="panel" id="endBox"></div>
+<div class="overlay hidden" id="end">
+<div class="panel" id="endText"></div>
 </div>
 
-<div class="hud">
-<div id="hearts">❤️❤️❤️</div>
-<div class="level-label" id="level">Level 1</div>
 </div>
-
-<section id="scene">
-<div class="road"></div>
-
-<div id="saeed-wrapper">
-<svg viewBox="0 0 120 220" width="100%">
-<circle cx="60" cy="60" r="26" fill="#fde68a"/>
-<circle class="eye" cx="50" cy="60" r="3"/>
-<circle class="eye" cx="70" cy="60" r="3"/>
-<path id="mouth" d="M50 76 Q60 82 70 76" stroke="#b91c1c" stroke-width="3" fill="none"/>
-<rect x="40" y="94" width="40" height="90" rx="18" fill="#fff"/>
-</svg>
-</div>
-
-<div id="phone">
-<div class="phone-inner">
-<div id="msg" class="msg-in"></div>
-<div class="choice-row">
-<button class="choice-btn choice-safe" id="safe"></button>
-<button class="choice-btn choice-risk" id="risk"></button>
-</div>
-<p id="tip" style="margin-top:6px;font-size:.8rem;color:#f87171"></p>
-</div>
-</div>
-
-</section>
-</div>
-</main>
 
 <script>
-/* 🎧 AUDIO FIX */
-const playBtn = document.getElementById("playBtn");
-playBtn.addEventListener("touchstart", playIntro, { once:true });
-playBtn.addEventListener("click", playIntro, { once:true });
-
-async function playIntro(){
-const audio=document.getElementById("introAudio");
-const status=document.getElementById("introStatus");
-status.style.display="block";
-try{
-audio.currentTime=0;
-await audio.play();
-audio.onended=()=>{
-document.getElementById("intro").style.display="none";
-document.getElementById("lang").style.display="flex";
-};
-}catch(e){
-status.textContent="Tap once more";
-}
+/* STARS */
+for(let i=0;i<60;i++){
+const s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"%";
+s.style.top=Math.random()*100+"%";
+s.style.animationDelay=Math.random()*3+"s";
+document.getElementById("bg").appendChild(s);
 }
 
-/* 🎮 GAME */
-let lang="en",idx=0,hearts=3;
-const scenarios=[
-{m:{en:"Send me a private pic?",ar:"ارسل صورة خاصة"},s:{en:"Block",ar:"حظر"},r:{en:"Send",ar:"أرسل"},bad:{en:"Never send photos",ar:"لا ترسل صور"}},
-{m:{en:"Click bank link",ar:"اضغط رابط البنك"},s:{en:"Use app",ar:"استخدم التطبيق"},r:{en:"Click",ar:"اضغط"},bad:{en:"Banks don’t send links",ar:"البنوك لا ترسل روابط"}}
+/* GAME DATA */
+const levels=[
+{q:"Someone asks for your password.",safe:"Never share",risk:"Tell them",bad:"Passwords are private"},
+{q:"A link says: free Robux!",safe:"Ignore",risk:"Click",bad:"Free prizes are scams"},
+{q:"Stranger asks your school name.",safe:"Don’t answer",risk:"Tell",bad:"Location info is dangerous"},
+{q:"Email says bank locked account.",safe:"Use bank app",risk:"Click email",bad:"Banks don’t email links"},
+{q:"Friend sends weird link.",safe:"Ask first",risk:"Open",bad:"Accounts can be hacked"},
+{q:"Public WiFi asks login.",safe:"Use data",risk:"Login",bad:"Fake WiFi steals info"},
+{q:"Game chat asks phone number.",safe:"Say no",risk:"Give",bad:"Phone numbers are private"},
+{q:"Unknown file download.",safe:"Delete",risk:"Download",bad:"Files can have viruses"}
 ];
 
-function setLang(l){
-lang=l;
-document.getElementById("lang").style.display="none";
-start();
+let level=0;
+let hearts=3;
+
+/* ELEMENTS */
+const card=document.getElementById("card");
+const msg=document.getElementById("message");
+const safeBtn=document.getElementById("safeBtn");
+const riskBtn=document.getElementById("riskBtn");
+const mouth=document.getElementById("mouth");
+
+/* START */
+function startGame(){
+document.getElementById("start").classList.add("hidden");
+card.classList.add("show");
+load();
 }
-function start(){
-idx=0;hearts=3;
-document.getElementById("phone").classList.add("show");
-update();
-}
-function update(){
-const s=scenarios[idx];
-document.getElementById("msg").textContent=s.m[lang];
-document.getElementById("safe").textContent=s.s[lang];
-document.getElementById("risk").textContent=s.r[lang];
-document.getElementById("tip").textContent="";
+
+/* LOAD LEVEL */
+function load(){
+document.getElementById("level").textContent=`Level ${level+1}`;
+msg.textContent=levels[level].q;
+safeBtn.textContent=levels[level].safe;
+riskBtn.textContent=levels[level].risk;
+mouth.setAttribute("d","M48 64 Q60 70 72 64");
 document.getElementById("hearts").textContent="❤️".repeat(hearts)+"🖤".repeat(3-hearts);
 }
-safe.onclick=()=>{idx++;idx>=scenarios.length?end(true):update();}
-risk.onclick=()=>{
-hearts--;update();
-document.getElementById("tip").textContent=scenarios[idx].bad[lang];
-if(hearts<=0)end(false);
+
+/* CHOICES */
+safeBtn.onclick=()=>{
+level++;
+if(level>=levels.length) return win();
+load();
 };
-function end(win){
-document.getElementById("end").style.display="flex";
-endBox.innerHTML=win?"🎉 You kept Saeed safe":"💔 Game Over";
+riskBtn.onclick=()=>{
+hearts--;
+mouth.setAttribute("d","M48 68 Q60 60 72 68");
+alert("❌ "+levels[level].bad);
+if(hearts<=0) return lose();
+load();
+};
+
+/* ENDINGS */
+function win(){
+document.getElementById("end").classList.remove("hidden");
+document.getElementById("endText").innerHTML="<h2>🎉 You saved Saeed!</h2><p>You’re a cyber hero.</p><button class='safe' onclick='location.reload()'>Play Again</button>";
+}
+function lose(){
+document.getElementById("end").classList.remove("hidden");
+document.getElementById("endText").innerHTML="<h2>💔 Game Over</h2><p>Try again and protect Saeed.</p><button class='safe' onclick='location.reload()'>Retry</button>";
 }
 </script>
+
 </body>
 </html>
