@@ -7,7 +7,7 @@
 
 <style>
 
-/* 🌌 BACKGROUND */
+
 body {
   margin:0;
   font-family:"Inter",system-ui;
@@ -18,7 +18,7 @@ body {
   flex-direction:column;
 }
 
-/* 🔥 NAVBAR */
+
 nav {
   display:flex;
   justify-content:space-between;
@@ -46,7 +46,7 @@ nav button {
   cursor:pointer;
 }
 
-/* 💬 CHAT CONTAINER */
+
 .chat-card {
   width:90%;
   max-width:800px;
@@ -61,7 +61,7 @@ nav button {
 }
 @keyframes fade {from{opacity:0;transform:translateY(20px);}}
 
-/* 🟢 iPHONE BUBBLES */
+
 #messages{
   display:flex;
   flex-direction:column;
@@ -80,7 +80,7 @@ nav button {
 }
 @keyframes pop{from{transform:scale(.8);opacity:0;}}
 
-/* USER MESSAGE – GREEN (like iMessage) */
+
 .user-msg {
   background:#1df970;
   align-self:flex-end;
@@ -88,7 +88,7 @@ nav button {
   border-bottom-right-radius:6px;
 }
 
-/* AI MESSAGE – GRAY iPhone style */
+
 .ai-msg {
   background:#e5e5ea;
   color:black;
@@ -96,7 +96,7 @@ nav button {
   border-bottom-left-radius:6px;
 }
 
-/* TYPEWRITER CURSOR */
+
 .typewriter {
   border-right:3px solid #22c55e;
   white-space:pre-line;
@@ -105,7 +105,7 @@ nav button {
 }
 @keyframes blink{0%,100%{border-color:transparent;}50%{border-color:#22c55e;}}
 
-/* INPUT AREA */
+
 .input-row{
   display:flex;
   gap:10px;
@@ -218,21 +218,20 @@ function greet(){
   box.innerHTML="";
   let message = lang==="ar"
   ? `مرحباً ${username} 👋✨
-أنا مساعدك للقانون الإلكتروني والأمن السيبراني في الإمارات 🇦🇪
+أنا مساعدك للقانون الإلكتروني والأمن السيبراني في الإمارات 
 تقدر تسأل عن:
 • تهكير، ابتزاز، تهديد، سرقة حساب
 • رسائل مشبوهة / نصابين
 • وين أبلغ؟ وكيف أجمع دليل؟
 
-اكتب رسالتك تحت 👇`
   : `Hey ${username}! 👋✨
 I'm your UAE Cyber Safety Assistant 🇦🇪
-Ask me about:
+Feel free to Ask me about:
 • hacked accounts & blackmail
 • scam messages / suspicious links
 • how to report in UAE & gather proof
 
-Type below 👇`;
+
 
   typewriter(message);
 }
