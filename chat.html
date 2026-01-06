@@ -1,373 +1,265 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-
-<title>Saeed Cyber Survival</title>
+<meta charset="UTF-8" />
+<title>Cyber Safety Assistant | Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
-body{
- background:#0a0f1f;
- font-family:Segoe UI, sans-serif;
- color:white;
+
+/* 🌌 BACKGROUND */
+
+body {
+  margin:0;
+  font-family:"Inter",system-ui;
+  background:linear-gradient(135deg,#0c0f19,#111827 40%,#020617);
+  color:white;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-/* FLOATING BOX */
-#gameBox{
- position:fixed;
- inset:0;
- margin:auto;
- max-width:900px;
- height:640px;
- background:#111827;
- border-radius:24px;
- border:1px solid #1f2937;
- box-shadow:0 20px 80px rgba(0,0,0,.6);
- overflow:hidden;
+/* 🔥 NAVBAR */
+
+nav {
+  display:flex;
+  justify-content:space-between;
+  padding:10px 16px;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.15);
+}
+nav a {
+  color:white;
+  text-decoration:none;
+  padding:6px 10px;
+  border-radius:10px;
+  transition:0.2s;
+}
+nav a:hover, nav a.active {
+  background:rgba(255,255,255,0.2);
+}
+nav button {
+  background:rgba(255,255,255,0.1);
+  border:none;
+  color:white;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
 }
 
-/* SCENE */
-#scene{
- position:relative;
- height:520px;
+/* 💬 CHAT CONTAINER */
+
+.chat-card {
+  width:90%;
+  max-width:800px;
+  margin:auto;
+  margin-top:40px;
+  background:rgba(255,255,255,0.08);
+  border-radius:24px;
+  padding:22px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 0 30px rgba(0,255,200,0.15);
+  animation:fade 0.6s ease;
+}
+@keyframes fade {from{opacity:0;transform:translateY(20px);}}
+
+/* 🟢 iPHONE BUBBLES */
+
+#messages{
+  display:flex;
+  flex-direction:column;
+@@ -80,23 +80,23 @@
+}
+@keyframes pop{from{transform:scale(.8);opacity:0;}}
+
+/* USER MESSAGE – GREEN (like iMessage) */
+
+.user-msg {
+  background:#1df970;
+  align-self:flex-end;
+  color:#000;
+  border-bottom-right-radius:6px;
 }
 
-/* SAEED AVATAR */
-#saeed{
- position:absolute;
- left:10%;
- bottom:0;
- width:240px;
+/* AI MESSAGE – GRAY iPhone style */
+
+.ai-msg {
+  background:#e5e5ea;
+  color:black;
+  align-self:flex-start;
+  border-bottom-left-radius:6px;
 }
 
-/* CLOTHES MENU */
-#closet{
- position:absolute;
- right:3%;
- top:80px;
- width:320px;
- background:#020617;
- padding:12px;
- border-radius:18px;
-}
+/* TYPEWRITER CURSOR */
 
-/* PHONE BUBBLES */
-#phone{
- position:absolute;
- right:6%;
- bottom:20px;
- width:340px;
+.typewriter {
+  border-right:3px solid #22c55e;
+  white-space:pre-line;
+@@ -105,7 +105,7 @@
 }
+@keyframes blink{0%,100%{border-color:transparent;}50%{border-color:#22c55e;}}
 
-/* BUTTONS FIXED */
-.choiceBtn{
- width:100%;
- margin-top:8px;
- padding:10px;
- border:0;
- border-radius:12px;
- font-weight:700;
- cursor:pointer;
+/* INPUT AREA */
+
+.input-row{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
 }
-
-/* DANGER BAR */
-#danger{
- width:200px;
+input{
+  flex:1;
+  background:#0d1117;
+  border:none;
+  padding:12px;
+  border-radius:14px;
+  color:white;
+  outline:none;
 }
-
-.bar{
- height:8px;
- background:#1e293b;
- border-radius:999px;
- overflow:hidden;
+button{
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:bold;
 }
-
-.bar>div{
- height:100%;
- width:0%;
- background:linear-gradient(to right,#22c55e,#f59e0b,#ef4444);
- transition:.4s;
-}
-
-/* MINI LEADER BOARD */
-#miniBoard{
- position:absolute;
- left:14px;
- top:74px;
- width:260px;
- background:#020617;
- border-radius:16px;
- padding:10px;
-}
-
-/* RESPONSIVE */
-@media(max-width:760px){
- #gameBox{width:100%;height:100vh}
- #closet{right:50%;top:320px;transform:translateX(50%)}
- #phone{right:50%;transform:translateX(50%)}
-}
-
+#send-btn{background:#1df970;}
+#mic-btn{background:#06b6d4;}
 </style>
 </head>
-
 <body>
-
-<div id="gameBox">
-
-<!-- HUD -->
-<div id="hud" style="padding:12px;background:#020617">
- <span id="level">Level 1</span> |
- <span id="score">Score: 0</span> |
- <span id="hearts">❤❤❤</span>
-</div>
-
-<!-- AVATAR CLOTHES -->
-<div id="closet">
- <h3>Avatar Clothes</h3>
-
- <select id="clothSelect">
-  <option>Hoodie</option>
-  <option>Police Style</option>
-  <option>Gamer Shirt</option>
- </select>
-
- <button class="choiceBtn" onclick="applyClothes()">Apply</button>
-</div>
-
-<!-- MINI BOARD -->
-<div id="miniBoard">
- <h4>Top Players</h4>
- <div id="topList"></div>
-</div>
-
-<section id="scene">
-
-<!-- SAEED HUMAN LOOKING -->
-<div id="saeed">
-<svg viewBox="0 0 220 320">
-
- <!-- body -->
- <rect x="76" y="140" width="68" height="120" rx="28" fill="#f9fafb"/>
-
- <!-- head -->
- <circle cx="110" cy="94" r="50" fill="#eab308"/>
-
- <!-- hair -->
- <path d="M70 84 Q110 40 150 84 Z" fill="#0b1220"/>
-
- <!-- eyes -->
- <circle cx="92" cy="110" r="6" fill="#0b1220"/>
- <circle cx="128" cy="110" r="6" fill="#0b1220"/>
-
- <!-- brows -->
- <path id="browL" d="M82 92 Q92 86 102 92" stroke="#0b1220" stroke-width="6" stroke-linecap="round" opacity=".15"/>
- <path id="browR" d="M118 92 Q128 86 138 92" stroke="#0b1220" stroke-width="6" stroke-linecap="round" opacity=".15"/>
-
- <!-- cheeks -->
- <g id="cheeks" opacity=".18">
-   <ellipse cx="78" cy="128" rx="10" ry="6" fill="#fb7185"/>
-   <ellipse cx="142" cy="128" rx="10" ry="6" fill="#fb7185"/>
- </g>
-
- <!-- mouth emotions -->
- <path id="mouth" d="M56 132 Q100 164 144 132" stroke="#b91c1c" stroke-width="6" fill="none"/>
-
- <!-- shadow -->
- <ellipse cx="110" cy="300" rx="46" ry="12" fill="rgba(0,0,0,.45)"/>
-
-</svg>
-</div>
-
-<!-- PHONE UI -->
-<div id="phone">
- <div class="bubble" id="qTxt"></div>
-
- <button id="safeBtn" class="choiceBtn"> </button>
- <button id="riskBtn" class="choiceBtn"> </button>
-
- <div id="danger" class="bar"><div id="dangerFill"></div></div>
-</div>
-
+<nav>
+  <div>
+   <a href="index.html">🏠 Home</a>
+<a href="chat.html">💬 Chat</a>
+<a href="history.html">📁 History</a>
+<a href="quiz.html">🧠 Cyber Quiz</a>
+<a href="scam.html">⚠️ Scam Detector</a>
+<a href="saeed.game.html" class="active">🎮 Saeed's Game</a>
+    
+  </div>
+  <div>
+    <button id="lang-en">EN</button>
+    <button id="lang-ar">AR</button>
+    <button id="clear-chat">✨ Clear</button>
+  </div>
+</nav>
+<section class="chat-card">
+  <h2 id="title" style="margin:0 0 8px;">Cyber Safety & UAE Law Assistant</h2>
+  <p id="subtitle">Ask about hacking, online threats & reporting.</p>
+  <div id="messages"></div>
+  <form id="chat-form" class="input-row">
+    <input id="chat-input" placeholder="Type here...">
+    <button id="mic-btn" type="button">🎙</button>
+    <button id="send-btn" type="submit">Send</button>
+  </form>
 </section>
-
-<!-- INTRO STORY -->
-<div class="overlay" id="introOverlay">
-<div class="panel" style="text-align:center">
- <h2>Meet Saeed</h2>
- <p>
- This is Saeed.  
- He enjoys playing online and chatting with friends,  
- but cyber scams and hackers try to trick him.  
- The player must guide Saeed through **8 levels**  
- and choose actions that keep him safe while earning score.
- </p>
-
- <button class="bigBtn" onclick="startGame()">Start Game</button>
-</div>
-</div>
-
-<!-- LANGUAGE -->
-<div class="overlay" id="langOverlay" style="display:none">
- <button onclick="setLang('en')">English</button>
- <button onclick="setLang('ar')">العربية</button>
-</div>
-
-<!-- END -->
-<div class="overlay" id="endOverlay" style="display:none"></div>
-
-</div>
-
 <script>
-
-/* CERTIFICATE */
-function certificate(name, pts){
- return `
- <h2>You Won</h2>
- <p>${name} – ${pts} pts</p>
- <button onclick="location.reload()">Play Again</button>`;
+/* ===================== */
+/* VARIABLES */
+/* ===================== */
+let lang = localStorage.getItem("lang")||"en";
+let username = localStorage.getItem("cyber_user_name")||"Guest";
+const box = document.getElementById("messages");
+/* ===================== */
+/* ADD BUBBLE */
+/* ===================== */
+function add(role,text){
+  const d=document.createElement("div");
+  d.className="msg "+(role==="user"?"user-msg":"ai-msg");
+  d.textContent=text;
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
 }
-
-/* LEADER BOARD SAVE */
-function saveBoard(n, s){
- let b = JSON.parse(localStorage.board || "[]");
- b.push({n,s});
- localStorage.board = JSON.stringify(b);
+/* ===================== */
+/* TYPEWRITER INTRO */
+/* ===================== */
+function typewriter(text){
+  let i=0;
+  const speed=28;
+  const div=document.createElement("div");
+  div.className="msg ai-msg typewriter";
+  box.appendChild(div);
+  function write(){
+    if(i<text.length){
+      div.textContent=text.slice(0,i+1);
+      i++;
+      box.scrollTop=box.scrollHeight;
+      setTimeout(write,speed);
+    } else {
+      div.classList.remove("typewriter");
+    }
+  }
+  write();
 }
+/* ===================== */
+/* GREETING MESSAGE */
+/* ===================== */
+function greet(){
+  box.innerHTML="";
+  let message = lang==="ar"
+  ? `مرحباً ${username} 👋✨
+أنا مساعدك للقانون الإلكتروني والأمن السيبراني في الإمارات 🇦🇪
+أنا مساعدك للقانون الإلكتروني والأمن السيبراني في الإمارات 
+تقدر تسأل عن:
+• تهكير، ابتزاز، تهديد، سرقة حساب
+• رسائل مشبوهة / نصابين
+• وين أبلغ؟ وكيف أجمع دليل؟
+اكتب رسالتك تحت 👇`
+  : `Hey ${username}! 👋✨
+I'm your UAE Cyber Safety Assistant 🇦🇪
+Ask me about:
+Feel free to Ask me about:
+• hacked accounts & blackmail
+• scam messages / suspicious links
+• how to report in UAE & gather proof
 
-/* FACE ANIMATIONS */
-function reactFace(state){
- const face = document.getElementById("saeed");
- if(state==="shocked"){
-   mouth(false);
- }
- if(state==="happy"){
-   mouth(true);
- }
+Type below 👇`;
+
+
+  typewriter(message);
 }
-
-/* BUTTON BUG FIX – LISTENERS */
-document.getElementById("safeBtn").addEventListener("click", ()=>choose(true));
-document.getElementById("riskBtn").addEventListener("click", ()=>choose(false));
-
-let level=0, score=0, hearts=3, danger=0;
-let lang="en";
-let SCENES=[];
-
-function setLang(l){lang=l;}
-
-function startGame(){
- gameStarted=true;
- render();
-}
-
-/* GAME DATA 8 LEVELS */
-SCENES=[
-{
- q:{en:"DM asks for OTP",ar:"رسالة تطلب OTP"},
- safe:{txt:{en:"رفض + حظر",ar:"refuse"},emo:"happy",delta:{hearts:0,danger:-10}},
- risk:{txt:{en:"اعطي OTP",ar:"give"},emo:"worried",delta:{hearts:-1,danger:+20}},
-},
-
-{
- q:{en:"Email click bank",ar:"رابط بنك"},
- safe:{txt:{en:"تطبيق رسمي",ar:"app"},emo:"happy",delta:{danger:-8}},
- risk:{txt:{en:"اضغط الرابط",ar:"click"},emo:"shocked",delta:{hearts:-1,danger:+16}},
-},
-
-{
- q:{en:"Download prize",ar:"تحميل"},
- safe:{txt:{en:"احذف",ar:"delete"},emo:"happy",delta:{danger:-6}},
- risk:{txt:{en:"حمّل",ar:"download"},emo:"worried",delta:{hearts:-1,danger:+18}},
-},
-
-{
- q:{en:"Share age",ar:"شارك عمرك"},
- safe:{txt:{en:"لا تشارك",ar:"no"},emo:"happy",delta:{danger:-5}},
- risk:{txt:{en:"شارك",ar:"share"},emo:"worried",delta:{danger:+14}},
-},
-
-{
- q:{en:"Meet alone?",ar:"تقابل وحدك"},
- safe:{txt:{en:"خبر الشرطة",ar:"tell adult"},emo:"happy",delta:{danger:-20}},
- risk:{txt:{en:"روح",ar:"go"},emo:"shocked",delta:{hearts:-1,danger:+40}},
-},
-
-{
- q:{en:"Public Wi-Fi login?",ar:"واي فاي"},
- safe:{txt:{en:"بيانات الهاتف",ar:"4G"},emo:"happy",delta:{danger:-5}},
- risk:{txt:{en:"سجّل دخول",ar:"login"},emo:"worried",delta:{danger:+22}},
-},
-
-{
- q:{en:"Friend sends random link",ar:"رابط غريب"},
- safe:{txt:{en:"اسألهم",ar:"ask"},emo:"happy",delta:{danger:-6}},
- risk:{txt:{en:"اضغط",ar:"click"},emo:"shocked",delta:{hearts:-1,danger:+14}},
-},
-
-{
- q:{en:"Threat rumors incoming",ar:"شائعات"},
- safe:{txt:{en:"صور + تبليغ",ar:"evidence"},emo:"happy",delta:{danger:-10}},
- risk:{txt:{en:"رد بعصبية",ar:"angry"},emo:"shocked",delta:{hearts:-1,danger:+16}},
-}
-];
-
-function choose(isSafe){
- const s = SCENES[level];
- if(isSafe){
-   reactFace("happy");
-   score+=12;
-   level++;
- }else{
-   reactFace("shocked");
-   hearts--;
-   danger+=20;
-   level++;
- }
-
- render();
-}
-
-/* RENDER UTIL */
-function render(){
- if(!gameStarted) return;
-
- document.getElementById("qTxt").textContent = SCENES[level].q[lang];
-
- document.getElementById("safeBtn").textContent = SCENES[level].safe.txt[lang];
- document.getElementById("riskBtn").textContent = SCENES[level].risk.txt[lang];
-
- updateHud();
-
- if(hearts<=0 || danger>=100){
-   document.getElementById("endOverlay").innerHTML =
-   certificate("Player", score);
-   saveBoard("Player", score);
- }
-}
-
-function updateHud(){
- document.getElementById("score").textContent = "Score "+score;
- document.getElementById("level").textContent = "Level "+(level+1);
-
- document.getElementById("hearts").textContent =
- "❤".repeat(hearts)+"🖤".repeat(3-hearts);
-
- danger = clamp(danger,0,100);
- document.getElementById("dangerFill").style.width = danger+"%";
- document.getElementById("dangerPct").textContent = danger+"%";
-}
-
-/* MINI BOARD */
-function miniBoard(){
- let b = JSON.parse(localStorage.board || "[]");
- b.sort((a,b)=>b.s-a.s);
- document.getElementById("topList").innerHTML =
- b.slice(0,5).map(x=>`${x.n} – ${x.s}`).join("<br/>");
-}
-miniBoard();
-
+greet();
+/* ===================== */
+/* SEND TO BACKEND */
+/* ===================== */
+document.getElementById("chat-form").onsubmit=async(e)=>{
+  e.preventDefault();
+  const text=document.getElementById("chat-input").value.trim();
+  if(!text)return;
+  add("user",text);
+  document.getElementById("chat-input").value="";
+  const response=await fetch("/api/chat",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({message:text,language:lang,username})
+  });
+  const data=await response.json();
+  add("ai",data?.answer||"⚠️ Error");
+};
+/* ===================== */
+/* CLEAR CHAT */
+/* ===================== */
+document.getElementById("clear-chat").onclick=()=>{
+  if(confirm("Clear chat?")) greet();
+};
+/* ===================== */
+/* LANGUAGE SWITCH */
+/* ===================== */
+document.getElementById("lang-en").onclick=()=>{lang="en";localStorage.setItem("lang","en");greet();}
+document.getElementById("lang-ar").onclick=()=>{lang="ar";localStorage.setItem("lang","ar");greet();}
+/* ===================== */
+/* SPEECH INPUT */
+/* ===================== */
+document.getElementById("mic-btn").onclick=()=>{
+  const R = window.SpeechRecognition||webkitSpeechRecognition;
+  if(!R)return alert("🎙 Not supported here");
+  const rec=new R();
+  rec.lang = lang==="ar"?"ar-AE":"en-US";
+  rec.onresult=e=>document.getElementById("chat-input").value=e.results[0][0].transcript;
+  rec.start();
+};
 </script>
-
+<script src="chat.js?v=16"></script>
 </body>
 </html>
