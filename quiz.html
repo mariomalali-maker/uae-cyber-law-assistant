@@ -2,102 +2,157 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>🎯 Cyber Security Quiz | Mariam</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
-
-<style>
-body{
-  margin:0;background:radial-gradient(circle at top,#0B1221,#000);
-  color:white;font-family:'Poppins',sans-serif;text-align:center;
-}
-nav{display:flex;gap:10px;padding:10px;background:#09101f;position:sticky;top:0;}
-nav a{text-decoration:none;color:#d1d5db;padding:6px 10px;border-radius:8px;font-size:14px;}
-nav a.active{background:#1e293b;color:white;}
-
-#home{padding:60px;}
-#home h1{font-size:42px;margin-bottom:10px;}
-#home p{opacity:.8;font-size:18px;margin-bottom:30px;}
-
-.btn{
-  background:linear-gradient(135deg,#22c55e,#0ea5e9);
-  border:none;color:#001;padding:15px 30px;border-radius:40px;
-  cursor:pointer;font-weight:700;font-size:18px;
-  transition:0.2s;margin:10px;
-}
-.btn:hover{transform:scale(1.05);}
-
-.quiz-box{
-  width:90%;max-width:550px;margin:40px auto;
-  background:#142037;padding:30px;border-radius:20px;
-  animation:float 3s infinite ease-in-out;
-}
-@keyframes float{0%{transform:translateY(0);}50%{transform:translateY(-8px);}100%{transform:translateY(0);}}
-
-#timer{font-size:20px;color:#60a5fa;margin-bottom:8px;}
-#progressBar{width:100%;height:8px;background:#1e293b;border-radius:10px;}
-#progress{height:8px;width:0%;background:#22c55e;border-radius:10px;transition:0.4s;}
-
-.opt{
-  display:block;width:100%;border:none;color:white;
-  background:#1e293b;padding:14px;border-radius:12px;
-  margin:10px 0;cursor:pointer;font-size:17px;
-  transition:0.2s;
-}
-.opt:hover{background:#334155;}
-.correct{background:#22c55e!important;color:#000!important;}
-.wrong{background:#b91c1c!important;}
-
-#end{display:none;margin-top:80px;}
-#end h2{font-size:38px;margin-bottom:0;}
-#end h3{font-size:24px;margin:10px 0 30px;}
-footer{margin:40px 0;opacity:.5;}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Cyber Security Quiz | Test Your Self </title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<link rel="stylesheet" href="quiz.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 
 <body>
 
-<nav>
-<a href="index.html">🏠 Home</a>
-<a href="chat.html">💬 Chat</a>
-<a href="history.html">📁 History</a>
-<a href="quiz.html" class="active">🧠 Quiz</a>
-<a href="scam.html">⚠️ Detector</a>
-<a href="saeed.game.html">🎮 Saeed's Game</a>
-</nav>
 
-<!-- HOME -->
-<section id="home">
-<h1>🎯 Cyber Security Quiz</h1>
-<p>Protect yourself with real UAE cyber safety scenarios.</p>
-<h3>Language / اللغة</h3>
-<button class="btn" onclick="setLang('EN')">🇬🇧 English</button>
-<button class="btn" onclick="setLang('AR')">🇦🇪 العربية</button>
-<br>
-<button class="btn" id="startBtn" style="display:none;" onclick="startGame()">🚀 Start</button>
-</section>
-
-<!-- QUIZ -->
-<section id="quiz" style="display:none;">
-<div class="quiz-box">
-<h2 id="question"></h2>
-<div id="timer">⏳ 15s</div>
-<div id="progressBar"><div id="progress"></div></div>
-<div id="options"></div>
-<button class="btn" id="nextBtn" style="display:none;" onclick="nextQ()">Next ➜</button>
+<div id="startScreen" class="screen">
+    <div class="logo-container">
+        <div class="pulse-logo">🎯</div>
+        <h1 class="title">CYBER SECURITY<br><span class="gradient-text">CHALLENGE</span></h1>
+    </div>
+    
+    <div class="language-selector">
+        <h3>Choose Language / اختر اللغة</h3>
+        <div class="lang-buttons">
+            <button class="lang-btn" onclick="setLanguage('EN')">
+                <span class="flag">🇬🇧</span>
+                <span class="lang-name">English</span>
+            </button>
+            <button class="lang-btn" onclick="setLanguage('AR')">
+                <span class="flag">🇦🇪</span>
+                <span class="lang-name">العربية</span>
+            </button>
+        </div>
+    </div>
+    
+    <div id="startContainer" class="start-container hidden">
+        <div class="player-info">
+            <input type="text" id="playerName" placeholder="Enter your name / أدخل اسمك" maxlength="15">
+        </div>
+        <button class="btn-start" onclick="startGame()">
+            <span class="btn-text">🚀 START GAME</span>
+            <span class="btn-shine"></span>
+        </button>
+    </div>
 </div>
-</section>
 
-<!-- END -->
-<section id="end">
-<h2 id="endTitle"></h2>
-<h3 id="endScore"></h3>
-<button class="btn" onclick="location.reload()">🔁 Play Again</button>
-</section>
 
-<footer>Created by Mariam — 2025</footer>
-<script src="scripts/quiz.js"></script>
+<div id="countdownScreen" class="screen hidden">
+    <div class="countdown-container">
+        <div class="countdown-number" id="countdownNumber">3</div>
+        <div class="countdown-text" id="countdownText">GET READY!</div>
+    </div>
+</div>
 
+
+<div id="quizScreen" class="screen hidden">
+    <div class="quiz-header">
+        <div class="question-counter">
+            <span id="currentQ">1</span>/<span id="totalQ">10</span>
+        </div>
+        <div class="score-display">
+            <span class="score-icon">⭐</span>
+            <span id="currentScore">0</span>
+        </div>
+    </div>
+    
+    <div class="timer-bar">
+        <div class="timer-fill" id="timerFill"></div>
+    </div>
+    
+    <div class="question-box">
+        <h2 id="questionText"></h2>
+    </div>
+    
+    <div class="options-container" id="optionsContainer">
+        <button class="option-btn" data-option="0" onclick="selectAnswer(0)">
+            <span class="option-key">A</span>
+            <span class="option-text"></span>
+        </button>
+        <button class="option-btn" data-option="1" onclick="selectAnswer(1)">
+            <span class="option-key">B</span>
+            <span class="option-text"></span>
+        </button>
+        <button class="option-btn" data-option="2" onclick="selectAnswer(2)">
+            <span class="option-key">C</span>
+            <span class="option-text"></span>
+        </button>
+        <button class="option-btn" data-option="3" onclick="selectAnswer(3)">
+            <span class="option-key">D</span>
+            <span class="option-text"></span>
+        </button>
+    </div>
+    
+    <div id="feedbackOverlay" class="feedback-overlay hidden">
+        <div class="feedback-content">
+            <div class="feedback-icon" id="feedbackIcon"></div>
+            <div class="feedback-text" id="feedbackText"></div>
+            <div class="feedback-points" id="feedbackPoints"></div>
+        </div>
+    </div>
+</div>
+
+
+<div id="resultsScreen" class="screen hidden">
+    <div class="results-container">
+        <div class="results-title">
+            <div id="resultEmoji" class="result-emoji">🎉</div>
+            <h2 id="resultTitle"></h2>
+        </div>
+        
+        <div class="score-circle">
+            <svg class="progress-ring" viewBox="0 0 200 200">
+                <circle class="progress-ring-bg" cx="100" cy="100" r="90"/>
+                <circle class="progress-ring-fill" id="progressRing" cx="100" cy="100" r="90"/>
+            </svg>
+            <div class="score-text">
+                <span id="finalScore">0</span>
+                <span class="score-divider">/</span>
+                <span id="totalScore">10</span>
+            </div>
+        </div>
+        
+        <div class="player-result">
+            <p class="result-label">Player / اللاعب</p>
+            <p class="result-name" id="playerNameDisplay">Anonymous</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="correctCount">0</div>
+                <div class="stat-label">Correct / صحيح</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="wrongCount">0</div>
+                <div class="stat-label">Wrong / خطأ</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Accuracy / الدقة</div>
+            </div>
+        </div>
+        
+        <div class="result-actions">
+            <button class="btn-play" onclick="playAgain()">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">PLAY AGAIN</span>
+            </button>
+            <button class="btn-home" onclick="goHome()">
+                <span class="btn-icon">🏠</span>
+                <span class="btn-text">HOME</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="quiz.js"></script>
 </body>
 </html>
