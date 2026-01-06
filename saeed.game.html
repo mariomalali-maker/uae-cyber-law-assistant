@@ -1,99 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Saeed: Cyber Survival</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Saeed: Cyber Survival Story</title>
 
 <style>
-/* =======================
-   RESET + THEME
-======================= */
+/* ========================
+   THEME + RESET
+======================== */
 *{box-sizing:border-box;margin:0;padding:0}
+
 :root{
-  --bg0:#020617;
-  --bg1:#050b1f;
-  --panel:rgba(10,16,40,.72);
-  --panel2:rgba(2,6,23,.78);
-  --stroke:rgba(148,163,184,.22);
-  --text:#e5e7eb;
-  --muted:#94a3b8;
-  --accent:#22c55e;
-  --danger:#ef4444;
-  --warn:#f59e0b;
-  --cyan:#22d3ee;
-  --pink:#fb7185;
+ --bg:#020617;
+ --panel:#0f172a;
+ --panel2:#111827;
+ --accent:#22c55e;
+ --danger:#ef4444;
+ --warn:#f59e0b;
+ --text:#e5e7eb;
+ --muted:#94a3b8;
 }
 
+/* ========================
+   PAGE
+======================== */
 body{
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  background: radial-gradient(circle at top, var(--bg1), #000 70%);
-  color:var(--text);
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:16px;
-  overflow:hidden;
+ font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+ background: radial-gradient(circle at top,#050b1f,#000 70%);
+ color:var(--text);
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:16px;
 }
 
-/* =======================
+/* ========================
    GAME SHELL
-======================= */
+======================== */
 #game{
-  width: min(980px, 100%);
-  height: min(620px, calc(100vh - 32px));
-  min-height: 560px;
-  border-radius: 26px;
-  border: 1px solid rgba(148,163,184,.20);
-  box-shadow: 0 30px 120px rgba(0,0,0,.75);
-  position:relative;
-  overflow:hidden;
-  background: linear-gradient(180deg, rgba(2,6,23,.8), rgba(2,6,23,.95));
+ width:min(1000px,100%);
+ height:min(700px,calc(100vh - 20px));
+ min-height:620px;
+ border-radius:26px;
+ border:1px solid rgba(255,255,255,.15);
+ box-shadow:0 30px 120px rgba(0,0,0,.8);
+ position:relative;
+ overflow:hidden;
 }
 
-/* =======================
-   PHONE FIXES (CRITICAL)
-======================= */
+/* ========================
+   BACKGROUND ANIMATIONS
+======================== */
+#bg{
+ position:absolute;
+ inset:0;
+ background:
+   radial-gradient(circle at 10% 20%,rgba(34,211,238,.18),transparent 40%),
+   radial-gradient(circle at 90% 20%,rgba(251,113,133,.14),transparent 40%),
+   linear-gradient(#0f172a,#000 60%);
+}
+
+/* Moving scan line */
+.scan{
+ position:absolute;
+ left:-20%;
+ top:0;
+ width:20%;
+ height:100%;
+ background:linear-gradient(90deg,transparent,rgba(34,211,238,.16),transparent);
+ animation:scan 6s linear infinite;
+ mix-blend-mode:screen;
+}
+@keyframes scan{
+ to{transform:translateX(600%)}
+}
+
+/* Floating stars */
+.star{
+ position:absolute;
+ width:3px;
+ height:3px;
+ background:#fff;
+ opacity:.6;
+ animation:twinkle 3s infinite alternate;
+}
+@keyframes twinkle{
+ to{opacity:.1;transform:translateY(-2px)}
+}
+
+/* ========================
+   HUD
+======================== */
+#hud{
+ position:absolute;
+ top:10px;
+ left:10px;
+ right:10px;
+ z-index:20;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.pill{
+ background:rgba(0,0,0,.45);
+ border:1px solid rgba(255,255,255,.15);
+ padding:8px 12px;
+ border-radius:999px;
+ font-size:.85rem;
+}
+
+/* Danger bar */
+#danger{
+ width:200px;
+}
+.bar{
+ height:10px;
+ background:rgba(255,255,255,.12);
+ border-radius:999px;
+ overflow:hidden;
+}
+.bar div{
+ height:100%;
+ width:0%;
+ background:linear-gradient(90deg,var(--accent),var(--warn),var(--danger));
+ transition:.5s ease;
+}
+
+/* ========================
+   OVERLAYS
+======================== */
+.overlay{
+ position:absolute;
+ inset:0;
+ background:rgba(0,0,0,.6);
+ backdrop-filter:blur(6px);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ z-index:50;
+}
+
+.panel{
+ background:var(--panel);
+ border:1px solid rgba(255,255,255,.18);
+ border-radius:22px;
+ padding:20px;
+ width:min(520px,92vw);
+ text-align:center;
+ animation:pop .4s ease;
+}
+@keyframes pop{
+ from{transform:translateY(10px) scale(.95);opacity:0}
+ to{transform:translateY(0) scale(1);opacity:1}
+}
+
+/* ========================
+   PHONE UI
+======================== */
 #phone{
-  position:absolute;
-  right:7%;
-  top:110px;
-  width:340px;
-  z-index:18;
-  opacity:0;
-  pointer-events:none;
-  transform:translateY(20px) scale(.96);
-  transition:.4s ease;
+ position:absolute;
+ right:50%;
+ top:120px;
+ width:360px;
+ transform:translateX(50%) scale(.95);
+ opacity:0;
+ pointer-events:none;
+ transition:.45s ease;
 }
+
 #phone.show{
-  opacity:1;
-  pointer-events:auto;
-  transform:translateY(0) scale(1);
+ opacity:1;
+ pointer-events:auto;
+ transform:translateX(50%) scale(1);
 }
 
-/* Mobile tap reliability */
-button{
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+/* Phone shell */
+.phoneShell{
+ background:var(--panel2);
+ border-radius:26px;
+ padding:16px;
+ border:1px solid rgba(255,255,255,.2);
 }
 
-/* Hidden overlays must not block clicks */
-.overlay[style*="display:none"]{
-  pointer-events:none !important;
+/* Message bubble */
+.bubble{
+ background:#1e293b;
+ border-radius:16px;
+ padding:12px;
+ margin-bottom:10px;
+ line-height:1.3;
 }
 
-/* =======================
-   (THE REST IS YOUR CODE)
-======================= */
+/* Choices */
+.btnRow{
+ display:flex;
+ gap:10px;
+}
 
-/* --- background, HUD, Saeed, phone UI, overlays, responsive --- */
-/* UNCHANGED — kept exactly as you sent */
-/* (Code continues exactly the same visually) */
+.btn{
+ flex:1;
+ border:0;
+ border-radius:14px;
+ padding:10px;
+ font-weight:800;
+ cursor:pointer;
+ transition:.2s ease;
+}
 
-/* ... YOUR ORIGINAL STYLES CONTINUE HERE ... */
+.btn.safe{
+ background:var(--accent);
+ color:#022c22;
+}
 
-/* (NO VISUAL / STRUCTURAL CHANGES MADE) */
+.btn.risky{
+ background:#ffe2e2;
+ color:#7f1d1d;
+}
+
+.btn:active{
+ transform:translateY(2px) scale(.98)
+}
+
+/* ========================
+   RESPONSIVE
+======================== */
+@media(max-width:760px){
+ #game{height:auto;min-height:760px}
+ #phone{right:50%;top:360px;width:min(400px,92vw);transform:translateX(50%) scale(.95)}
+ #phone.show{transform:translateX(50%) scale(1)}
+}
+
 </style>
 </head>
 
@@ -101,135 +240,290 @@ button{
 
 <div id="game">
 
-  <!-- BACKGROUND -->
-  <div id="bg">
-    <div class="scan"></div>
-    <div class="city">
-      <div class="layer back" id="layerBack"></div>
-      <div class="layer mid"  id="layerMid"></div>
-      <div class="layer front" id="layerFront"></div>
-    </div>
-    <div class="neonRoad"></div>
-    <div class="roadLine"></div>
-  </div>
-
-  <!-- HUD -->
-  <div id="hud">
-    <div class="badges">
-      <div class="pill" id="levelPill">🎮 <span id="levelText">Level 1</span></div>
-      <div class="pill">❤️ <span id="hearts">❤️❤️❤️</span></div>
-      <div class="pill" id="dangerBarWrap">
-        <div class="bar"><div id="dangerFill"></div></div>
-        <div class="small">
-          <span id="dangerLabel">Danger</span>
-          <span id="dangerPct">0%</span>
-        </div>
-      </div>
-    </div>
-    <div class="pill" id="langBtn">🌍 <span id="langText">EN</span></div>
-  </div>
-
-  <!-- SCENE -->
-  <div id="scene">
-
-    <!-- SAEED -->
-    <div id="saeedWrap" class="saeed-happy">
-      <div class="halo"></div>
-      <div id="saeed">
-        <!-- SVG stays exactly the same -->
-        <!-- (unchanged) -->
-      </div>
-    </div>
-
-    <!-- PHONE -->
-    <div id="phone">
-      <div class="phoneShell">
-        <div class="phoneGlow"></div>
-
-        <div class="phoneTop">
-          <div class="appName">
-            <div class="appIcon" id="appIcon">📱</div>
-            <div>
-              <div id="appTitle">Message</div>
-              <div class="signal" id="subTitle">online</div>
-            </div>
-          </div>
-          <div class="signal" id="timeTxt">9:41</div>
-        </div>
-
-        <div class="phoneScreen">
-          <div class="bubble" id="questionTxt"></div>
-          <div class="metaRow">
-            <span id="scenarioTag"></span>
-            <span id="hintTag"></span>
-          </div>
-          <div class="tip" id="tipTxt"></div>
-        </div>
-
-        <div class="btnRow">
-          <button class="btn safe" id="btnSafe"></button>
-          <button class="btn risky" id="btnRisk"></button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- INTRO -->
-  <div class="overlay" id="introOverlay">
-    <div class="panel">
-      <div class="panelTitle">🧒 Meet Saeed</div>
-      <p>This is Saeed. Help him survive 8 cyber challenges.</p>
-      <div class="panelActions">
-        <button class="bigBtn primary" id="startBtn">Start Story</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- END -->
-  <div class="overlay" id="endOverlay" style="display:none;">
-    <div class="panel" id="endPanel"></div>
-  </div>
-
+<div id="bg">
+ <div class="scan"></div>
 </div>
 
+<!-- INTRO -->
+<div class="overlay" id="intro">
+ <div class="panel">
+   <h2>🌐 Saeed Cyber Adventure</h2>
+   <p>Help Saeed survive online world by smart choices.</p>
+   <button class="btn safe" id="startBtn">Start Game</button>
+ </div>
+</div>
+
+<!-- LANGUAGE -->
+<div class="overlay" id="langPanel" style="display:none">
+ <div class="panel">
+   <h2>Choose Language</h2>
+   <button class="btn safe" onclick="setLang('en')">English</button>
+   <button class="btn risky" onclick="setLang('ar')">العربية</button>
+ </div>
+</div>
+
+<!-- GAME OVERLAY END -->
+<div class="overlay" id="endPanel" style="display:none">
+</div>
+
+<!-- HUD -->
+<div id="hud">
+ <div class="pill" id="level">Level 1</div>
+ <div class="pill hearts" id="hearts">❤️❤️❤️</div>
+
+ <div class="pill" id="danger">
+   <div class="bar"><div id="dangerFill"></div></div>
+   <div style="display:flex;justify-content:space-between;font-size:.75rem;margin-top:6px">
+     <span>Danger</span>
+     <span id="dangerPct">0%</span>
+   </div>
+ </div>
+
+ <div class="pill" id="score">Score 0</div>
+</div>
+
+<!-- PHONE QUESTIONS -->
+<div id="phone">
+ <div class="phoneShell">
+
+  <div class="phoneShell">
+   <div class="bubble" id="storyTxt"> </div>
+   <div class="bubble" id="questionTxt"> </div>
+
+   <div class="btnRow">
+     <button class="btn safe" id="btnSafe"> </button>
+     <button class="btn risky" id="btnRisk"> </button>
+   </div>
+
+   <div class="bubble tip" id="tipTxt"> </div>
+  </div>
+
+  <!-- CERTIFICATE -->
+  <div id="certBox" style="display:none;margin-top:8px">
+    <input id="nameInput" placeholder="Enter name" style="padding:6px;margin:6px;border-radius:12px;border:1px solid #fff;width:90%">
+    <button class="btn safe" onclick="finish()">Get Certificate</button>
+  </div>
+
+ </div>
+</div>
+
+</section>
+
+</div>
+</main>
+
 <script>
-/* =======================
-   GAME FIXES ONLY
-======================= */
-const $ = id => document.getElementById(id);
-const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
 
-let idx=0, hearts=3, danger=0, gameStarted=false;
-
-/* Start game FIX */
-function startGame(){
-  gameStarted=true;
-  idx=0; hearts=3; danger=0;
-  $("introOverlay").style.display="none";
-  $("phone").classList.add("show");
-  renderScenario();
+/* ========================
+   DECENT BACKGROUND STARS
+======================== */
+for(let i=0;i<80;i++){
+ const s=document.createElement("div");
+ s.className="star";
+ s.style.left=Math.random()*100+"%";
+ s.style.top=Math.random()*50+"%";
+ document.getElementById("bg").appendChild(s);
 }
 
-/* Button fixes (click + touch) */
-["btnSafe","btnRisk"].forEach(id=>{
-  const el=$(id);
-  el.addEventListener("click",()=>handleChoice(id==="btnSafe"));
-  el.addEventListener("touchend",(e)=>{
-    e.preventDefault();
-    handleChoice(id==="btnSafe");
-  },{passive:false});
-});
+/* ========================
+   GAME DATA 8 LEVELS
+======================== */
+let lang="en", idx=0, hearts=3, danger=0, score=0;
 
-/* Attach start */
-$("startBtn").addEventListener("click", startGame);
+const STORY=[
+ en:[
+  "Saeed just created a new Instagram account and feels excited.",
+  "Saeed received an email while playing games after school.",
+  "Saeed is chatting inside an online game lobby.",
+  "Saeed is at the mall using public Wi-Fi.",
+  "Saeed sees a pop up prize download on his phone.",
+  "Saeed got a new friend request on Snapchat.",
+  "Saeed’s cousin account sends him a strange link.",
+  "Final day: Saeed faces an online threat."
+ ],
+ ar:[
+  "سعيد توه مسوي حساب انستغرام جديد ومتحمس.",
+  "سعيد وصله إيميل وهو يلعب بعد المدرسة.",
+  "سعيد يسولف في لوبي لعبة أونلاين.",
+  "سعيد في المول ويستخدم واي فاي عام.",
+  "سعيد شاف إعلان جائزة تحميل.",
+  "سعيد وصله طلب صداقة جديد.",
+  "حساب قريب سعيد يرسل رابط غريب.",
+  "المرحلة الأخيرة: سعيد يواجه تهديد."
+ ]
+];
 
-/* Dummy handlers (your real logic already exists below) */
-function handleChoice(safe){
-  if(!gameStarted) return;
-  // existing logic continues...
+const SCENES=[
+{
+ good:true,
+ q:{en:"Instagram DM: A stranger asks for private photo. What do you do?",
+     ar:"رسالة: شخص غريب يطلب صورة خاصة. شو تسوي؟"},
+ safe:{txt:{en:"Block & Report",ar:"حظر و تبليغ"},delta:{hearts:0,danger:-6}},
+ risk:{txt:{en:"Send photo",ar:"أرسل الصورة"},delta:{hearts:-1,danger:+18}},
+},
+{
+ good:true,
+ q:{en:"Email: Your bank frozen — click link?",
+     ar:"إيميل: تم تجميد الحساب — تضغط الرابط؟"},
+ safe:{txt:{en:"Use official app",ar:"استخدم تطبيق رسمي"},delta:{hearts:0,danger:-6}},
+ risk:{txt:{en:"Click link",ar:"اضغط الرابط"},delta:{hearts:-1,danger:+14}},
+},
+{
+ good:true,
+ q:{en:"Game chat asks for school + area?",
+     ar:"لعبة: يسأل عن مدرستك ومنطقتك؟"},
+ safe:{txt:{en:"Don’t answer",ar:"لا تجاوب"},delta:{hearts:0,danger:-6}},
+ risk:{txt:{en:"Tell them",ar:"خبرهم"},delta:{hearts:0,danger:+20}},
+},
+{
+ good:true,
+ q:{en:"Airport Wi-Fi login with Instagram?",
+     ar:"واي فاي عام يطلب دخول بانستغرام؟"},
+ safe:{txt:{en:"Mobile data",ar:"بيانات الهاتف"},delta:{hearts:0,danger:-6}},
+ risk:{txt:{en:"Login",ar:"سجّل دخول"},delta:{hearts:0,danger:+22}},
+},
+
+/* ➕ 4 MORE IMPRESSIVE HARDER ONES */
+
+{
+ good:true,
+ q:{en:"Download: Unknown prize file?",
+     ar:"إعلان: فزت وحمل ملف؟"},
+ safe:{txt:{en:"Delete it",ar:"احذف فوراً"},delta:{hearts:0,danger:-6}},
+ risk:{txt:{en:"Download",ar:"حمّل الملف"},delta:{hearts:-1,danger:+18}},
+},
+
+{
+ good:true,
+ q:{en:"Snapchat: Stranger asks for your number?",
+     ar:"شخص غريب يطلب رقمك؟"},
+ safe:{txt:{en:"Say NO & block",ar:"قول لا واحظر"},delta:{hearts:0,danger:-6}},
+ risk:{txt:{en:"Give number",ar:"اعطي الرقم"},delta:{hearts:0,danger:+24}},
+},
+
+{
+ good:true,
+ q:{en:"Link: Friend sends strange URL — verify?",
+     ar:"صديق يرسل رابط غريب — تتأكد؟"},
+ safe:{txt:{en:"Ask them",ar:"اسألهم"},delta:{hearts:0,danger:-8}},
+ risk:{txt:{en:"Click",ar:"اضغط"},delta:{hearts:-1,danger:+16}},
+},
+
+{
+ good:true,
+ q:{en:"Threat: Someone will post lies about you?",
+     ar:"شخص يهدد ينشر كذب؟"},
+ safe:{txt:{en:"Save evidence + tell adult",ar:"احفظ الدليل وخبر كبير"},delta:{hearts:0,danger:-10}},
+ risk:{txt:{en:"Reply angry",ar:"رد بعصبية"},delta:{hearts:-1,danger:+16}},
+}
+];
+
+function isAR(){return lang==="ar"}
+
+function updateHud(){
+ document.getElementById("level").textContent=isAR()?`المستوى ${idx+1}`:`Level ${idx+1}`;
+ document.getElementById("hearts").textContent="❤️".repeat(hearts)+"🖤".repeat(3-hearts);
+
+ danger=Math.max(0,Math.min(100,danger));
+ document.getElementById("dangerFill").style.width=danger+"%";
+ document.getElementById("dangerPct").textContent=danger+"%";
+
+ document.getElementById("score").textContent=isAR()?`النقاط ${score}`:`Score ${score}`;
 }
 
-/* renderScenario remains unchanged */
+function renderScenario(){
+ const s=SCENES[idx];
+
+ document.getElementById("storyTxt").textContent=s.story? s.story[lang] : STORY[lang][idx];
+
+ document.getElementById("questionTxt").textContent=s.q[lang];
+
+ document.getElementById("btnSafe").textContent=s.safe.txt[lang];
+ document.getElementById("btnRisk").textContent=s.risk.txt[lang];
+
+ updateHud();
+}
+
+/* ========================
+   CHOICES FIX
+======================== */
+function choose(safe){
+ const s=SCENES[idx];
+
+ if(safe){
+   score+=10;
+   hearts+=s.safe.delta.hearts;
+   danger+=s.safe.delta.danger;
+ }else{
+   danger+=s.risk.delta.danger;
+   hearts+=s.risk.delta.hearts;
+ }
+
+ idx++;
+
+ if(hearts<=0 || danger>=100){
+   lose();
+   return;
+ }
+
+ if(idx>=8){
+   win();
+   return;
+ }
+
+ renderScenario();
+}
+
+document.getElementById("btnSafe").onclick=()=>choose(true);
+document.getElementById("btnRisk").onclick=()=>choose(false);
+
+/* Safari iOS double security */
+document.getElementById("btnSafe").addEventListener("touchend",(e)=>{e.preventDefault();choose(true)});
+document.getElementById("btnRisk").addEventListener("touchend",(e)=>{e.preventDefault();choose(false)});
+
+/* ========================
+   START
+======================== */
+document.getElementById("startBtn").onclick=()=>{
+ document.getElementById("intro").style.display="none";
+ document.getElementById("phone").classList.add("show");
+ idx=0; hearts=3; danger=0; score=0;
+ renderScenario();
+};
+
+/* ========================
+   ENDINGS + AMAZE
+======================== */
+function win(){
+ const panel=document.getElementById("endPanel");
+ panel.style.display="flex";
+
+ document.getElementById("certBox").style.display="block";
+
+ document.getElementById("endBox").innerHTML=
+   `<h2>🎉 ${isAR()?"حميت سعيد بالكامل!":"You kept Saeed safe!"}</h2>
+    <p>${isAR()?"صرت بطل إنترنت":"Cyber Hero Achieved"}</p>
+    <div class="btnRow">
+      <button class="btn safe" onclick="location.reload()">Restart</button>
+    </div>`;
+}
+
+function lose(){
+ const panel=document.getElement.getElementById("endPanel");
+ panel.style.display="flex";
+
+ document.getElementById("certBox").style.display="none";
+
+ document.getElementById("endBox").innerHTML=
+   `<h2>💔 ${isAR()?"سعيد في خطر":"Saeed is unsafe"}</h2>
+    <p>${isAR()?"اختيارات رفعت مؤشر الخطر":"Risky choices increased danger"}</p>
+    <div class="btnRow">
+      <button class="btn safe" onclick="location.reload()">Try Again</button>
+    </div>`;
+}
+
+renderScenario();
+
 </script>
 
 </body>
