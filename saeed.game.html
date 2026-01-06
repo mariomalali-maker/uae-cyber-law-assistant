@@ -1,529 +1,668 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Saeed: Cyber Survival Story</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, viewport-fit=cover" />
+<title>Saeed Cyber Survival – Story Mode</title>
 
 <style>
-/* ========================
-   THEME + RESET
-======================== */
-*{box-sizing:border-box;margin:0;padding:0}
+/* -------- RESET & THEME -------- */
+* { box-sizing: border-box; margin:0; padding:0; }
 
 :root{
- --bg:#020617;
- --panel:#0f172a;
- --panel2:#111827;
- --accent:#22c55e;
- --danger:#ef4444;
- --warn:#f59e0b;
- --text:#e5e7eb;
- --muted:#94a3b8;
+  --bg:#020617;
+  --panel:#0f172a;
+  --accent:#22c55e;
+  --danger:#ef4444;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --cyan:#22d3ee;
+  --pink:#fb7185;
+  --stroke:rgba(148,163,184,.20);
 }
 
-/* ========================
-   PAGE
-======================== */
 body{
- font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
- background: radial-gradient(circle at top,#050b1f,#000 70%);
- color:var(--text);
- min-height:100vh;
- display:flex;
- align-items:center;
- justify-content:center;
- padding:16px;
+  font-family: system-ui, Segoe UI, Roboto, sans-serif;
+  background: radial-gradient(circle at top, #050b1f, #000 70%);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-/* ========================
-   GAME SHELL
-======================== */
-#game{
- width:min(1000px,100%);
- height:min(700px,calc(100vh - 20px));
- min-height:620px;
- border-radius:26px;
- border:1px solid rgba(255,255,255,.15);
- box-shadow:0 30px 120px rgba(0,0,0,.8);
- position:relative;
- overflow:hidden;
+/* -------- NAV -------- */
+nav{
+  display:flex; gap:12px;
+  padding:12px 18px;
+  background:#020617;
+  border-bottom:1px solid rgba(15,23,42,.8);
+  position:sticky; top:0; z-index:20;
+}
+nav a{
+  color:var(--text);
+  text-decoration:none;
+  font-size:.9rem;
+  padding:6px 10px;
+  border-radius:999px;
+  transition:.25s;
+  border:1px solid transparent;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+nav a:hover{ background:#111827; border-color:#1f2937 }
+nav a.active{ background:var(--accent); color:#022c22 }
+
+/* -------- GAME CONTAINER -------- */
+main{ flex:1; display:flex; justify-content:center; padding:20px }
+
+#game-shell{
+  width:100%;
+  max-width:960px;
+  background:rgba(15,23,42,.95);
+  border-radius:24px;
+  border:1px solid var(--stroke);
+  box-shadow:0 25px 80px rgba(0,0,0,.6);
+  position:relative;
+  overflow:hidden;
 }
 
-/* ========================
-   BACKGROUND ANIMATIONS
-======================== */
-#bg{
- position:absolute;
- inset:0;
- background:
-   radial-gradient(circle at 10% 20%,rgba(34,211,238,.18),transparent 40%),
-   radial-gradient(circle at 90% 20%,rgba(251,113,133,.14),transparent 40%),
-   linear-gradient(#0f172a,#000 60%);
+/* -------- BACKGROUND -------- */
+#scene{
+  height:min(70vh,520px);
+  min-height:420px;
+  background:linear-gradient(#0f172a 0,#001 60%,#000 100%);
+  position:relative;
+  overflow:hidden;
 }
 
-/* Moving scan line */
-.scan{
- position:absolute;
- left:-20%;
- top:0;
- width:20%;
- height:100%;
- background:linear-gradient(90deg,transparent,rgba(34,211,238,.16),transparent);
- animation:scan 6s linear infinite;
- mix-blend-mode:screen;
+.tower{
+  position:absolute;
+  bottom:120px;
+  width:70px;
+  background:linear-gradient(#1f2937,#020617);
+  border-radius:16px 16px 0 0;
+  animation: towerFloat 6s ease-in-out infinite alternate;
+  opacity:.75;
 }
-@keyframes scan{
- to{transform:translateX(600%)}
+@keyframes towerFloat{ to{ transform:translateY(-12px)} }
+
+.road{
+  position:absolute;
+  bottom:40px;
+  left:-20%; right:-20%;
+  height:120px;
+  background:
+    linear-gradient(180deg, transparent, rgba(2,6,23,.98) 70%);
+}
+.lane{
+  position:absolute;
+  left:-10%; right:-10%;
+  bottom:70px;
+  height:4px;
+  background-image: repeating-linear-gradient(to right, #fff,#fff 26px, transparent 26px, transparent 54px);
+  opacity:.35;
 }
 
-/* Floating stars */
-.star{
- position:absolute;
- width:3px;
- height:3px;
- background:#fff;
- opacity:.6;
- animation:twinkle 3s infinite alternate;
-}
-@keyframes twinkle{
- to{opacity:.1;transform:translateY(-2px)}
-}
-
-/* ========================
-   HUD
-======================== */
+/* -------- HUD -------- */
 #hud{
- position:absolute;
- top:10px;
- left:10px;
- right:10px;
- z-index:20;
- display:flex;
- justify-content:space-between;
- align-items:center;
+  position:absolute;
+  top:14px; left:14px; right:14px;
+  z-index:25;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
 }
-
 .pill{
- background:rgba(0,0,0,.45);
- border:1px solid rgba(255,255,255,.15);
- padding:8px 12px;
- border-radius:999px;
- font-size:.85rem;
+  background:rgba(2,6,23,.62);
+  border:1px solid var(--stroke);
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:.82rem;
+  backdrop-filter:blur(10px);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
 }
 
-/* Danger bar */
-#danger{
- width:200px;
-}
 .bar{
- height:10px;
- background:rgba(255,255,255,.12);
- border-radius:999px;
- overflow:hidden;
+  height:10px; border-radius:999px;
+  background:rgba(255,255,255,.12);
+  overflow:hidden;
 }
-.bar div{
- height:100%;
- width:0%;
- background:linear-gradient(90deg,var(--accent),var(--warn),var(--danger));
- transition:.5s ease;
-}
-
-/* ========================
-   OVERLAYS
-======================== */
-.overlay{
- position:absolute;
- inset:0;
- background:rgba(0,0,0,.6);
- backdrop-filter:blur(6px);
- display:flex;
- align-items:center;
- justify-content:center;
- z-index:50;
+.bar>div{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg, var(--cyan), var(--pink), var(--danger));
+  transition:width .45s ease;
 }
 
-.panel{
- background:var(--panel);
- border:1px solid rgba(255,255,255,.18);
- border-radius:22px;
- padding:20px;
- width:min(520px,92vw);
- text-align:center;
- animation:pop .4s ease;
-}
-@keyframes pop{
- from{transform:translateY(10px) scale(.95);opacity:0}
- to{transform:translateY(0) scale(1);opacity:1}
+.hearts{ font-size:1rem }
+#langBtn{ cursor:pointer }
+
+/* -------- SAEED HUMAN AVATAR -------- */
+#saeed-wrapper{
+  position:absolute;
+  left:50%;
+  bottom:180px;
+  width:min(220px, 46vw);
+  height:auto;
+  transform:translateX(-50%) scale(.95);
+  transform-origin:center bottom;
+  animation: saeedIdle 2s ease-in-out infinite;
+  z-index:10;
 }
 
-/* ========================
-   PHONE UI
-======================== */
-#phone{
- position:absolute;
- right:50%;
- top:120px;
- width:360px;
- transform:translateX(50%) scale(.95);
- opacity:0;
- pointer-events:none;
- transition:.45s ease;
+@keyframes saeedIdle{
+  0%,100%{ transform:translateX(-50%) translateY(0) scale(.95);}
+  50%{ transform:translateX(-50%) translateY(-5px) scale(.96);}
 }
 
-#phone.show{
- opacity:1;
- pointer-events:auto;
- transform:translateX(50%) scale(1);
+#saeed svg{ width:100% }
+
+#browL,#browR{ transition:.3s }
+#mouthPath{ transition:.3s }
+
+/* emotions */
+.saeed-happy #mouthPath{ d:path("M70 200 Q110 224 150 200"); }
+.saeed-worried #mouthPath{ d:path("M70 210 Q110 184 150 210"); }
+.saeed-shocked #mouthPath{ d:path("M96 208 C96 196 124 196 124 208 C124 220 96 220 96 208"); }
+
+.saeed-worried #browL, .saeed-worried #browR{ opacity:.9; transform:translateY(6px)}
+.saeed-shocked #browL, .saeed-shocked #browR{ opacity:.9; transform:translateY(-4px)}
+
+/* -------- PHONE QUESTION UI -------- */
+#phoneUI{
+  position:absolute;
+  right:50%;
+  top:90px;
+  width:min(380px, 92vw);
+  transform:translateX(50%) translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  transition:.45s;
+  z-index:40;
+}
+#phoneUI.show{
+  transform:translateX(50%) translateY(0);
+  opacity:1;
+  pointer-events:auto;
 }
 
-/* Phone shell */
 .phoneShell{
- background:var(--panel2);
- border-radius:26px;
- padding:16px;
- border:1px solid rgba(255,255,255,.2);
+  background:rgba(2,6,23,.78);
+  border:1px solid var(--stroke);
+  border-radius:26px;
+  padding:14px;
+  backdrop-filter:blur(12px);
+  box-shadow:0 18px 60px rgba(0,0,0,.7);
 }
 
-/* Message bubble */
+.phoneTop{ display:flex; justify-content:space-between; margin-bottom:8px; }
+
 .bubble{
- background:#1e293b;
- border-radius:16px;
- padding:12px;
- margin-bottom:10px;
- line-height:1.3;
+  background:#1e293b;
+  padding:10px 12px;
+  border-radius:14px;
+  font-size:.9rem;
+  margin-bottom:10px;
 }
 
-/* Choices */
-.btnRow{
- display:flex;
- gap:10px;
-}
-
+.btnRow{ display:flex; gap:10px; margin-top:10px }
 .btn{
- flex:1;
- border:0;
- border-radius:14px;
- padding:10px;
- font-weight:800;
- cursor:pointer;
- transition:.2s ease;
+  flex:1;border:0;
+  padding:10px;
+  border-radius:14px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s;
 }
 
-.btn.safe{
- background:var(--accent);
- color:#022c22;
+.btn.safe{ background:#22c55e;color:#022c22 }
+.btn.risky{ background:#fde8e8;color:#7f1d1d }
+
+.btn.safe:hover{ box-shadow:0 0 0 3px rgba(34,197,94,.18); }
+.btn.risky:hover{ box-shadow:0 0 0 3px rgba(239,68,68,.18); }
+
+#tipTxt{ margin-top:6px;font-size:.82rem;color:#f87171;min-height:20px }
+
+/* -------- LEADERBOARD -------- */
+#board{
+  position:absolute;
+  left:14px; bottom:14px;
+  width:min(260px, 80vw);
+  background:rgba(2,6,23,.82);
+  border:1px solid var(--stroke);
+  border-radius:18px;
+  padding:12px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 14px 40px rgba(0,0,0,.6);
+  z-index:60;
 }
 
-.btn.risky{
- background:#ffe2e2;
- color:#7f1d1d;
-}
+#leaderTable{ width:100%;font-size:.8rem;margin-top:6px }
+#leaderTable th{ text-align:left;color:var(--muted) }
+#leaderTable td{ padding:4px 0 }
 
-.btn:active{
- transform:translateY(2px) scale(.98)
-}
-
-/* ========================
-   RESPONSIVE
-======================== */
+/* -------- RESPONSIVE -------- */
 @media(max-width:760px){
- #game{height:auto;min-height:760px}
- #phone{right:50%;top:360px;width:min(400px,92vw);transform:translateX(50%) scale(.95)}
- #phone.show{transform:translateX(50%) scale(1)}
+  #board{ position:static;margin:10px auto }
 }
-
 </style>
 </head>
 
 <body>
 
-<div id="game">
+<nav>
+  <a class="active">🎮 Saeed's Game</a>
+</nav>
 
-<div id="bg">
- <div class="scan"></div>
-</div>
+<main>
+<div id="game-shell">
 
-<!-- INTRO -->
-<div class="overlay" id="intro">
- <div class="panel">
-   <h2>🌐 Saeed Cyber Adventure</h2>
-   <p>Help Saeed survive online world by smart choices.</p>
-   <button class="btn safe" id="startBtn">Start Game</button>
- </div>
-</div>
-
-<!-- LANGUAGE -->
-<div class="overlay" id="langPanel" style="display:none">
- <div class="panel">
-   <h2>Choose Language</h2>
-   <button class="btn safe" onclick="setLang('en')">English</button>
-   <button class="btn risky" onclick="setLang('ar')">العربية</button>
- </div>
-</div>
-
-<!-- GAME OVERLAY END -->
-<div class="overlay" id="endPanel" style="display:none">
-</div>
-
-<!-- HUD -->
 <div id="hud">
- <div class="pill" id="level">Level 1</div>
- <div class="pill hearts" id="hearts">❤️❤️❤️</div>
-
- <div class="pill" id="danger">
-   <div class="bar"><div id="dangerFill"></div></div>
-   <div style="display:flex;justify-content:space-between;font-size:.75rem;margin-top:6px">
-     <span>Danger</span>
-     <span id="dangerPct">0%</span>
-   </div>
- </div>
-
- <div class="pill" id="score">Score 0</div>
+  <div class="pill" id="levelPill">🎮 <span id="levelText">Level 1</span></div>
+  <div class="pill hearts">❤️ <span id="heartText">3</span></div>
+  <div class="pill" style="width:200px">
+     <div class="bar"><div id="dangerFill"></div></div>
+     <div class="small"><span>Danger</span><span id="dangerPct">0%</span></div>
+  </div>
+  <div class="pill" id="langBtn">🌍 <span id="langText">EN</span></div>
 </div>
 
-<!-- PHONE QUESTIONS -->
-<div id="phone">
- <div class="phoneShell">
+<section id="scene">
 
-  <div class="phoneShell">
-   <div class="bubble" id="storyTxt"> </div>
-   <div class="bubble" id="questionTxt"> </div>
+<div id="saeed-wrapper" class="saeed-happy">
+  <div id="saeed">
+    <svg viewBox="0 0 220 320">
+      <circle cx="110" cy="120" r="60" fill="#ffe58a"/>
+      <path d="M80 120 Q110 70 140 120 L140 180 Q130 200 110 200 Q90 200 80 180Z" fill="#0b1220"/>
+      <path id="browL" d="M90 150 Q100 144 110 150" stroke="#0b1220" stroke-width="6" opacity=".2"/>
+      <path id="browR" d="M110 150 Q120 144 130 150" stroke="#0b1220" stroke-width="6" opacity=".2"/>
+      <circle cx="92" cy="170" r="6" fill="#000"/>
+      <circle cx="128" cy="170" r="6" fill="#000"/>
+      <path id="mouthPath" d="M70 200 Q110 224 150 200" stroke="#b91c1c" stroke-width="6" fill="none"/>
+      <rect x="76" y="220" width="70" height="90" rx="30" fill="#fff"/>
+    </svg>
+  </div>
+</div>
+
+<!-- PHONE STYLE OVER  -->
+<div id="phoneUI">
+ <div class="phoneShell">
+   <div class="phoneTop">
+     <div class="appName"><span id="appIcon">📱</span> <span id="appTitle">DM</span></div>
+     <span id="timeTxt">9:41</span>
+   </div>
+
+   <div class="bubble" id="questionTxt"></div>
 
    <div class="btnRow">
-     <button class="btn safe" id="btnSafe"> </button>
-     <button class="btn risky" id="btnRisk"> </button>
+     <button class="btn safe"  id="btnSafe"></button>
+     <button class="btn risky" id="btnRisk"></button>
    </div>
 
-   <div class="bubble tip" id="tipTxt"> </div>
-  </div>
-
-  <!-- CERTIFICATE -->
-  <div id="certBox" style="display:none;margin-top:8px">
-    <input id="nameInput" placeholder="Enter name" style="padding:6px;margin:6px;border-radius:12px;border:1px solid #fff;width:90%">
-    <button class="btn safe" onclick="finish()">Get Certificate</button>
-  </div>
+   <p id="tipTxt"></p>
 
  </div>
+</div>
+
+<!-- MINI LEADER BOARD -->
+<div id="board">
+  <h3 style="color:var(--accent)">Mini Leaderboard</h3>
+  <table id="leaderTable">
+     <thead>
+        <tr><th>Name</th><th>Score</th><th>Meter</th></tr>
+     </thead>
+     <tbody id="leaderBody"></tbody>
+  </table>
+</div>
+
+<!-- INTRO PANEL -->
+<div class="overlay" id="introOverlay">
+  <div class="panel">
+    <div class="panelTitle">🧒 <span id="introTitle">Meet Saeed</span></div>
+    <p id="introText">
+      This is Saeed — a brave teenager who uses the internet every day.  
+      Your mission is to guide him through a LONG story of 8 challenging stages.  
+      Every level the story gets deeper, and your choices decide if he stays safe or gets closer to real trouble.
+    </p>
+    <div class="panelActions">
+      <button class="bigBtn primary" id="startBtn" onclick="beginGame()">Start Adventure</button>
+      <button class="bigBtn" id="howBtn">How to Play</button>
+    </div>
+    <div class="note">Internet situations in UAE can lead to fines or legal cases — learn while you play.</div>
+  </div>
+</div>
+
+<!-- HOW PANEL -->
+<div class="overlay" id="howOverlay" style="display:none">
+  <div class="panel">
+    <div class="panelTitle">📚 <span id="howTitle">How to Play</span></div>
+    <p id="howText">
+      You have 3 hearts.  
+      The danger meter rises with risky behaviour, but not every risky answer is instant loss.  
+      Reach level 8 with score above 70 to impress everyone.
+    </p>
+    <div class="panelActions">
+      <button class="bigBtn primary" onclick="closeHow()">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- END BOX -->
+<div class="overlay" id="endOverlay" style="display:none">
+  <div class="panel" id="endBox"></div>
 </div>
 
 </section>
-
 </div>
 </main>
 
 <script>
+/* -------- INTRO & NAV LOGIC -------- */
+let lang="en";
+const $=id=>document.getElementById(id);
 
-/* ========================
-   DECENT BACKGROUND STARS
-======================== */
-for(let i=0;i<80;i++){
- const s=document.createElement("div");
- s.className="star";
- s.style.left=Math.random()*100+"%";
- s.style.top=Math.random()*50+"%";
- document.getElementById("bg").appendChild(s);
+function beginGame(){
+   $("introOverlay").style.display="none";
+   $("phoneUI").classList.add("show");
+   window.gameStarted=true;
+   idx=0; hearts=3; danger=0; score=0;
+   renderScenario();
 }
 
-/* ========================
-   GAME DATA 8 LEVELS
-======================== */
-let lang="en", idx=0, hearts=3, danger=0, score=0;
-
-const STORY=[
- en:[
-  "Saeed just created a new Instagram account and feels excited.",
-  "Saeed received an email while playing games after school.",
-  "Saeed is chatting inside an online game lobby.",
-  "Saeed is at the mall using public Wi-Fi.",
-  "Saeed sees a pop up prize download on his phone.",
-  "Saeed got a new friend request on Snapchat.",
-  "Saeed’s cousin account sends him a strange link.",
-  "Final day: Saeed faces an online threat."
- ],
- ar:[
-  "سعيد توه مسوي حساب انستغرام جديد ومتحمس.",
-  "سعيد وصله إيميل وهو يلعب بعد المدرسة.",
-  "سعيد يسولف في لوبي لعبة أونلاين.",
-  "سعيد في المول ويستخدم واي فاي عام.",
-  "سعيد شاف إعلان جائزة تحميل.",
-  "سعيد وصله طلب صداقة جديد.",
-  "حساب قريب سعيد يرسل رابط غريب.",
-  "المرحلة الأخيرة: سعيد يواجه تهديد."
- ]
-];
-
-const SCENES=[
-{
- good:true,
- q:{en:"Instagram DM: A stranger asks for private photo. What do you do?",
-     ar:"رسالة: شخص غريب يطلب صورة خاصة. شو تسوي؟"},
- safe:{txt:{en:"Block & Report",ar:"حظر و تبليغ"},delta:{hearts:0,danger:-6}},
- risk:{txt:{en:"Send photo",ar:"أرسل الصورة"},delta:{hearts:-1,danger:+18}},
-},
-{
- good:true,
- q:{en:"Email: Your bank frozen — click link?",
-     ar:"إيميل: تم تجميد الحساب — تضغط الرابط؟"},
- safe:{txt:{en:"Use official app",ar:"استخدم تطبيق رسمي"},delta:{hearts:0,danger:-6}},
- risk:{txt:{en:"Click link",ar:"اضغط الرابط"},delta:{hearts:-1,danger:+14}},
-},
-{
- good:true,
- q:{en:"Game chat asks for school + area?",
-     ar:"لعبة: يسأل عن مدرستك ومنطقتك؟"},
- safe:{txt:{en:"Don’t answer",ar:"لا تجاوب"},delta:{hearts:0,danger:-6}},
- risk:{txt:{en:"Tell them",ar:"خبرهم"},delta:{hearts:0,danger:+20}},
-},
-{
- good:true,
- q:{en:"Airport Wi-Fi login with Instagram?",
-     ar:"واي فاي عام يطلب دخول بانستغرام؟"},
- safe:{txt:{en:"Mobile data",ar:"بيانات الهاتف"},delta:{hearts:0,danger:-6}},
- risk:{txt:{en:"Login",ar:"سجّل دخول"},delta:{hearts:0,danger:+22}},
-},
-
-/* ➕ 4 MORE IMPRESSIVE HARDER ONES */
-
-{
- good:true,
- q:{en:"Download: Unknown prize file?",
-     ar:"إعلان: فزت وحمل ملف؟"},
- safe:{txt:{en:"Delete it",ar:"احذف فوراً"},delta:{hearts:0,danger:-6}},
- risk:{txt:{en:"Download",ar:"حمّل الملف"},delta:{hearts:-1,danger:+18}},
-},
-
-{
- good:true,
- q:{en:"Snapchat: Stranger asks for your number?",
-     ar:"شخص غريب يطلب رقمك؟"},
- safe:{txt:{en:"Say NO & block",ar:"قول لا واحظر"},delta:{hearts:0,danger:-6}},
- risk:{txt:{en:"Give number",ar:"اعطي الرقم"},delta:{hearts:0,danger:+24}},
-},
-
-{
- good:true,
- q:{en:"Link: Friend sends strange URL — verify?",
-     ar:"صديق يرسل رابط غريب — تتأكد؟"},
- safe:{txt:{en:"Ask them",ar:"اسألهم"},delta:{hearts:0,danger:-8}},
- risk:{txt:{en:"Click",ar:"اضغط"},delta:{hearts:-1,danger:+16}},
-},
-
-{
- good:true,
- q:{en:"Threat: Someone will post lies about you?",
-     ar:"شخص يهدد ينشر كذب؟"},
- safe:{txt:{en:"Save evidence + tell adult",ar:"احفظ الدليل وخبر كبير"},delta:{hearts:0,danger:-10}},
- risk:{txt:{en:"Reply angry",ar:"رد بعصبية"},delta:{hearts:-1,danger:+16}},
+function closeHow(){
+   $("howOverlay").style.display="none";
 }
-];
 
+function openHow(){
+   $("howOverlay").style.display="flex";
+}
+$("howBtn").onclick=openHow;
+
+function closeHow(){
+   $("howOverlay").style.display="none";
+}
+
+$("closeHowBtn").onclick=closeHow;
+
+function closeHow(){ $("howOverlay").style.display="none"; }
+
+/* -------- BACKGROUND STARS -------- */
+const starLayer = $("scene");
+for(let i=0;i<60;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*60+"%";
+  s.style.animationDelay=Math.random()*3+"s";
+  starLayer.appendChild(s);
+}
+
+/* -------- GAME STORY DATA (LONG QUESTIONS) -------- */
+let idx=0,hearts=3,danger=0,score=0;
 function isAR(){return lang==="ar"}
 
-function updateHud(){
- document.getElementById("level").textContent=isAR()?`المستوى ${idx+1}`:`Level ${idx+1}`;
- document.getElementById("hearts").textContent="❤️".repeat(hearts)+"🖤".repeat(3-hearts);
+const SCENES=[
+ {
+   icon:"📱",
+   appTitle:{en:"Instagram DM",ar:"رسالة انستغرام"},
+   tag:{en:"DM",ar:"رسالة"},
+   q:{
+     en:`Level 1 — Saeed receives a very long message from an unknown account on Instagram.  
+The account writes in English:  
+“Hello Saeed, I was browsing profiles and your pictures look friendly.  
+I want to be your gaming buddy and maybe meet after school near your house.  
+Please tell me:  
+1- What school do you attend exactly?  
+2- Which neighbourhood in Abu Dhabi do you live in?  
+3- At what time do you finish college usually?  
+The person insists that sharing these details will make the friendship stronger.”  
 
- danger=Math.max(0,Math.min(100,danger));
- document.getElementById("dangerFill").style.width=danger+"%";
- document.getElementById("dangerPct").textContent=danger+"%";
+As a player, what should you advise Saeed to do in this situation?`,
+     ar:`المستوى ١ — سعيد يستلم رسالة طويلة من حساب مجهول في انستغرام.  
+الشخص يكتب:  
+«مرحبا سعيد، كنت أتصفح الحسابات وصورك شكلها ودّي.  
+أبغي أكون رفيقك في الألعاب ويمكن نتلاقى بعد المدرسة قريب بيتك.  
+لو سمحت خبرني:  
+١- أي مدرسة تدرس فيها بالضبط؟  
+٢- في أي حي في أبوظبي تسكن؟  
+٣- متى تخلص دوامك عادة؟  
+ويقول إن مشاركة هالمعلومات تقوّي الصداقة.»  
 
- document.getElementById("score").textContent=isAR()?`النقاط ${score}`:`Score ${score}`;
-}
+شو تنصح سعيد يسوي؟`
+   },
+   safe:{txt:{en:"Block and report",ar:"حظر وتبليغ"},delta:{hearts:0,danger:-8,score:+10},emo:"happy",
+     explain:{en:"Great choice — Saeed stays far from danger.",ar:"اختيار ممتاز — حميت سعيد."}
+   },
+   risk:{txt:{en:"Share details",ar:"شارك المعلومات"},delta:{hearts:0,danger:+22,score:+4},emo:"worried",
+     explain:{en:"Not instant loss — but meter jumped.",ar:"مو خسارة مباشرة لكن الخطر ارتفع."}
+   }
+ },
 
+ {
+   icon:"✉️",
+   appTitle:{en:"Email",ar:"إيميل"},
+   tag:{en:"EMAIL",ar:"إيميل"},
+   q:{en:`Level 2 — The same scammer now moves to email.  
+He sends Saeed a professional looking message:
+
+“Dear Saeed, congratulations you were selected for a student ambassador program.  
+To continue we need a very detailed verification:  
+- your Emirates ID front and back  
+- your father or mother phone number  
+- a code sent to your mobile  
+Please hurry or Saeed will lose the opportunity.”
+
+Mohamed told you risky choices are not always instant game over.  
+What should Saeed do now?`,
+      ar:`المستوى ٢ — نفس المحتال يرسل إيميل:  
+«تم اختيارك لبرنامج سفير طلابي.  
+نحتاج تحقق مفصّل:  
+- صورة الهوية الإماراتية  
+- رقم أحد الوالدين  
+- الرمز المرسل على هاتفك»  
+
+شو يسوي سعيد؟`
+   },
+   safe:{txt:{en:"Ignore and verify using official channels",ar:"تجاهل وتحقق رسمي"},delta:{hearts:0,danger:-5,score:+10},emo:"happy",
+      explain:{en:"Perfect Saeed move.",ar:"حركة احترافية."}},
+   risk:{txt:{en:"Send documents",ar:"أرسل البيانات"},delta:{hearts:-1,danger:+16,score:+4},emo:"shocked",
+      explain:{en:"Phishing again.",ar:"تصيّد واضح."}}
+ },
+
+ {
+   icon:"📶",
+   appTitle:{en:"WiFi",ar:"واي فاي"},
+   tag:{en:"WIFI",ar:"واي فاي"},
+   q:{en:`Level 3 — Saeed is in a café using his iPhone.  
+The stranger sits next to him and shows a free Wi-Fi page asking login with Snapchat/Instagram.
+
+This level continues the story from earlier stages.  
+What vibe survival decision should you choose?`,
+      ar:`المستوى ٣ — سعيد في مقهى، شخص جنبه يعرض واي فاي مجاني يطلب تسجيل دخول بحساب سناب أو انستغرام.  
+شو يسوي؟`
+   },
+   safe:{txt:{en:"Use mobile data only",ar:"استخدم بيانات الهاتف فقط"},delta:{danger:-6,score:+10},emo:"happy",
+     explain:{en:"You guided Saeed like a pro gamer.",ar:"وجّهت سعيد باحتراف."}},
+   risk:{txt:{en:"Login anyway",ar:"سجّل دخول"},delta:{danger:+20,score:+3},emo:"worried",
+     explain:{en:"Meter rises but no instant loss.",ar:"الخطر ارتفع."}}
+ },
+
+ {
+   icon:"👤",
+   appTitle:{en:"Social",ar:"سوشال"},
+   tag:{en:"SOCIAL",ar:"سوشال"},
+   q:{en:`Level 4 — Saeed gets cyberbullying in a game chat displayed on an iPhone style bubble.  
+The bully writes a very long insult and threatens to spread rumours in UAE.  
+What should Saeed do?`,
+      ar:`المستوى ٤ — شخص في شات لعبة يسب سعيد ويهدد ينشر شائعات.  
+شو يسوي؟`
+   },
+   safe:{txt:{en:"Screenshot + block + report to police platform",ar:"صور الشاشة + حظر + تبليغ"},delta:{danger:-10,score:+12},emo:"happy",
+      explain:{en:"Best survival path Saeed saved.",ar:"أفضل مسار نجاة."}},
+   risk:{txt:{en:"Reply insult back",ar:"رد بسب"},delta:{hearts:-1,danger:+24},emo:"shocked",
+      explain:{en:"Arguing makes it worse Saeed.",ar:"الرد يزيد المشكلة."}}
+ },
+
+ {
+   icon:"📦",
+   appTitle:{en:"Download",ar:"تحميل"},
+   tag:{en:"FILE",ar:"ملف"},
+   q:{en:`Level 5 — After previous events the story continues.  
+A pop-up says download VPN hack tool to protect Saeed.  
+Is this safe?`,
+      ar:`المستوى ٥ — إعلان يقول حمّل أداة اختراق لحماية نفسك.  
+آمن؟`
+   },
+   safe:{txt:{en:"No – delete and rely on real security apps",ar:"لا – احذف واعتمد تطبيقات أمن"},delta:{danger:-9,score:+15},emo:"happy",
+     explain:{en:"Saeed close call survival.",ar:"قرار واعي."}},
+   risk:{txt:{en:"Download tool",ar:"حمّل الأداة"},delta:{hearts:-1,danger:+30},emo:"worried",
+     explain:{en:"Malware trap.",ar:"فخ فايروسات."}}
+ },
+
+ {
+   icon:"🔐",
+   appTitle:{en:"Privacy",ar:"خصوصية"},
+   tag:{en:"PRIVACY",ar:"خصوصية"},
+   q:{en:`Level 6 — Saeed wants to film someone without them knowing to make a TikTok challenge on iPhone.  
+Under UAE vibes is this allowed?`,
+      ar:`المستوى ٦ — سعيد يبغي يصوّر شخص بدون علمه لتحدي تيك توك.  
+مسموح في الإمارات؟`
+   },
+   safe:{txt:{en:"No – it is illegal in UAE",ar:"لا – مخالف للقانون"},delta:{danger:-8,score:+10},emo:"happy",
+     explain:{en:"You sound like nerd gamer — saved Saeed.",ar:"صحيح، التصوير بدون إذن جريمة."}},
+   risk:{txt:{en:"Do it for views",ar:"سوها للمشاهدات"},delta:{hearts:-1,danger:+26},emo:"shocked",
+     explain:{en:"Rumours law case Saeed.",ar:"قضية إشاعات."}}
+ },
+
+ {
+   icon:"🔗",
+   appTitle:{en:"Links",ar:"روابط"},
+   tag:{en:"LINK",ar:"رابط"},
+   q:{en:`Level 7 — The bully from earlier hacks Saeed account and sends you a very long link claiming it is from Dubai Police article 2021.  
+What should Saeed do?`,
+      ar:`المستوى ٧ — رابط يزعم إنه من شرطة دبي.  
+شو يسوي سعيد؟`
+   },
+   safe:{txt:{en:"Open ecrime.ae or Dubai Police official site instead",ar:"ادخل موقع ecrime.ae"},delta:{danger:-10,score:+10},emo:"happy",
+      explain:{en:"Saeed survived again nerd style.",ar:"هذا الصحيح."}},
+   risk:{txt:{en:"Open the link",ar:"افتح الرابط"},delta:{hearts:-1,danger:+20},emo:"worried",
+      explain:{en:"Phishing risk",ar:"تصيّد."}}
+ },
+
+ {
+   icon:"🏆",
+   appTitle:{en:"Final Boss",ar:"نهائي"},
+   tag:{en:"BOSS",ar:"نهائي"},
+   q:{en:`Level 8 — FINAL STORY — Saeed almost unsafe.  
+Player chooses final survival path to win certificate and people say woah.  
+Which path is safest?`,
+      ar:`المستوى ٨ — المرحلة الأخيرة — اختر أفضل مسار لحماية سعيد.`},
+   safe:{txt:{en:"Calm + Evidence + Adult + Official UAE report",ar:"هدوء + دليل + تبليغ رسمي"},delta:{danger:-10,score:+20},emo:"happy",
+      explain:{en:"You reached max level Saeed saved — PRO!",ar:"وصلت للماكس باحتراف."}},
+   risk:{txt:{en:"Fight back",ar:"الجدال"},delta:{hearts:-1,danger:+16},emo:"shocked",
+      explain:{en:"Bad ending",ar:"نهاية سيئة."}}
+ },
+];
+
+/* -------- RISK FIX -------- */
 function renderScenario(){
- const s=SCENES[idx];
-
- document.getElementById("storyTxt").textContent=s.story? s.story[lang] : STORY[lang][idx];
-
- document.getElementById("questionTxt").textContent=s.q[lang];
-
- document.getElementById("btnSafe").textContent=s.safe.txt[lang];
- document.getElementById("btnRisk").textContent=s.risk.txt[lang];
-
- updateHud();
+  const s = SCENES[idx];
+  $("questionTxt").textContent = s.q[lang];
+  $("btnSafe").textContent = s.safe.txt[lang];
+  $("btnRisk").textContent = s.risky?.txt?.[lang] || s.risk.txt[lang];
+  updateHud();
 }
 
-/* ========================
-   CHOICES FIX
-======================== */
-function choose(safe){
- const s=SCENES[idx];
+function updateHud(){
+  $("heartText").textContent = hearts;
+  danger = clamp(danger,0,100);
+  $("dangerFill").style.width = danger;
+  $("dangerPct").textContent = danger+"%";
 
- if(safe){
-   score+=10;
-   hearts+=s.safe.delta.hearts;
-   danger+=s.safe.delta.danger;
- }else{
-   danger+=s.risk.delta.danger;
-   hearts+=s.risk.delta.hearts;
- }
-
- idx++;
-
- if(hearts<=0 || danger>=100){
-   lose();
-   return;
- }
-
- if(idx>=8){
-   win();
-   return;
- }
-
- renderScenario();
+  // leaderboard update
+  updateBoard();
 }
 
-document.getElementById("btnSafe").onclick=()=>choose(true);
-document.getElementById("btnRisk").onclick=()=>choose(false);
+function updateBoard(){
+  const body = $("leaderBody");
+  body.innerHTML="";
 
-/* Safari iOS double security */
-document.getElementById("btnSafe").addEventListener("touchend",(e)=>{e.preventDefault();choose(true)});
-document.getElementById("btnRisk").addEventListener("touchend",(e)=>{e.preventDefault();choose(false)});
+  const recordName = window.playerName || "guest";
 
-/* ========================
-   START
-======================== */
-document.getElementById("startBtn").onclick=()=>{
- document.getElementById("intro").style.display="none";
- document.getElementById("phone").classList.add("show");
- idx=0; hearts=3; danger=0; score=0;
- renderScenario();
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${recordName}</td><td>${score}</td><td>${danger}%</td>`;
+  body.appendChild(row);
+}
+
+/* -------- BEGIN -------- */
+$("btnSafe").onclick=()=>{
+  const s = SCENES[idx];
+  applyDelta(s.safe.delta);
+  score += 10;
+  setEmotion("happy");
+  idx++;
+  idx>=8?win():renderScenario();
 };
 
-/* ========================
-   ENDINGS + AMAZE
-======================== */
+$("btnRisk").onclick=()=>{
+  const s = SCENES[idx];
+  applyDelta(s.risk.delta);
+  score += 4;
+  setEmotion("worried");
+  idx++;
+  hearts = clamp(hearts,0,3);
+  if(hearts<=0 || danger>=100) lose();
+  else if(idx>=8) win();
+  else renderScenario();
+};
+
+/* -------- MINI MINI CERTIFICATE -------- */
 function win(){
- const panel=document.getElementById("endPanel");
- panel.style.display="flex";
-
- document.getElementById("certBox").style.display="block";
-
- document.getElementById("endBox").innerHTML=
-   `<h2>🎉 ${isAR()?"حميت سعيد بالكامل!":"You kept Saeed safe!"}</h2>
-    <p>${isAR()?"صرت بطل إنترنت":"Cyber Hero Achieved"}</p>
-    <div class="btnRow">
-      <button class="btn safe" onclick="location.reload()">Restart</button>
-    </div>`;
+  document.getElementById("endOverlay").style.display="flex";
+  document.getElementById("endBox").innerHTML =
+  `<h2>🎉 You amazed UAE cyber survival!</h2>
+   <p>Your score: ${score}</p>
+   <button onclick="location.reload()">Play Again</button>`;
 }
 
 function lose(){
- const panel=document.getElement.getElementById("endPanel");
- panel.style.display="flex";
-
- document.getElementById("certBox").style.display="none";
-
- document.getElementById("endBox").innerHTML=
-   `<h2>💔 ${isAR()?"سعيد في خطر":"Saeed is unsafe"}</h2>
-    <p>${isAR()?"اختيارات رفعت مؤشر الخطر":"Risky choices increased danger"}</p>
-    <div class="btnRow">
-      <button class="btn safe" onclick="location.reload()">Try Again</button>
-    </div>`;
+ document.getElementById("endOverlay").style.display="flex";
+ document.getElementById("endBox").innerHTML =
+ `<h2>💔 Game Over</h2><button onclick="location.reload()">Try Again</button>`;
 }
 
+function applyDelta(delta){
+  if(delta?.hearts) hearts += delta.hearts;
+  if(delta?.danger) danger += delta.danger;
+  if(delta?.score)  score  += delta.score;
+  hearts = clamp(hearts,0,3);
+  danger = clamp(danger,0,100);
+}
+
+function setEmotion(type){
+  const wrap = document.getElementById("saeed-wrapper");
+  wrap.classList.remove("saeed-happy","saeed-worried","saeed-shocked");
+  wrap.classList.add("saeed-"+type);
+}
+
+/* language */
+$("langBtn").onclick=()=>{
+  lang = isAR()?"en":"ar";
+  document.documentElement.lang=lang;
+};
 renderScenario();
 
+</style>
+</head>
+
+<body>
+<script>
+/* ask player name for board */
+window.playerName = prompt("Enter your name to survive story vibes:");
 </script>
 
 </body>
