@@ -11,7 +11,6 @@
 canvas {
     display: none !important;
 }
-
 * {
     margin: 0;
     padding: 0;
@@ -667,88 +666,152 @@ body.rtl .option-btn .option-key {
     pointer-events: none;
     z-index: 9999;
 }
-
-body {
-    margin:0;
-    font-family:'Poppins', sans-serif;
-    background:#0c0f19;
-}
-
-.screen.hidden {
-    display:none;
-}
-
-.rtl {
-    direction:rtl;
-    text-align:right;
-}
-
-.option-btn.correct {
-    background:#22c55e;
-}
-
-.option-btn.wrong {
-    background:#e21b3c;
-}
-
-.timer-fill.danger {
-    background:#e21b3c;
-}
-
-.timer-fill.warning {
-    background:#f59e0b;
-}
-
-.feedback-overlay.hidden {
-    display:none;
-}
-
-/* hide any injected canvas */
-canvas {
-    display:none;
-}
-
 </style>
 </head>
 
 <body>
 
+
 <div id="startScreen" class="screen">
-    <input type="text" id="playerName" maxlength="15">
-    <button onclick="startGame()">START</button>
+    <div class="logo-container">
+        <div class="pulse-logo">🎯</div>
+        <h1 class="title">CYBER SECURITY<br><span class="gradient-text">CHALLENGE</span></h1>
+    </div>
+    
+    <div class="language-selector">
+        <h3>Choose Language / اختر اللغة</h3>
+        <div class="lang-buttons">
+            <button class="lang-btn" onclick="setLanguage('EN')">
+                <span class="flag">🇬🇧</span>
+                <span class="lang-name">English</span>
+            </button>
+            <button class="lang-btn" onclick="setLanguage('AR')">
+                <span class="flag">🇦🇪</span>
+                <span class="lang-name">العربية</span>
+            </button>
+        </div>
+    </div>
+    
+    <div id="startContainer" class="start-container hidden">
+        <div class="player-info">
+            <input type="text" id="playerName" placeholder="Enter your name / أدخل اسمك" maxlength="15">
+        </div>
+        <button class="btn-start" onclick="startGame()">
+            <span class="btn-text">🚀 START GAME</span>
+            <span class="btn-shine"></span>
+        </button>
+    </div>
 </div>
 
+<!-- COUNTDOWN SCREEN -->
 <div id="countdownScreen" class="screen hidden">
-    <div id="countdownNumber">3</div>
-    <div id="countdownText">GET READY!</div>
+    <div class="countdown-container">
+        <div class="countdown-number" id="countdownNumber">3</div>
+        <div class="countdown-text" id="countdownText">GET READY!</div>
+    </div>
 </div>
 
+<!-- QUIZ SCREEN -->
 <div id="quizScreen" class="screen hidden">
-    <span id="currentScore">0</span>
-    <h2 id="questionText"></h2>
-
-    <button class="option-btn" onclick="selectAnswer(0)">
-        <span class="option-text"></span>
-    </button>
-
-    <button class="option-btn" onclick="selectAnswer(1)">
-        <span class="option-text"></span>
-    </button>
-
-    <button class="option-btn" onclick="selectAnswer(2)">
-        <span class="option-text"></span>
-    </button>
-
-    <button class="option-btn" onclick="selectAnswer(3)">
-        <span class="option-text"></span>
-    </button>
+    <div class="quiz-header">
+        <div class="question-counter">
+            <span id="currentQ">1</span>/<span id="totalQ">10</span>
+        </div>
+        <div class="score-display">
+            <span class="score-icon">⭐</span>
+            <span id="currentScore">0</span>
+        </div>
+    </div>
+    
+    <div class="timer-bar">
+        <div class="timer-fill" id="timerFill"></div>
+    </div>
+    
+    <div class="question-box">
+        <h2 id="questionText"></h2>
+    </div>
+    
+    <div class="options-container" id="optionsContainer">
+        <button class="option-btn" data-option="0" onclick="selectAnswer(0)">
+            <span class="option-key">A</span>
+            <span class="option-text"></span>
+        </button>
+        <button class="option-btn" data-option="1" onclick="selectAnswer(1)">
+            <span class="option-key">B</span>
+            <span class="option-text"></span>
+        </button>
+        <button class="option-btn" data-option="2" onclick="selectAnswer(2)">
+            <span class="option-key">C</span>
+            <span class="option-text"></span>
+        </button>
+        <button class="option-btn" data-option="3" onclick="selectAnswer(3)">
+            <span class="option-key">D</span>
+            <span class="option-text"></span>
+        </button>
+    </div>
+    
+    <div id="feedbackOverlay" class="feedback-overlay hidden">
+        <div class="feedback-content">
+            <div class="feedback-icon" id="feedbackIcon"></div>
+            <div class="feedback-text" id="feedbackText"></div>
+            <div class="feedback-points" id="feedbackPoints"></div>
+        </div>
+    </div>
 </div>
 
+<!-- RESULTS SCREEN -->
 <div id="resultsScreen" class="screen hidden">
-    <span id="playerNameDisplay">Anonymous</span>
+    <div class="results-container">
+        <div class="results-title">
+            <div id="resultEmoji" class="result-emoji">🎉</div>
+            <h2 id="resultTitle"></h2>
+        </div>
+        
+        <div class="score-circle">
+            <svg class="progress-ring" viewBox="0 0 200 200">
+                <circle class="progress-ring-bg" cx="100" cy="100" r="90"/>
+                <circle class="progress-ring-fill" id="progressRing" cx="100" cy="100" r="90"/>
+            </svg>
+            <div class="score-text">
+                <span id="finalScore">0</span>
+                <span class="score-divider">/</span>
+                <span id="totalScore">10</span>
+            </div>
+        </div>
+        
+        <div class="player-result">
+            <p class="result-label">Player / اللاعب</p>
+            <p class="result-name" id="playerNameDisplay">Anonymous</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="correctCount">0</div>
+                <div class="stat-label">Correct / صحيح</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="wrongCount">0</div>
+                <div class="stat-label">Wrong / خطأ</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Accuracy / الدقة</div>
+            </div>
+        </div>
+        
+        <div class="result-actions">
+            <button class="btn-play" onclick="playAgain()">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">PLAY AGAIN</span>
+            </button>
+            <button class="btn-home" onclick="goHome()">
+                <span class="btn-icon">🏠</span>
+                <span class="btn-text">HOME</span>
+            </button>
+        </div>
+    </div>
 </div>
 
 <script src="quiz.js"></script>
-
 </body>
 </html>
