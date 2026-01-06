@@ -1,4 +1,4 @@
-
+// Quiz State
 let currentLanguage = '';
 let currentQuestion = 0;
 let score = 0;
@@ -9,6 +9,7 @@ let hasAnswered = false;
 let correctAnswers = 0;
 let wrongAnswers = 0;
 
+// DOM Elements
 const screens = {
     start: document.getElementById('startScreen'),
     countdown: document.getElementById('countdownScreen'),
@@ -16,7 +17,7 @@ const screens = {
     results: document.getElementById('resultsScreen')
 };
 
-
+// Questions Data
 const questions = [
     {
         en: "A social media account was hacked and the attacker changed the recovery email and phone number. The attacker is contacting others and impersonating the owner to request money. What is the safest first action?",
@@ -110,7 +111,7 @@ const questions = [
     }
 ];
 
-
+// Sound Effects (using Web Audio API)
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 function playSound(type) {
@@ -159,13 +160,13 @@ function playSound(type) {
     }
 }
 
-
+// Screen Management
 function showScreen(screenName) {
     Object.values(screens).forEach(screen => screen.classList.add('hidden'));
     screens[screenName].classList.remove('hidden');
 }
 
-
+// Language Selection
 function setLanguage(lang) {
     currentLanguage = lang;
     document.body.classList.toggle('rtl', lang === 'AR');
@@ -177,7 +178,7 @@ function setLanguage(lang) {
     playSound('correct');
 }
 
-
+// Start Game
 function startGame() {
     const nameInput = document.getElementById('playerName');
     playerName = nameInput.value.trim() || 'Anonymous';
@@ -192,7 +193,7 @@ function startGame() {
     startCountdown();
 }
 
-
+// Countdown
 function startCountdown() {
     let count = 3;
     const countdownNumber = document.getElementById('countdownNumber');
@@ -214,7 +215,7 @@ function startCountdown() {
     }, 1000);
 }
 
-
+// Load Question
 function loadQuestion() {
     hasAnswered = false;
     const question = questions[currentQuestion];
@@ -234,7 +235,7 @@ function loadQuestion() {
     questionText.offsetHeight; // Trigger reflow
     questionText.style.animation = 'slideIn 0.5s ease-out';
     
-
+    // Update options
     const options = question.options[lang.toLowerCase()];
     const optionButtons = document.querySelectorAll('.option-btn');
     
@@ -244,7 +245,7 @@ function loadQuestion() {
         btn.querySelector('.option-text').textContent = options[index];
     });
     
-
+    // Start timer
     startTimer();
 }
 
@@ -297,7 +298,7 @@ function handleTimeout() {
     }
 }
 
-
+// Select Answer
 function selectAnswer(selectedIndex) {
     if (hasAnswered) return;
     hasAnswered = true;
@@ -332,7 +333,7 @@ function selectAnswer(selectedIndex) {
     showFeedback(isCorrect, points);
 }
 
-
+// Show Feedback
 function showFeedback(isCorrect, points) {
     const overlay = document.getElementById('feedbackOverlay');
     const icon = document.getElementById('feedbackIcon');
@@ -360,14 +361,14 @@ function showFeedback(isCorrect, points) {
         pointsText.textContent = '+0';
     }
     
-    
+    // Auto-advance after delay
     setTimeout(() => {
         overlay.classList.add('hidden');
         nextQuestion();
     }, 2000);
 }
 
-
+// Next Question
 function nextQuestion() {
     currentQuestion++;
     
@@ -378,13 +379,13 @@ function nextQuestion() {
     }
 }
 
-
+// Show Results
 function showResults() {
     showScreen('results');
     
     const accuracy = Math.round((correctAnswers / questions.length) * 100);
     
-
+    // Determine result message
     const resultEmoji = document.getElementById('resultEmoji');
     const resultTitle = document.getElementById('resultTitle');
     
@@ -402,10 +403,10 @@ function showResults() {
         resultTitle.textContent = currentLanguage === 'EN' ? 'GOOD EFFORT!' : 'جيد!';
     } else {
         resultEmoji.textContent = '📚';
-        resultTitle.textContent = currentLanguage === 'EN' ? 'KEEP LEARNING!' : 'استمر في التعلم!';
+        resultTitle.textContent = currentLanguage === 'EN' ? 'KEEP LEARNING!' : 'استمري في التعلم!';
     }
     
-    
+    // Animate score circle
     setTimeout(() => {
         const progressRing = document.getElementById('progressRing');
         const offset = 565.48 - (565.48 * accuracy / 100);
@@ -422,7 +423,7 @@ function showResults() {
     document.getElementById('accuracy').textContent = accuracy + '%';
 }
 
-
+// Launch Confetti
 function launchConfetti() {
     const duration = 3000;
     const end = Date.now() + duration;
@@ -447,19 +448,19 @@ function launchConfetti() {
     }());
 }
 
-
+// Play Again
 function playAgain() {
     showScreen('start');
     document.getElementById('startContainer').classList.remove('visible');
     document.getElementById('playerName').value = '';
 }
 
-
+// Go Home
 function goHome() {
     window.location.href = 'index.html';
 }
 
-
+// Keyboard support
 document.addEventListener('keydown', (e) => {
     if (screens.quiz.classList.contains('hidden')) return;
     if (hasAnswered) return;
@@ -472,7 +473,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-
+// Touch feedback for mobile
 document.querySelectorAll('.option-btn').forEach(btn => {
     btn.addEventListener('touchstart', function() {
         this.style.transform = 'scale(0.98)';
@@ -483,7 +484,7 @@ document.querySelectorAll('.option-btn').forEach(btn => {
     });
 });
 
-
+// Initialize on load
 window.addEventListener('load', () => {
     // Pre-warm audio context on first interaction
     document.body.addEventListener('click', () => {
