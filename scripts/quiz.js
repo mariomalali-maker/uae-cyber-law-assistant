@@ -1,4 +1,4 @@
-check // Quiz State
+// Quiz State
 let currentLanguage = '';
 let currentQuestion = 0;
 let score = 0;
@@ -9,7 +9,6 @@ let hasAnswered = false;
 let correctAnswers = 0;
 let wrongAnswers = 0;
 
-
 const screens = {
     start: document.getElementById('startScreen'),
     countdown: document.getElementById('countdownScreen'),
@@ -17,7 +16,7 @@ const screens = {
     results: document.getElementById('resultsScreen')
 };
 
-// Questions Data
+// Questions Data (same as yours)
 const questions = [
     {
         en: "A social media account was hacked and the attacker changed the recovery email and phone number. The attacker is contacting others and impersonating the owner to request money. What is the safest first action?",
@@ -111,101 +110,71 @@ const questions = [
     }
 ];
 
-// Sound Effects (using Web Audio API)
+// Sound Effects
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
 function playSound(type) {
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
-    
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
     
     if (type === 'correct') {
-        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
-        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-        oscillator.start(audioContext.currentTime);
+        oscillator.start();
         oscillator.stop(audioContext.currentTime + 0.4);
     } else if (type === 'wrong') {
         oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
         oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-        oscillator.start(audioContext.currentTime);
+        oscillator.start();
         oscillator.stop(audioContext.currentTime + 0.3);
     } else if (type === 'countdown') {
         oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
         gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-        oscillator.start(audioContext.currentTime);
+        oscillator.start();
         oscillator.stop(audioContext.currentTime + 0.1);
-    } else if (type === 'win') {
-        const frequencies = [523.25, 659.25, 783.99, 1046.50];
-        frequencies.forEach((freq, i) => {
-            setTimeout(() => {
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
-                osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                osc.start(audioContext.currentTime);
-                osc.stop(audioContext.currentTime + 0.3);
-            }, i * 100);
-        });
     }
 }
 
-
 function showScreen(screenName) {
-    Object.values(screens).forEach(screen => screen.classList.add('hidden'));
-    screens[screenName].classList.remove('hidden');
+    Object.values(screens).forEach(screen => {
+        if(screen) screen.classList.add('hidden');
+    });
+    if(screens[screenName]) screens[screenName].classList.remove('hidden');
 }
 
-// Language Selection
 function setLanguage(lang) {
     currentLanguage = lang;
     document.body.classList.toggle('rtl', lang === 'AR');
-    
     const startContainer = document.getElementById('startContainer');
     startContainer.classList.remove('hidden');
     setTimeout(() => startContainer.classList.add('visible'), 100);
-    
-    playSound('correct');
+    if(audioContext.state === 'suspended') audioContext.resume();
 }
 
-// Start Game
 function startGame() {
     const nameInput = document.getElementById('playerName');
     playerName = nameInput.value.trim() || 'Anonymous';
-    
-    // Reset game state
     currentQuestion = 0;
     score = 0;
     correctAnswers = 0;
     wrongAnswers = 0;
-    
     showScreen('countdown');
-    startCountdown();
+    runCountdown(); // Fixed name call
 }
 
-// Countdown
 function runCountdown() {
- {
     let count = 3;
     const countdownNumber = document.getElementById('countdownNumber');
-    const countdownText = document.getElementById('countdownText');
-    
     const countdownInterval = setInterval(() => {
         if (count > 0) {
             countdownNumber.textContent = count;
-            countdownNumber.style.animation = 'none';
-            countdownNumber.offsetHeight; // Trigger reflow
-            countdownNumber.style.animation = 'countPulse 1s ease-in-out';
             playSound('countdown');
             count--;
         } else {
@@ -216,28 +185,19 @@ function runCountdown() {
     }, 1000);
 }
 
-// Load Question
 function loadQuestion() {
     hasAnswered = false;
     const question = questions[currentQuestion];
-    const lang = currentLanguage;
+    const lang = currentLanguage.toLowerCase();
     
-    // Update question counter
     document.getElementById('currentQ').textContent = currentQuestion + 1;
     document.getElementById('totalQ').textContent = questions.length;
-    
-    // Update score display
     document.getElementById('currentScore').textContent = score;
     
-    // Update question text with animation
     const questionText = document.getElementById('questionText');
-    questionText.textContent = question[lang.toLowerCase()];
-    questionText.style.animation = 'none';
-    questionText.offsetHeight; // Trigger reflow
-    questionText.style.animation = 'slideIn 0.5s ease-out';
+    questionText.textContent = question[lang];
     
-    // Update options
-    const options = question.options[lang.toLowerCase()];
+    const options = question.options[lang];
     const optionButtons = document.querySelectorAll('.option-btn');
     
     optionButtons.forEach((btn, index) => {
@@ -246,31 +206,19 @@ function loadQuestion() {
         btn.querySelector('.option-text').textContent = options[index];
     });
     
-    // Start timer
     startTimer();
 }
 
-// Timer
 function startTimer() {
     timeLeft = 15;
     const timerFill = document.getElementById('timerFill');
-    timerFill.className = 'timer-fill';
     timerFill.style.width = '100%';
-    
     clearInterval(timerInterval);
     
     timerInterval = setInterval(() => {
         timeLeft--;
         const percentage = (timeLeft / 15) * 100;
         timerFill.style.width = percentage + '%';
-        
-        // Change color based on time
-        if (timeLeft <= 5) {
-            timerFill.className = 'timer-fill danger';
-        } else if (timeLeft <= 10) {
-            timerFill.className = 'timer-fill warning';
-        }
-        
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             handleTimeout();
@@ -278,38 +226,20 @@ function startTimer() {
     }, 1000);
 }
 
-// Handle Timeout
 function handleTimeout() {
     if (!hasAnswered) {
-        hasAnswered = true;
-        wrongAnswers++;
-        const correctAnswer = questions[currentQuestion].correct;
-        
-        // Highlight correct answer
-        const optionButtons = document.querySelectorAll('.option-btn');
-        optionButtons.forEach((btn, index) => {
-            btn.disabled = true;
-            if (index === correctAnswer) {
-                btn.classList.add('correct');
-            }
-        });
-        
-        playSound('wrong');
-        showFeedback(false, 0);
+        selectAnswer(-1); // Use -1 to indicate no selection
     }
 }
 
-// Select Answer
 function selectAnswer(selectedIndex) {
     if (hasAnswered) return;
     hasAnswered = true;
-    
     clearInterval(timerInterval);
     
     const question = questions[currentQuestion];
     const isCorrect = selectedIndex === question.correct;
-    const timeBonus = Math.round((timeLeft / 15) * 500);
-    const points = isCorrect ? 1000 + timeBonus : 0;
+    const points = isCorrect ? 1000 + Math.round((timeLeft / 15) * 500) : 0;
     
     if (isCorrect) {
         correctAnswers++;
@@ -320,21 +250,16 @@ function selectAnswer(selectedIndex) {
         playSound('wrong');
     }
     
-    // Update button styles
     const optionButtons = document.querySelectorAll('.option-btn');
     optionButtons.forEach((btn, index) => {
         btn.disabled = true;
-        if (index === question.correct) {
-            btn.classList.add('correct');
-        } else if (index === selectedIndex && !isCorrect) {
-            btn.classList.add('wrong');
-        }
+        if (index === question.correct) btn.classList.add('correct');
+        else if (index === selectedIndex) btn.classList.add('wrong');
     });
     
     showFeedback(isCorrect, points);
 }
 
-// Show Feedback
 function showFeedback(isCorrect, points) {
     const overlay = document.getElementById('feedbackOverlay');
     const icon = document.getElementById('feedbackIcon');
@@ -342,155 +267,34 @@ function showFeedback(isCorrect, points) {
     const pointsText = document.getElementById('feedbackPoints');
     
     overlay.classList.remove('hidden');
-    
-    if (isCorrect) {
-        icon.textContent = '🎉';
-        text.textContent = currentLanguage === 'EN' ? 'CORRECT!' : 'صحيح!';
-        text.style.color = '#22c55e';
-        pointsText.textContent = '+' + points;
-        
-        // Mini confetti for correct answer
-        confetti({
-            particleCount: 50,
-            spread: 60,
-            origin: { y: 0.7 }
-        });
-    } else {
-        icon.textContent = '😢';
-        text.textContent = currentLanguage === 'EN' ? 'WRONG!' : 'خطأ!';
-        text.style.color = '#e21b3c';
-        pointsText.textContent = '+0';
-    }
-    
-    // Auto-advance after delay
+    icon.textContent = isCorrect ? '🎉' : '😢';
+    text.textContent = isCorrect ? (currentLanguage === 'EN' ? 'CORRECT!' : 'صحيح!') : (currentLanguage === 'EN' ? 'WRONG!' : 'خطأ!');
+    pointsText.textContent = '+' + points;
+
     setTimeout(() => {
         overlay.classList.add('hidden');
         nextQuestion();
     }, 2000);
 }
 
-// Next Question
 function nextQuestion() {
     currentQuestion++;
-    
-    if (currentQuestion < questions.length) {
-        loadQuestion();
-    } else {
-        showResults();
-    }
+    if (currentQuestion < questions.length) loadQuestion();
+    else showResults();
 }
 
-// Show Results
 function showResults() {
     showScreen('results');
-    
     const accuracy = Math.round((correctAnswers / questions.length) * 100);
-    
-    // Determine result message
-    const resultEmoji = document.getElementById('resultEmoji');
-    const resultTitle = document.getElementById('resultTitle');
-    
-    if (accuracy >= 80) {
-        resultEmoji.textContent = '🏆';
-        resultTitle.textContent = currentLanguage === 'EN' ? 'CYBER SECURITY CHAMPION!' : 'بطل الأمن السيبراني!';
-        playSound('win');
-        launchConfetti();
-    } else if (accuracy >= 60) {
-        resultEmoji.textContent = '🎉';
-        resultTitle.textContent = currentLanguage === 'EN' ? 'GREAT JOB!' : 'عمل رائع!';
-        playSound('win');
-    } else if (accuracy >= 40) {
-        resultEmoji.textContent = '👍';
-        resultTitle.textContent = currentLanguage === 'EN' ? 'GOOD EFFORT!' : 'جيد!';
-    } else {
-        resultEmoji.textContent = '📚';
-        resultTitle.textContent = currentLanguage === 'EN' ? 'KEEP LEARNING!' : 'استمري في التعلم!';
-    }
-    
-    // Animate score circle
-    setTimeout(() => {
-        const progressRing = document.getElementById('progressRing');
-        const offset = 565.48 - (565.48 * accuracy / 100);
-        progressRing.style.setProperty('--offset', offset);
-        progressRing.classList.add('animate');
-    }, 500);
-    
-    // Update stats
     document.getElementById('finalScore').textContent = score;
-    document.getElementById('totalScore').textContent = '10';
     document.getElementById('playerNameDisplay').textContent = playerName;
     document.getElementById('correctCount').textContent = correctAnswers;
     document.getElementById('wrongCount').textContent = wrongAnswers;
     document.getElementById('accuracy').textContent = accuracy + '%';
 }
 
-// Launch Confetti
-function launchConfetti() {
-    const duration = 3000;
-    const end = Date.now() + duration;
-    
-    (function frame() {
-        confetti({
-            particleCount: 5,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0 }
-        });
-        confetti({
-            particleCount: 5,
-            angle: 120,
-            spread: 55,
-            origin: { x: 1 }
-        });
-        
-        if (Date.now() < end) {
-            requestAnimationFrame(frame);
-        }
-    }());
-}
-
-// Play Again
 function playAgain() {
     showScreen('start');
     document.getElementById('startContainer').classList.remove('visible');
     document.getElementById('playerName').value = '';
 }
-
-// Go Home
-function goHome() {
-    window.location.href = 'index.html';
-}
-
-// Keyboard support
-document.addEventListener('keydown', (e) => {
-    if (screens.quiz.classList.contains('hidden')) return;
-    if (hasAnswered) return;
-    
-    const key = e.key.toLowerCase();
-    const keyMap = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
-    
-    if (keyMap.hasOwnProperty(key)) {
-        selectAnswer(keyMap[key]);
-    }
-});
-
-// Touch feedback for mobile
-document.querySelectorAll('.option-btn').forEach(btn => {
-    btn.addEventListener('touchstart', function() {
-        this.style.transform = 'scale(0.98)';
-    });
-    
-    btn.addEventListener('touchend', function() {
-        this.style.transform = '';
-    });
-});
-
-// Initialize on load
-window.addEventListener('load', () => {
-    // Pre-warm audio context on first interaction
-    document.body.addEventListener('click', () => {
-        if (audioContext.state === 'suspended') {
-            audioContext.resume();
-        }
-    }, { once: true });
-});
