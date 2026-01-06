@@ -16,7 +16,7 @@ const screens = {
     results: document.getElementById('resultsScreen')
 };
 
-// Questions Data (same as yours)
+// Questions Data
 const questions = [
     {
         en: "A social media account was hacked and the attacker changed the recovery email and phone number. The attacker is contacting others and impersonating the owner to request money. What is the safest first action?",
@@ -112,66 +112,74 @@ const questions = [
 
 // Sound Effects
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
 function playSound(type) {
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
+    
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
     
     if (type === 'correct') {
-        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
-        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
+        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); 
+        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); 
+        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); 
         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-        oscillator.start();
+        oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.4);
     } else if (type === 'wrong') {
         oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
         oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-        oscillator.start();
+        oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.3);
     } else if (type === 'countdown') {
         oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
         gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-        oscillator.start();
+        oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.1);
     }
 }
 
 function showScreen(screenName) {
-    Object.values(screens).forEach(screen => {
-        if(screen) screen.classList.add('hidden');
-    });
-    if(screens[screenName]) screens[screenName].classList.remove('hidden');
+    Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+    screens[screenName].classList.remove('hidden');
 }
 
 function setLanguage(lang) {
     currentLanguage = lang;
     document.body.classList.toggle('rtl', lang === 'AR');
+    
     const startContainer = document.getElementById('startContainer');
     startContainer.classList.remove('hidden');
     setTimeout(() => startContainer.classList.add('visible'), 100);
-    if(audioContext.state === 'suspended') audioContext.resume();
+    
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    playSound('correct');
 }
 
 function startGame() {
     const nameInput = document.getElementById('playerName');
     playerName = nameInput.value.trim() || 'Anonymous';
+    
     currentQuestion = 0;
     score = 0;
     correctAnswers = 0;
     wrongAnswers = 0;
+    
     showScreen('countdown');
-    runCountdown(); // Fixed name call
+    runCountdown(); // Fixed: function name must match
 }
 
-function runCountdown() {
+function runCountdown() { // Fixed: removed illegal bracket and fixed name
     let count = 3;
     const countdownNumber = document.getElementById('countdownNumber');
+    
     const countdownInterval = setInterval(() => {
         if (count > 0) {
             countdownNumber.textContent = count;
@@ -212,13 +220,22 @@ function loadQuestion() {
 function startTimer() {
     timeLeft = 15;
     const timerFill = document.getElementById('timerFill');
+    timerFill.className = 'timer-fill';
     timerFill.style.width = '100%';
+    
     clearInterval(timerInterval);
     
     timerInterval = setInterval(() => {
         timeLeft--;
         const percentage = (timeLeft / 15) * 100;
         timerFill.style.width = percentage + '%';
+        
+        if (timeLeft <= 5) {
+            timerFill.className = 'timer-fill danger';
+        } else if (timeLeft <= 10) {
+            timerFill.className = 'timer-fill warning';
+        }
+        
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             handleTimeout();
@@ -228,18 +245,31 @@ function startTimer() {
 
 function handleTimeout() {
     if (!hasAnswered) {
-        selectAnswer(-1); // Use -1 to indicate no selection
+        hasAnswered = true;
+        wrongAnswers++;
+        const correctAnswer = questions[currentQuestion].correct;
+        const optionButtons = document.querySelectorAll('.option-btn');
+        optionButtons.forEach((btn, index) => {
+            btn.disabled = true;
+            if (index === correctAnswer) {
+                btn.classList.add('correct');
+            }
+        });
+        playSound('wrong');
+        showFeedback(false, 0);
     }
 }
 
 function selectAnswer(selectedIndex) {
     if (hasAnswered) return;
     hasAnswered = true;
+    
     clearInterval(timerInterval);
     
     const question = questions[currentQuestion];
     const isCorrect = selectedIndex === question.correct;
-    const points = isCorrect ? 1000 + Math.round((timeLeft / 15) * 500) : 0;
+    const timeBonus = Math.round((timeLeft / 15) * 500);
+    const points = isCorrect ? 1000 + timeBonus : 0;
     
     if (isCorrect) {
         correctAnswers++;
@@ -253,8 +283,11 @@ function selectAnswer(selectedIndex) {
     const optionButtons = document.querySelectorAll('.option-btn');
     optionButtons.forEach((btn, index) => {
         btn.disabled = true;
-        if (index === question.correct) btn.classList.add('correct');
-        else if (index === selectedIndex) btn.classList.add('wrong');
+        if (index === question.correct) {
+            btn.classList.add('correct');
+        } else if (index === selectedIndex && !isCorrect) {
+            btn.classList.add('wrong');
+        }
     });
     
     showFeedback(isCorrect, points);
@@ -267,10 +300,23 @@ function showFeedback(isCorrect, points) {
     const pointsText = document.getElementById('feedbackPoints');
     
     overlay.classList.remove('hidden');
-    icon.textContent = isCorrect ? '🎉' : '😢';
-    text.textContent = isCorrect ? (currentLanguage === 'EN' ? 'CORRECT!' : 'صحيح!') : (currentLanguage === 'EN' ? 'WRONG!' : 'خطأ!');
-    pointsText.textContent = '+' + points;
-
+    
+    if (isCorrect) {
+        icon.textContent = '🎉';
+        text.textContent = currentLanguage === 'EN' ? 'CORRECT!' : 'صحيح!';
+        text.style.color = '#22c55e';
+        pointsText.textContent = '+' + points;
+        
+        if(typeof confetti === 'function') {
+            confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        }
+    } else {
+        icon.textContent = '😢';
+        text.textContent = currentLanguage === 'EN' ? 'WRONG!' : 'خطأ!';
+        text.style.color = '#e21b3c';
+        pointsText.textContent = '+0';
+    }
+    
     setTimeout(() => {
         overlay.classList.add('hidden');
         nextQuestion();
@@ -279,13 +325,25 @@ function showFeedback(isCorrect, points) {
 
 function nextQuestion() {
     currentQuestion++;
-    if (currentQuestion < questions.length) loadQuestion();
-    else showResults();
+    if (currentQuestion < questions.length) {
+        loadQuestion();
+    } else {
+        showResults();
+    }
 }
 
 function showResults() {
     showScreen('results');
     const accuracy = Math.round((correctAnswers / questions.length) * 100);
+    
+    document.getElementById('resultTitle').textContent = accuracy >= 80 ? 
+        (currentLanguage === 'EN' ? 'CHAMPION!' : 'بطل!') : 
+        (currentLanguage === 'EN' ? 'FINISH!' : 'انتهى!');
+    
+    const progressRing = document.getElementById('progressRing');
+    const offset = 565.48 - (565.48 * accuracy / 100);
+    progressRing.style.strokeDashoffset = offset;
+    
     document.getElementById('finalScore').textContent = score;
     document.getElementById('playerNameDisplay').textContent = playerName;
     document.getElementById('correctCount').textContent = correctAnswers;
@@ -297,4 +355,8 @@ function playAgain() {
     showScreen('start');
     document.getElementById('startContainer').classList.remove('visible');
     document.getElementById('playerName').value = '';
+}
+
+function goHome() {
+    window.location.href = 'index.html';
 }
