@@ -1,4 +1,4 @@
-// scripts/scam.js
+
 
 const textArea = document.getElementById("scam-text");
 const checkBtn = document.getElementById("check-scam-btn");
