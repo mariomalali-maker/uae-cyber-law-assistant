@@ -1,6 +1,4 @@
-/* ------------------------------------------------------
-   📌 GET ELEMENTS
------------------------------------------------------- */
+
 const form = document.getElementById("chat-form");
 const input = document.getElementById("chat-input");
 const messagesBox = document.getElementById("messages");
@@ -11,14 +9,12 @@ const clearChatBtn = document.getElementById("clear-chat-btn") || document.getEl
 const langEnBtn = document.getElementById("lang-en");
 const langArBtn = document.getElementById("lang-ar");
 
-/* Optional */
+
 const typingHint = document.getElementById("typing-hint");
 const newChatBtn = document.getElementById("new-chat-btn");
 const speakBtn = document.getElementById("speak-btn");
 
-/* ------------------------------------------------------
-   📌 USER DATA
------------------------------------------------------- */
+
 const userName = localStorage.getItem("cyber_user_name") || "User";
 const userGender = localStorage.getItem("cyber_user_gender") || "other";
 const LANGUAGE_KEY = "cyber_lang";
@@ -27,9 +23,7 @@ let currentLang = localStorage.getItem(LANGUAGE_KEY) || "en";
 let lastAiText = "";
 let currentConversation = [];
 
-/* ------------------------------------------------------
-   🗣 SPEAK FUNCTION
------------------------------------------------------- */
+
 function speak(text) {
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = /[ء-ي]/.test(text) ? "ar-AE" : "en-US";
@@ -38,9 +32,7 @@ function speak(text) {
   speechSynthesis.speak(utter);
 }
 
-/* ------------------------------------------------------
-   💬 MESSAGE BUBBLE
------------------------------------------------------- */
+
 function addBubble(text, type) {
   const div = document.createElement("div");
   div.className = type === "user" ? "msg user-msg" : "msg ai-msg";
@@ -61,13 +53,11 @@ function addBubble(text, type) {
   currentConversation.push({ role: type, content: text, time: Date.now() });
 }
 
-/* ------------------------------------------------------
-   🧠 GREETING – FIX APPLIED
------------------------------------------------------- */
+
 function greetUser() {
   const relation =
-    userGender === "female" ? "أختي 🌸" :
-    userGender === "male"   ? "أخوي 🤝"  : "صاحبي 🤍";
+    userGender === "female" ? "أختي " :
+    userGender === "male"   ? "أخوي "  : "صاحبي ";
 
   const arabic = `مرحباً ${userName} ${relation}✨
 اكتب مشكلتك أو سؤالك:
@@ -91,9 +81,7 @@ window.addEventListener("load", () => {
   if (!history) greetUser();
 });
 
-/* ------------------------------------------------------
-   🌍 LANGUAGE SWITCH
------------------------------------------------------- */
+
 if (langEnBtn) langEnBtn.onclick = () => {
   currentLang = "en";
   localStorage.setItem(LANGUAGE_KEY, "en");
@@ -105,9 +93,7 @@ if (langArBtn) langArBtn.onclick = () => {
   location.reload();
 };
 
-/* ------------------------------------------------------
-   ✉️ SEND MESSAGE
------------------------------------------------------- */
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = input.value.trim();
@@ -134,9 +120,7 @@ form.addEventListener("submit", async (e) => {
   statusLabel.textContent = "Online";
 });
 
-/* ------------------------------------------------------
-   🧹 CLEAR CHAT (FIXED)
------------------------------------------------------- */
+
 if (clearChatBtn) {
   clearChatBtn.onclick = () => {
     if (!confirm("Clear chat?")) return;
@@ -146,9 +130,7 @@ if (clearChatBtn) {
   };
 }
 
-/* ------------------------------------------------------
-   🗑 DELETE ALL HISTORY
------------------------------------------------------- */
+
 if (deleteAllBtn) {
   deleteAllBtn.onclick = () => {
     if (!confirm("Delete ALL saved chats?")) return;
@@ -157,9 +139,7 @@ if (deleteAllBtn) {
   };
 }
 
-/* ------------------------------------------------------
-   🎙 MICROPHONE INPUT
------------------------------------------------------- */
+
 micBtn.onclick = () => {
   const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!Rec) return alert("🎙 Voice not supported here");
