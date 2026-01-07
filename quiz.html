@@ -30,7 +30,7 @@
             align-items: center;
         }
 
-        /* Welcome Screen */
+    
         #welcome-screen {
             text-align: center;
             animation: fadeIn 1s ease-in;
@@ -128,7 +128,7 @@
             animation: scaleIn 0.5s ease-out;
         }
 
-        /* Quiz Screen */
+       
         #quiz-screen {
             display: none;
             width: 100%;
@@ -257,7 +257,7 @@
             color: #c4b5fd;
         }
 
-        /* Result Screen */
+    
         #result-screen {
             display: none;
             text-align: center;
@@ -283,7 +283,7 @@
             color: #ffffff;
         }
 
-        /* Leaderboard */
+    
         .leaderboard {
             background: rgba(168, 85, 247, 0.1);
             border-radius: 20px;
@@ -330,7 +330,7 @@
             margin-top: 30px;
         }
 
-        /* Animations */
+    
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -373,7 +373,7 @@
             50% { background-position: 100% 50%; }
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 768px) {
             .game-title {
                 font-size: 2rem;
@@ -491,7 +491,7 @@
             }
         }
 
-        /* RTL Support */
+      
         [dir="rtl"] .answers-container {
             direction: rtl;
         }
@@ -504,7 +504,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Welcome Screen -->
+       
         <div id="welcome-screen">
             <h1 class="game-title">Cyber Security | Test yourself</h1>
             <p class="game-subtitle">الأمن السيبراني | اختبر نفسك</p>
@@ -517,12 +517,12 @@
             <button class="start-btn" onclick="startGame()">START GAME</button>
         </div>
 
-        <!-- Countdown Screen -->
+     
         <div id="countdown-screen">
             <div class="countdown-number" id="countdown-display">3</div>
         </div>
 
-        <!-- Quiz Screen -->
+        
         <div id="quiz-screen">
             <div class="quiz-header">
                 <div class="question-counter">Question <span id="current-question">1</span>/15</div>
@@ -540,11 +540,11 @@
             </div>
 
             <div class="answers-container" id="answers-container">
-                <!-- Answers will be generated dynamically -->
+          
             </div>
         </div>
 
-        <!-- Result Screen -->
+        
         <div id="result-screen">
             <h1 class="game-title">Game Complete!</h1>
             <p class="arabic-text">انتهت اللعبة!</p>
@@ -742,14 +742,14 @@ answers: [
 correct: 0
 }
 ];
-// DOM Elements
+
 let welcomeScreen, countdownScreen, quizScreen, resultScreen;
 let playerNameInput, countdownDisplay;
 let questionText, questionArabic, answersContainer;
 let timerText, timerFill, currentQuestionSpan;
 let finalScore, resultMessage, leaderboardEntries;
 
-// Initialize DOM elements when DOM is loaded
+
 function initializeDOM() {
     welcomeScreen = document.getElementById('welcome-screen');
     countdownScreen = document.getElementById('countdown-screen');
@@ -768,7 +768,7 @@ function initializeDOM() {
     leaderboardEntries = document.getElementById('leaderboard-entries');
 }
 
-// Start Game Function
+
 function startGame() {
     playerName = playerNameInput.value.trim();
     
@@ -782,7 +782,7 @@ function startGame() {
     showCountdown();
 }
 
-// Show Countdown Function
+
 function showCountdown() {
     welcomeScreen.style.display = 'none';
     countdownScreen.style.display = 'block';
@@ -813,7 +813,7 @@ function showCountdown() {
     }, 1000);
 }
 
-// Show Question Function
+
 function showQuestion() {
     if (currentQuestion >= questions.length) {
         endGame();
@@ -822,14 +822,14 @@ function showQuestion() {
     
     const question = questions[currentQuestion];
     
-    // Update question counter
+    
     currentQuestionSpan.textContent = currentQuestion + 1;
     
-    // Display question
+    
     questionText.textContent = question.question;
     questionArabic.textContent = question.arabicQuestion;
     
-    // Generate answers
+
     answersContainer.innerHTML = '';
     
     question.answers.forEach((answer, index) => {
@@ -846,11 +846,11 @@ function showQuestion() {
         answersContainer.appendChild(answerCard);
     });
     
-    // Start timer
+ 
     startTimer();
 }
 
-// Timer Function
+
 function startTimer() {
     timeLeft = 15;
     updateTimerDisplay();
@@ -866,13 +866,13 @@ function startTimer() {
     }, 1000);
 }
 
-// Update Timer Display
+
 function updateTimerDisplay() {
     timerText.textContent = timeLeft;
     const percentage = (timeLeft / 15) * 100;
     timerFill.style.width = percentage + '%';
     
-    // Change color as time runs out
+    
     if (timeLeft <= 5) {
         timerFill.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
         timerText.style.color = '#ef4444';
@@ -882,12 +882,12 @@ function updateTimerDisplay() {
     }
 }
 
-// Time Up Function
+
 function timeUp() {
     const answerCards = answersContainer.querySelectorAll('.answer-card');
     const correctAnswer = questions[currentQuestion].correct;
     
-    // Show correct answer
+    
     answerCards.forEach((card, index) => {
         card.classList.add('disabled');
         if (index === correctAnswer) {
@@ -902,20 +902,20 @@ function timeUp() {
     }, 2000);
 }
 
-// Select Answer Function
+
 function selectAnswer(selectedIndex) {
     clearInterval(timer);
     
     const answerCards = answersContainer.querySelectorAll('.answer-card');
     const correctAnswer = questions[currentQuestion].correct;
     
-    // Disable all cards
+
     answerCards.forEach(card => card.classList.add('disabled'));
     
-    // Show correct/wrong
+  
     if (selectedIndex === correctAnswer) {
         answerCards[selectedIndex].classList.add('correct');
-        // Calculate score based on time remaining (max 1000 points)
+        
         const points = Math.round((timeLeft / 15) * 1000);
         score += points;
     } else {
@@ -935,10 +935,10 @@ function endGame() {
     quizScreen.style.display = 'none';
     resultScreen.style.display = 'block';
     
-    // Display score
+
     finalScore.textContent = score;
     
-    // Generate result message
+    
     let message = '';
     if (score >= 12000) {
         message = "Excellent! You're a Cyber Security Expert!";
@@ -951,33 +951,33 @@ function endGame() {
     }
     resultMessage.textContent = message;
     
-    // Update leaderboard
+ 
     updateLeaderboard();
 }
 
-// Update Leaderboard Function
+
 function updateLeaderboard() {
-    // Add current player to leaderboard
+   
     leaderboard.push({
         name: playerName,
         score: score,
         isCurrent: true
     });
     
-    // Sort by score (highest first)
+   
     leaderboard.sort((a, b) => b.score - a.score);
     
-    // Keep only top 10
+   
     leaderboard = leaderboard.slice(0, 10);
     
-    // Save to localStorage
+    
     localStorage.setItem('cyberQuizLeaderboard', JSON.stringify(leaderboard));
     
-    // Display leaderboard
+  
     displayLeaderboard();
 }
 
-// Display Leaderboard Function
+
 function displayLeaderboard() {
     if (!leaderboardEntries) {
         initializeDOM();
@@ -991,7 +991,7 @@ function displayLeaderboard() {
         const entryDiv = document.createElement('div');
         entryDiv.className = `leaderboard-entry ${entry.isCurrent ? 'current-player' : ''}`;
         
-        // Add rank emoji
+        
         let rankEmoji = '';
         if (index === 0) rankEmoji = '🥇 ';
         else if (index === 1) rankEmoji = '🥈 ';
@@ -1007,7 +1007,7 @@ function displayLeaderboard() {
     });
 }
 
-// Load Leaderboard Function
+
 function loadLeaderboard() {
     const saved = localStorage.getItem('cyberQuizLeaderboard');
     if (saved) {
@@ -1015,7 +1015,6 @@ function loadLeaderboard() {
     }
 }
 
-// Restart Game Function
 function restartGame() {
     resultScreen.style.display = 'none';
     welcomeScreen.style.display = 'block';
@@ -1024,15 +1023,15 @@ function restartGame() {
     playerNameInput.placeholder = 'Enter your name / أدخل اسمك';
 }
 
-// Make functions globally accessible
+
 window.startGame = startGame;
 window.restartGame = restartGame;
 
-// Initialize
+
 loadLeaderboard();
 displayLeaderboard();
 
-// Handle Enter key on name input
+
 document.addEventListener('DOMContentLoaded', function() {
     initializeDOM();
     
