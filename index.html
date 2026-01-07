@@ -8,7 +8,7 @@
 </head>
 <body class="page-body">
 
-  <!-- Top nav -->
+
   <nav class="top-nav">
     <a href="index.html">🏠 Home</a>
 <a href="chat.html">💬 Chat</a>
@@ -83,7 +83,7 @@
   const nameInput = document.getElementById('name');
   const genderSelect = document.getElementById('gender');
 
-  // 🚫 Prevent Guest without name
+  
   guestBtn.addEventListener('click', () => {
     const name = nameInput.value.trim();
     if (!name) {
@@ -96,7 +96,7 @@
     window.location.href = 'chat.html';
   });
 
-  // 🚫 Prevent Login without name & gender
+  
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = nameInput.value.trim();
