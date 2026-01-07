@@ -6,7 +6,7 @@ let timer;
 let timeLeft = 15;
 let leaderboard = [];
 
-// ===== QUESTIONS — EXACT SAME ARRAY FROM YOU =====
+// 15 Tricky Cybersecurity Questions about UAE Protections
 const questions = [
     {
         question: "What is the primary purpose of the UAE's National Cybersecurity Strategy (NCSS)?",
@@ -19,7 +19,6 @@ const questions = [
         ],
         correct: 1
     },
-
     {
         question: "Which UAE authority is responsible for cybersecurity regulations and policies?",
         arabicQuestion: "أي جهة إماراتية مسؤولة عن تنظيمات وسياسات الأمن السيبراني؟",
@@ -31,7 +30,6 @@ const questions = [
         ],
         correct: 0
     },
-
     {
         question: "What is the UAE's national cybersecurity hotline for reporting cyber incidents?",
         arabicQuestion: "ما هو الخط الساخن الوطني للأمن السيبراني للإبلاغ عن الحوادث السيبرانية؟",
@@ -43,7 +41,6 @@ const questions = [
         ],
         correct: 2
     },
-
     {
         question: "The UAE Cyber Security Council was established in which year?",
         arabicQuestion: "تم إنشاء مجلس الأمن السيبراني في الإمارات في أي عام؟",
@@ -55,7 +52,6 @@ const questions = [
         ],
         correct: 2
     },
-
     {
         question: "What does UAE's 'Cyber Pulse' initiative focus on?",
         arabicQuestion: "ما الذي يركز عليه مبادرة 'نبض السيبراني' في الإمارات؟",
@@ -67,7 +63,6 @@ const questions = [
         ],
         correct: 1
     },
-
     {
         question: "Which UAE law criminalizes cybercrimes and defines penalties?",
         arabicQuestion: "أي قانون إماراتي يجرم الجرائم الإلكترونية ويحدد العقوبات؟",
@@ -79,7 +74,6 @@ const questions = [
         ],
         correct: 1
     },
-
     {
         question: "What is the UAE's National Electronic Security Authority (NESA) now called?",
         arabicQuestion: "ما هو الاسم الجديد لهيئة الأمن الإلكتروني الوطنية في الإمارات؟",
@@ -91,18 +85,17 @@ const questions = [
         ],
         correct: 1
     },
-
     {
         question: "What is the purpose of the UAE's 'Cyber Shield' program?",
         arabicQuestion: "ما هو الغرض من برنامج 'الدرع السيبراني' في الإمارات؟",
         answers: [
             { text: "To block VPN services completely", arabic: "لحظر خدمات VPN بالكامل" },
             { text: "To protect critical infrastructure from cyber threats", arabic: "لحماية البنية التحتية الحيوية من التهديدات السيبرانية" },
-            { text: "Keep learning", arabic: "استمر في التعلم" }
+            { text: "To monitor only government employees", arabic: "لمراقبة الموظفين الحكوميين فقط" },
+            { text: "To create a social media platform", arabic: "لإنشاء منصة تواصل اجتماعي" }
         ],
         correct: 1
     },
-
     {
         question: "Which month is designated as UAE Cyber Security Awareness Month?",
         arabicQuestion: "أي شهر تم تعيينه كشهر للتوعية بالأمن السيبراني في الإمارات؟",
@@ -114,202 +107,376 @@ const questions = [
         ],
         correct: 2
     },
-
     {
-        question: "What does CERT provide in UAE?",
-        arabicQuestion: "ما الذي توفره CERT في الإمارات؟",
+        question: "What is the UAE's Digital Government Strategy focused on regarding cybersecurity?",
+        arabicQuestion: "ما الذي تركز عليه استراتيجية الحكومة الرقمية الإماراتية فيما يتعلق بالأمن السيبراني؟",
         answers: [
-            { text: "Incident response", arabic: "الاستجابة للحوادث" },
-            { text: "Nothing", arabic: "لا شيء" }
+            { text: "Eliminating all paper documents", arabic: "إلغاء جميع المستندات الورقية" },
+            { text: "Building trust through secure digital services", arabic: "بناء الثقة من خلال الخدمات الرقمية الآمنة" },
+            { text: "Creating a separate internet for UAE only", arabic: "إنشاء إنترنت منفصل للإمارات فقط" },
+            { text: "Blocking all social media", arabic: "حظر جميع وسائل التواصل الاجتماعي" }
+        ],
+        correct: 1
+    },
+    {
+        question: "The UAE Cyber Security Council works under which ministry?",
+        arabicQuestion: "يعمل مجلس الأمن السيبراني الإماراتي تحت أي وزارة؟",
+        answers: [
+            { text: "Ministry of Interior", arabic: "وزارة الداخلية" },
+            { text: "Ministry of Economy", arabic: "وزارة الاقتصاد" },
+            { text: "Cabinet of the UAE", arabic: "مجلس الوزراء الإماراتي" },
+            { text: "Ministry of Foreign Affairs", arabic: "وزارة الخارجية" }
+        ],
+        correct: 2
+    },
+    {
+        question: "What is the UAE's policy on data protection and privacy?",
+        arabicQuestion: "ما هي سياسة الإمارات فيما يتعلق بحماية البيانات والخصوصية؟",
+        answers: [
+            { text: "No data protection laws exist", arabic: "لا توجد قوانين لحماية البيانات" },
+            { text: "Federal Law No. 2 of 2019 (Data Protection Law)", arabic: "القانون الاتحادي رقم 2 لسنة 2019 (قانون حماية البيانات)" },
+            { text: "Only companies need data protection", arabic: "فقط الشركات تحتاج لحماية البيانات" },
+            { text: "Data protection is optional", arabic: "حماية البيانات اختيارية" }
+        ],
+        correct: 1
+    },
+    {
+        question: "What does CERT (Computer Emergency Response Team) in UAE provide?",
+        arabicQuestion: "ما الذي توفره فريق الاستجابة للطوارئ الحاسوبية (CERT) في الإمارات؟",
+        answers: [
+            { text: "Only antivirus software", arabic: "فقط برامج مكافحة الفيروسات" },
+            { text: "Incident response and cybersecurity coordination", arabic: "الاستجابة للحوادث وتنسيق الأمن السيبراني" },
+            { text: "IT hardware support only", arabic: "دعم الأجهزة فقط" },
+            { text: "Website hosting services", arabic: "خدمات استضافة المواقع" }
+        ],
+        correct: 1
+    },
+    {
+        question: "The UAE's 'Smart Dubai' initiative includes which cybersecurity component?",
+        arabicQuestion: "ما هو مكون الأمن السيبراني في مبادرة 'دبي الذكية'؟",
+        answers: [
+            { text: "Dubai Electronic Security Center (DESC)", arabic: "مركز دبي للأمن الإلكتروني" },
+            { text: "Dubai Police Cyber Unit", arabic: "وحدة السيبراني في شرطة دبي" },
+            { text: "Dubai Internet City Security", arabic: "أمن مدينة دبي للإنترنت" },
+            { text: "Dubai Mall Security Cameras", arabic: "كاميرات أمن دبي مول" }
         ],
         correct: 0
+    },
+    {
+        question: "What is the UAE's stance on international cybersecurity cooperation?",
+        arabicQuestion: "ما هو موقف الإمارات من التعاون الدولي في مجال الأمن السيبراني؟",
+        answers: [
+            { text: "Complete isolation from global cybersecurity efforts", arabic: "عزل تام عن الجهود العالمية للأمن السيبراني" },
+            { text: "Active participation in global cybersecurity initiatives", arabic: "المشاركة النشطة في المبادرات العالمية للأمن السيبراني" },
+            { text: "Only cooperation with neighboring countries", arabic: "التعاون فقط مع الدول المجاورة" },
+            { text: "No international agreements signed", arabic: "لم يتم توقيع أي اتفاقات دولية" }
+        ],
+        correct: 1
     }
 ];
-// =================================================
 
-// ===== FIXED FRONT END LOGIC =====
+// DOM Elements (initialized on DOMContentLoaded)
+let welcomeScreen, countdownScreen, quizScreen, resultScreen;
+let playerNameInput, countdownDisplay;
+let questionText, questionArabic, answersContainer;
+let timerText, timerFill, currentQuestionSpan;
+let finalScore, resultMessage, leaderboardEntries;
 
+function initializeDOM() {
+    welcomeScreen = document.getElementById('welcome-screen');
+    countdownScreen = document.getElementById('countdown-screen');
+    quizScreen = document.getElementById('quiz-screen');
+    resultScreen = document.getElementById('result-screen');
+
+    playerNameInput = document.getElementById('player-name');
+    countdownDisplay = document.getElementById('countdown-display');
+
+    questionText = document.getElementById('question-text');
+    questionArabic = document.getElementById('question-arabic');
+    answersContainer = document.getElementById('answers-container');
+
+    timerText = document.getElementById('timer-text');
+    timerFill = document.getElementById('timer-fill');
+    currentQuestionSpan = document.getElementById('current-question');
+
+    finalScore = document.getElementById('final-score');
+    resultMessage = document.getElementById('result-message');
+    leaderboardEntries = document.getElementById('leaderboard-entries');
+}
+
+// Start Game Function
 function startGame() {
-    const input = document.getElementById('player-name');
-    playerName = input.value.trim();
+    // Ensure DOM initialized (safety for hosting)
+    if (!playerNameInput) initializeDOM();
+
+    playerName = playerNameInput.value.trim();
 
     if (!playerName) {
-        input.style.borderColor = '#ef4444';
-        input.placeholder = 'Please enter name';
+        playerNameInput.style.borderColor = '#ef4444';
+        playerNameInput.placeholder = 'Please enter your name / الرجاء إدخال اسمك';
         return;
     }
 
-    document.getElementById('welcome-screen').style.display = 'none';
-    document.getElementById('quiz-screen').style.display = 'block';
-
-    currentQuestion = 0;
-    score = 0;
-
-    showQuestion();
+    playerNameInput.style.borderColor = '#a855f7';
+    showCountdown();
 }
 
-function showQuestion() {
+// Show Countdown Function
+function showCountdown() {
+    welcomeScreen.style.display = 'none';
+    countdownScreen.style.display = 'block';
 
+    let count = 3;
+    countdownDisplay.textContent = count;
+    countdownDisplay.className = 'countdown-number';
+
+    const countdownInterval = setInterval(() => {
+        count--;
+
+        if (count > 0) {
+            countdownDisplay.textContent = count;
+            countdownDisplay.style.animation = 'none';
+            countdownDisplay.offsetHeight; // Trigger reflow
+            countdownDisplay.style.animation = 'pulse 1s ease-in-out';
+        } else if (count === 0) {
+            countdownDisplay.textContent = 'GO!';
+            countdownDisplay.className = 'go-text';
+        } else {
+            clearInterval(countdownInterval);
+            countdownScreen.style.display = 'none';
+            quizScreen.style.display = 'block';
+            currentQuestion = 0;
+            score = 0;
+            showQuestion();
+        }
+    }, 1000);
+}
+
+// Show Question Function
+function showQuestion() {
     if (currentQuestion >= questions.length) {
         endGame();
         return;
     }
 
-    const q = questions[currentQuestion];
+    const question = questions[currentQuestion];
 
-    document.getElementById('question-text').textContent = q.question;
-    document.getElementById('question-arabic').textContent = q.arabicQuestion;
+    // Update question counter
+    currentQuestionSpan.textContent = currentQuestion + 1;
 
-    const container = document.getElementById('answers-container');
-    container.innerHTML = '';
+    // Display question
+    questionText.textContent = question.question;
+    questionArabic.textContent = question.arabicQuestion;
 
-    // ===== MAIN FIX: EVENT DELEGATION FOR BROWSERS =====
-    q.answers.forEach(function(answer, index) {
+    // Generate answers
+    answersContainer.innerHTML = '';
 
-        const card = document.createElement('div');
-        card.className = 'answer-card';
+    question.answers.forEach((answer, index) => {
+        const answerCard = document.createElement('div');
+        answerCard.className = 'answer-card';
+        answerCard.style.animationDelay = `${index * 0.1}s`;
 
-        const p1 = document.createElement('p');
-        p1.className = 'answer-text';
-        p1.textContent = answer.text;
+        answerCard.innerHTML = `
+            <p class="answer-text">${answer.text}</p>
+            <p class="answer-arabic">${answer.arabic}</p>
+        `;
 
-        const p2 = document.createElement('p');
-        p2.className = 'answer-arabic';
-        p2.textContent = answer.arabic;
-
-        card.appendChild(p1);
-        card.appendChild(p2);
-
-        card.addEventListener('click', function() {
-            selectAnswer(index);
-        });
-
-        container.appendChild(card);
-
+        answerCard.addEventListener('click', () => selectAnswer(index));
+        answersContainer.appendChild(answerCard);
     });
 
+    // Start timer
     startTimer();
 }
 
+// Timer Function
 function startTimer() {
-
     timeLeft = 15;
-    const timerText = document.getElementById('timer-text');
-    const timerFill = document.getElementById('timer-fill');
+    updateTimerDisplay();
 
-    timerText.textContent = timeLeft;
-
-    timer = setInterval(function() {
-
+    clearInterval(timer);
+    timer = setInterval(() => {
         timeLeft--;
-
-        timerText.textContent = timeLeft;
-        timerFill.style.width = (timeLeft / 15 * 100) + '%';
+        updateTimerDisplay();
 
         if (timeLeft <= 0) {
             clearInterval(timer);
             timeUp();
         }
-
     }, 1000);
-
 }
 
-function selectAnswer(selectedIndex) {
+// Update Timer Display
+function updateTimerDisplay() {
+    timerText.textContent = timeLeft;
+    const percentage = (timeLeft / 15) * 100;
+    timerFill.style.width = percentage + '%';
 
-    clearInterval(timer);
-
-    const cards = document.querySelectorAll('.answer-card');
-    const correct = questions[currentQuestion].correct;
-
-    cards.forEach(function(card) {
-        card.classList.add('disabled');
-    });
-
-    if (selectedIndex === correct) {
-        cards[selectedIndex].classList.add('correct');
-        score += Math.round(timeLeft / 15 * 1000);
+    // Change color as time runs out
+    if (timeLeft <= 5) {
+        timerFill.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+        timerText.style.color = '#ef4444';
     } else {
-        cards[selectedIndex].classList.add('wrong');
-        cards[correct].classList.add('correct');
+        timerFill.style.background = 'linear-gradient(90deg, #a855f7, #ec4899)';
+        timerText.style.color = '#ec4899';
     }
-
-    setTimeout(function() {
-        currentQuestion++;
-        showQuestion();
-    }, 2000);
-
 }
 
+// Time Up Function
 function timeUp() {
-    const cards = document.querySelectorAll('.answer-card');
-    const correct = questions[currentQuestion].correct;
+    const answerCards = answersContainer.querySelectorAll('.answer-card');
+    const correctAnswer = questions[currentQuestion].correct;
 
-    cards.forEach(function(card, index) {
+    // Show correct answer
+    answerCards.forEach((card, index) => {
         card.classList.add('disabled');
-        if (index === correct) {
+        if (index === correctAnswer) {
             card.classList.add('correct');
         }
     });
 
-    setTimeout(function() {
+    // Move to next question after delay
+    setTimeout(() => {
         currentQuestion++;
         showQuestion();
     }, 2000);
 }
 
+// Select Answer Function
+function selectAnswer(selectedIndex) {
+    clearInterval(timer);
+
+    const answerCards = answersContainer.querySelectorAll('.answer-card');
+    const correctAnswer = questions[currentQuestion].correct;
+
+    // Disable all cards
+    answerCards.forEach(card => card.classList.add('disabled'));
+
+    // Show correct/wrong
+    if (selectedIndex === correctAnswer) {
+        answerCards[selectedIndex].classList.add('correct');
+        // Calculate score based on time remaining (max 1000 points)
+        const points = Math.round((timeLeft / 15) * 1000);
+        score += points;
+    } else {
+        answerCards[selectedIndex].classList.add('wrong');
+        answerCards[correctAnswer].classList.add('correct');
+    }
+
+    // Move to next question after delay
+    setTimeout(() => {
+        currentQuestion++;
+        showQuestion();
+    }, 2000);
+}
+
+// End Game Function
 function endGame() {
-    endGame();
+    quizScreen.style.display = 'none';
+    resultScreen.style.display = 'block';
+
+    // Display score
+    finalScore.textContent = score;
+
+    // Generate result message
+    let message = '';
+    if (score >= 12000) {
+        message = "Excellent! You're a Cyber Security Expert! 🎉";
+    } else if (score >= 9000) {
+        message = "Great job! You know your cyber security well! 👏";
+    } else if (score >= 6000) {
+        message = "Good effort! Keep learning! 💪";
+    } else {
+        message = "Keep practicing! Cyber security is important! 📚";
+    }
+    resultMessage.textContent = message;
+
+    // Update leaderboard
+    updateLeaderboard();
 }
 
-function endGame() {
+// Update Leaderboard Function
+function updateLeaderboard() {
+    // Mark previous current as false
+    leaderboard = leaderboard.map(x => ({ ...x, isCurrent: false }));
 
-    document.getElementById('quiz-screen').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'block';
-
-    document.getElementById('final-score').textContent = score;
-}
-
-function restartGame() {
-
-    document.getElementById('result-screen').style.display = 'none';
-    document.getElementById('welcome-screen').style.display = 'block';
-
-    document.getElementById('player-name').value = '';
-}
-
-// ===== LEADERBOARD — SAME IDEA =====
-
-function loadLeaderboard() {
-    const saved = localStorage.getItem('cyberQuizLeaderboard');
-    if (saved) leaderboard = JSON.parse(saved);
-}
-
-function displayLeaderboard() {
-
-    const leaderboardEntries = document.getElementById('leaderboard-entries');
-    leaderboardEntries.innerHTML = '';
-
-    leaderboard.forEach(function(entry, index) {
-
-        const entryDiv = document.createElement('div');
-        entryDiv.className = 'leaderboard-entry';
-
-        entryDiv.innerHTML =
-            '<span class="player-name">' + (index + 1) + '. ' + entry.name + '</span>' +
-            '<span class="player-score">' + entry.score + '</span>';
-
-        leaderboardEntries.appendChild(entryDiv);
-
+    // Add current player to leaderboard
+    leaderboard.push({
+        name: playerName,
+        score: score,
+        isCurrent: true
     });
 
+    // Sort by score (highest first)
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    // Keep only top 10
+    leaderboard = leaderboard.slice(0, 10);
+
+    // Save to localStorage
+    localStorage.setItem('cyberQuizLeaderboard', JSON.stringify(leaderboard));
+
+    // Display leaderboard
+    displayLeaderboard();
 }
 
-// initialize
-loadLeaderboard();
-displayLeaderboard();
+// Display Leaderboard Function
+function displayLeaderboard() {
+    if (!leaderboardEntries) return;
 
-// expose globally exactly as your original wanted
+    leaderboardEntries.innerHTML = '';
+
+    leaderboard.forEach((entry, index) => {
+        const entryDiv = document.createElement('div');
+        entryDiv.className = `leaderboard-entry ${entry.isCurrent ? 'current-player' : ''}`;
+
+        // Add rank emoji
+        let rankEmoji = '';
+        if (index === 0) rankEmoji = '🥇 ';
+        else if (index === 1) rankEmoji = '🥈 ';
+        else if (index === 2) rankEmoji = '🥉 ';
+        else rankEmoji = `${index + 1}. `;
+
+        entryDiv.innerHTML = `
+            <span class="player-name">${rankEmoji}${entry.name}</span>
+            <span class="player-score">${entry.score}</span>
+        `;
+
+        leaderboardEntries.appendChild(entryDiv);
+    });
+}
+
+// Load Leaderboard Function
+function loadLeaderboard() {
+    const saved = localStorage.getItem('cyberQuizLeaderboard');
+    if (saved) {
+        leaderboard = JSON.parse(saved);
+    }
+}
+
+// Restart Game Function
+function restartGame() {
+    resultScreen.style.display = 'none';
+    welcomeScreen.style.display = 'block';
+    playerNameInput.value = '';
+    playerNameInput.style.borderColor = '#a855f7';
+    playerNameInput.placeholder = 'Enter your name / أدخل اسمك';
+}
+
+// Make functions globally accessible for inline onclick
 window.startGame = startGame;
 window.restartGame = restartGame;
 
+// Initialize after DOM ready (critical for GitHub/Vercel)
+document.addEventListener('DOMContentLoaded', () => {
+    initializeDOM();
+    loadLeaderboard();
+    displayLeaderboard();
+
+    // Handle Enter key on name input
+    if (playerNameInput) {
+        playerNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') startGame();
+        });
+    }
+});
