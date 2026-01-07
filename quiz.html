@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Security | Test yourself</title>
+    <title>Cyber Security | Test yourself </title>
     <style>
         * {
             margin: 0;
@@ -503,20 +503,12 @@
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
-    <div>
-   <a href="index.html">🏠 Home</a>
-<a href="chat.html">💬 Chat</a>
-<a href="history.html">📁 History</a>
-<a href="quiz.html">🧠 Cyber Quiz</a>
-<a href="scam.html">⚠️ Scam Detector</a>
-<a href="saeed.game.html" class="active">🎮 Saeed's Game</a>
-  </div>
     <div class="container">
         <!-- Welcome Screen -->
         <div id="welcome-screen">
             <h1 class="game-title">Cyber Security | Test yourself</h1>
             <p class="game-subtitle">الأمن السيبراني | اختبر نفسك</p>
-            <p class="arabic-text">اختبار الأمن السيبراني في الإمارات</p>
+            <p class="english-text">Learn Security The Smart Way</p>
             
             <div class="input-container">
                 <input type="text" id="player-name" placeholder="Enter your name / أدخل اسمك" maxlength="20">
@@ -565,7 +557,7 @@
             <div class="leaderboard">
                 <h2 class="leaderboard-title">🏆 Leaderboard / المتصدرين 🏆</h2>
                 <div id="leaderboard-entries">
-                    <!-- Leaderboard entries will be generated -->
+                 
                 </div>
             </div>
             
@@ -574,7 +566,7 @@
     </div>
 
     <script>
-       // Game State
+      
 let playerName = '';
 let currentQuestion = 0;
 let score = 0;
@@ -582,7 +574,7 @@ let timer;
 let timeLeft = 15;
 let leaderboard = [];
 
-// 15 Tricky Cybersecurity Questions about UAE Protections
+
 const questions = [
 {
 question: "What is the main goal of cybersecurity?",
@@ -782,7 +774,7 @@ function startGame() {
     
     if (!playerName) {
         playerNameInput.style.borderColor = '#ef4444';
-        playerNameInput.placeholder = 'Please enter your name / الرجاء إدخال اسمك';
+        playerNameInput.placeholder = 'Please enter your name / ادخل اسمك';
         return;
     }
     
@@ -903,7 +895,7 @@ function timeUp() {
         }
     });
     
-    // Move to next question after delay
+    
     setTimeout(() => {
         currentQuestion++;
         showQuestion();
@@ -931,14 +923,14 @@ function selectAnswer(selectedIndex) {
         answerCards[correctAnswer].classList.add('correct');
     }
     
-    // Move to next question after delay
+    
     setTimeout(() => {
         currentQuestion++;
         showQuestion();
     }, 2000);
 }
 
-// End Game Function
+
 function endGame() {
     quizScreen.style.display = 'none';
     resultScreen.style.display = 'block';
@@ -949,13 +941,13 @@ function endGame() {
     // Generate result message
     let message = '';
     if (score >= 12000) {
-        message = "Excellent! You're a Cyber Security Expert! 🎉";
+        message = "Excellent! You're a Cyber Security Expert!";
     } else if (score >= 9000) {
-        message = "Great job! You know your cyber security well! 👏";
+        message = "Great job! You know your cyber security well! ";
     } else if (score >= 6000) {
-        message = "Good effort! Keep learning! 💪";
+        message = "Good effort! Keep learning! ";
     } else {
-        message = "Keep practicing! Cyber security is important! 📚";
+        message = "Keep practicing! Cyber security is important! ";
     }
     resultMessage.textContent = message;
     
