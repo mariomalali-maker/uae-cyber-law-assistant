@@ -176,21 +176,30 @@ const questions = [
 ];
 
 // DOM Elements
-const welcomeScreen = document.getElementById('welcome-screen');
-const countdownScreen = document.getElementById('countdown-screen');
-const quizScreen = document.getElementById('quiz-screen');
-const resultScreen = document.getElementById('result-screen');
-const playerNameInput = document.getElementById('player-name');
-const countdownDisplay = document.getElementById('countdown-display');
-const questionText = document.getElementById('question-text');
-const questionArabic = document.getElementById('question-arabic');
-const answersContainer = document.getElementById('answers-container');
-const timerText = document.getElementById('timer-text');
-const timerFill = document.getElementById('timer-fill');
-const currentQuestionSpan = document.getElementById('current-question');
-const finalScore = document.getElementById('final-score');
-const resultMessage = document.getElementById('result-message');
-const leaderboardEntries = document.getElementById('leaderboard-entries');
+let welcomeScreen, countdownScreen, quizScreen, resultScreen;
+let playerNameInput, countdownDisplay;
+let questionText, questionArabic, answersContainer;
+let timerText, timerFill, currentQuestionSpan;
+let finalScore, resultMessage, leaderboardEntries;
+
+// Initialize DOM elements when DOM is loaded
+function initializeDOM() {
+    welcomeScreen = document.getElementById('welcome-screen');
+    countdownScreen = document.getElementById('countdown-screen');
+    quizScreen = document.getElementById('quiz-screen');
+    resultScreen = document.getElementById('result-screen');
+    playerNameInput = document.getElementById('player-name');
+    countdownDisplay = document.getElementById('countdown-display');
+    questionText = document.getElementById('question-text');
+    questionArabic = document.getElementById('question-arabic');
+    answersContainer = document.getElementById('answers-container');
+    timerText = document.getElementById('timer-text');
+    timerFill = document.getElementById('timer-fill');
+    currentQuestionSpan = document.getElementById('current-question');
+    finalScore = document.getElementById('final-score');
+    resultMessage = document.getElementById('result-message');
+    leaderboardEntries = document.getElementById('leaderboard-entries');
+}
 
 // Start Game Function
 function startGame() {
@@ -365,13 +374,13 @@ function endGame() {
     // Generate result message
     let message = '';
     if (score >= 12000) {
-        message = "Excellent! You're a Cyber Security Expert! ";
+        message = "Excellent! You're a Cyber Security Expert! 🎉";
     } else if (score >= 9000) {
         message = "Great job! You know your cyber security well! 👏";
     } else if (score >= 6000) {
         message = "Good effort! Keep learning! 💪";
     } else {
-        message = "Keep practicing! Cyber security is important! ";
+        message = "Keep practicing! Cyber security is important! 📚";
     }
     resultMessage.textContent = message;
     
@@ -403,6 +412,12 @@ function updateLeaderboard() {
 
 // Display Leaderboard Function
 function displayLeaderboard() {
+    if (!leaderboardEntries) {
+        initializeDOM();
+    }
+    
+    if (!leaderboardEntries) return;
+    
     leaderboardEntries.innerHTML = '';
     
     leaderboard.forEach((entry, index) => {
@@ -442,13 +457,23 @@ function restartGame() {
     playerNameInput.placeholder = 'Enter your name / أدخل اسمك';
 }
 
+// Make functions globally accessible
+window.startGame = startGame;
+window.restartGame = restartGame;
+
 // Initialize
 loadLeaderboard();
 displayLeaderboard();
 
 // Handle Enter key on name input
-playerNameInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        startGame();
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDOM();
+    
+    if (playerNameInput) {
+        playerNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                startGame();
+            }
+        });
     }
 });
