@@ -1,362 +1,454 @@
-// Quiz State
-let currentLanguage = '';
+// Game State
+let playerName = '';
 let currentQuestion = 0;
 let score = 0;
-let playerName = 'Anonymous';
+let timer;
 let timeLeft = 15;
-let timerInterval = null;
-let hasAnswered = false;
-let correctAnswers = 0;
-let wrongAnswers = 0;
+let leaderboard = [];
 
-const screens = {
-    start: document.getElementById('startScreen'),
-    countdown: document.getElementById('countdownScreen'),
-    quiz: document.getElementById('quizScreen'),
-    results: document.getElementById('resultsScreen')
-};
-
-// Questions Data
+// 15 Tricky Cybersecurity Questions about UAE Protections
 const questions = [
     {
-        en: "A social media account was hacked and the attacker changed the recovery email and phone number. The attacker is contacting others and impersonating the owner to request money. What is the safest first action?",
-        ar: "تم اختراق حساب على أحد مواقع التواصل الاجتماعي، وقام المهاجم بتغيير بيانات الاسترجاع والتواصل مع الآخرين منتحلًا الهوية لطلب المال. ما أول إجراء آمن يجب اتخاذه؟",
-        options: {
-            en: ["Negotiate with the attacker", "Submit an official report (ecrime.ae) and secure all linked accounts immediately", "Delete the hacked account", "Post about the issue publicly"],
-            ar: ["التفاوض مع المهاجم", "رفع بلاغ رسمي عبر المنصات المختصة (مثل ecrime.ae) وتأمين الحسابات المرتبطة فورًا", "حذف الحساب المخترق", "النشر عن المشكلة على العلن"]
-        },
+        question: "What is the primary purpose of the UAE's National Cybersecurity Strategy (NCSS)?",
+        arabicQuestion: "ما هو الهدف الرئيسي من الاستراتيجية الوطنية للأمن السيبراني في الإمارات؟",
+        answers: [
+            { text: "Block all international websites", arabic: "حظر جميع المواقع الدولية" },
+            { text: "Create a secure and resilient cyber infrastructure", arabic: "إنشاء بنية تحتية سيبرانية آمنة ومقاومة" },
+            { text: "Monitor all citizens' online activities", arabic: "مراقبة أنشطة جميع المواطنين عبر الإنترنت" },
+            { text: "Replace all government websites with internal servers", arabic: "استبدال جميع المواقع الحكومية بخوادم داخلية" }
+        ],
         correct: 1
     },
     {
-        en: "A message claiming to be from the bank requests identity verification and includes a link. The URL spelling is suspicious and does not match the bank's domain. What is the correct response?",
-        ar: "وردت رسالة تدّعي أنها من البنك وتطلب التحقق من الهوية عبر رابط، لكن الرابط يحتوي على أخطاء إملائية ولا يتطابق مع النطاق الرسمي للبنك. ما الإجراء الصحيح؟",
-        options: {
-            en: ["Open link to check", "Verify through the bank's official contact channels and report phishing", "Forward link to friends", "Ignore everything"],
-            ar: ["فتح الرابط للتأكد", "التحقق من الجهة عبر وسائل الاتصال الرسمية والإبلاغ عن محاولة تصيّد", "إرسال الرابط للآخرين", "تجاهل كل شيء دون إجراء"]
-        },
-        correct: 1
+        question: "Which UAE authority is responsible for cybersecurity regulations and policies?",
+        arabicQuestion: "أي جهة إماراتية مسؤولة عن تنظيمات وسياسات الأمن السيبراني؟",
+        answers: [
+            { text: "Telecommunications Regulatory Authority (TRA)", arabic: "هيئة تنظيم الاتصالات" },
+            { text: "Dubai Police", arabic: "شرطة دبي" },
+            { text: "Abu Dhabi Department of Education", arabic: "دائرة التعليم والمعرفة في أبوظبي" },
+            { text: "Ministry of Health", arabic: "وزارة الصحة" }
+        ],
+        correct: 0
     },
     {
-        en: "An individual threatens to publish private conversations if not paid a certain amount. They also claim to have 'connections' that can cause legal trouble. Which approach is most appropriate?",
-        ar: "هناك من يهدد بنشر محادثات خاصة ما لم يتم دفع مبلغ مالي، ويدعي امتلاك علاقات يمكن أن تسبب مشكلات قانونية. ما الإجراء الأنسب؟",
-        options: {
-            en: ["Pay once to avoid escalation", "Respond aggressively", "Preserve evidence and file a report through authorized channels", "Attempt to hack their account"],
-            ar: ["الدفع لتجنب التصعيد", "الرد بطريقة عدائية", "حفظ الأدلة ورفع بلاغ عبر الجهات المختصة", "محاولة اختراق حساب المهاجم"]
-        },
+        question: "What is the UAE's national cybersecurity hotline for reporting cyber incidents?",
+        arabicQuestion: "ما هو الخط الساخن الوطني للأمن السيبراني للإبلاغ عن الحوادث السيبرانية؟",
+        answers: [
+            { text: "999", arabic: "999" },
+            { text: "901", arabic: "901" },
+            { text: "800 CRY (279)", arabic: "800 CRY (279)" },
+            { text: "800 SAFE (7233)", arabic: "800 SAFE (7233)" }
+        ],
         correct: 2
     },
     {
-        en: "A login notification appears from another country at a time when the account owner was inactive. Access is still available. What is the most secure sequence of actions?",
-        ar: "ظهرت إشعار بتسجيل دخول من دولة أخرى في وقت لم يكن فيه صاحب الحساب نشطًا، ولا يزال الوصول إلى الحساب ممكنًا. ما التسلسل الأكثر أمانًا للمعالجة؟",
-        options: {
-            en: ["Change password only", "Sign out of all devices → enable MFA → change password → review activity logs", "Disable the account", "Do nothing"],
-            ar: ["تغيير كلمة المرور فقط", "تسجيل الخروج من جميع الأجهزة → تفعيل التحقق متعدد العوامل → تغيير كلمة المرور → مراجعة سجل النشاط", "تعطيل الحساب بالكامل", "عدم اتخاذ أي إجراء"]
-        },
-        correct: 1
-    },
-    {
-        en: "A free Wi-Fi network in a public place requires installing an unknown configuration file before connecting. What is the safest choice?",
-        ar: "شبكة واي فاي مجانية في مكان عام تطلب تثبيت ملف إعدادات مجهول قبل الاتصال. ما الخيار الأكثر أمانًا؟",
-        options: {
-            en: ["Install it; free Wi-Fi is harmless", "Avoid connecting and never install unknown files; use cellular data instead", "Ask nearby users if they installed it safely", "Test it on another device first"],
-            ar: ["تثبيت الملف فالإنترنت مجاني", "تجنب الاتصال وعدم تثبيت ملفات مجهولة واستخدام بيانات الهاتف", "سؤال الموجودين إذا قاموا بتثبيته", "تجربته على جهاز آخر أولًا"]
-        },
-        correct: 1
-    },
-    {
-        en: "What is the most secure method of storing sensitive identity documents digitally?",
-        ar: "ما الطريقة الأكثر أمانًا لحفظ المستندات الحساسة رقميًا؟",
-        options: {
-            en: ["Screenshots in gallery", "Encrypted password manager or secure vault", "Email drafts", "Messaging app chat"],
-            ar: ["لقطات شاشة في المعرض", "مدير كلمات مرور مشفر أو خزانة رقمية آمنة", "مسودات بريد إلكتروني", "رسائل تطبيق محادثة"]
-        },
-        correct: 1
-    },
-    {
-        en: "A shortened link leads to an unknown website requesting login credentials. What is the recommended response?",
-        ar: "رابط مختصر يؤدي إلى موقع غير معروف ويطلب بيانات تسجيل الدخول. ما الإجراء الموصى به؟",
-        options: {
-            en: ["Enter credentials to verify", "Contact the sender via a different channel to confirm authenticity", "Open on incognito mode", "Ignore without checking"],
-            ar: ["إدخال البيانات للتحقق", "التواصل مع المرسل عبر قناة أخرى للتحقق من صحة الرابط", "فتحه عبر وضع التصفح الخفي", "التجاهل دون تحقق"]
-        },
-        correct: 1
-    },
-    {
-        en: "Sharing private audio or chat messages without consent in the UAE is considered:",
-        ar: "مشاركة رسائل صوتية أو محادثات خاصة دون موافقة في الإمارات تعتبر:",
-        options: {
-            en: ["A harmless action", "Allowed if truthful", "A violation punishable under UAE cybercrime regulations", "Allowed only if not monetized"],
-            ar: ["فعل غير ضار", "مسموح إن كان المحتوى صحيحًا", "انتهاك يُعاقب عليه وفق أنظمة الجرائم الإلكترونية", "مسموح إن لم يكن الهدف ربحيًا"]
-        },
+        question: "The UAE Cyber Security Council was established in which year?",
+        arabicQuestion: "تم إنشاء مجلس الأمن السيبراني في الإمارات في أي عام؟",
+        answers: [
+            { text: "2015", arabic: "2015" },
+            { text: "2018", arabic: "2018" },
+            { text: "2020", arabic: "2020" },
+            { text: "2022", arabic: "2022" }
+        ],
         correct: 2
     },
     {
-        en: "Using the same password for all critical accounts (email, social media, banking) and no 2FA leads to:",
-        ar: "استخدام كلمة المرور نفسها لجميع الحسابات المهمة (البريد، التواصل الاجتماعي، الخدمات البنكية) دون تفعيل التحقق بخطوتين يؤدي إلى:",
-        options: {
-            en: ["No major risk", "High risk of complete account compromise if one account is breached", "Only email is at risk", "Loss of device data only"],
-            ar: ["لا يوجد خطر كبير", "خطر عالي بانكشاف جميع الحسابات إذا تم اختراق أحدها", "الخطر يقتصر على البريد الإلكتروني فقط", "خسارة بيانات الجهاز فقط"]
-        },
+        question: "What does UAE's 'Cyber Pulse' initiative focus on?",
+        arabicQuestion: "ما الذي يركز عليه مبادرة 'نبض السيبراني' في الإمارات؟",
+        answers: [
+            { text: "Creating video games for children", arabic: "إنشاء ألعاب فيديو للأطفال" },
+            { text: "Building a national cybersecurity awareness platform", arabic: "بناء منصة وطنية للتوعية بالأمن السيبراني" },
+            { text: "Developing antivirus software", arabic: "تطوير برامج مكافحة الفيروسات" },
+            { text: "Monitoring social media only", arabic: "مراقبة وسائل التواصل الاجتماعي فقط" }
+        ],
         correct: 1
     },
     {
-        en: "A website pretending to be a government service threatens legal consequences unless payment is made. The domain is not official. The correct action is:",
-        ar: "موقع ينتحل صفة جهة حكومية ويهدد بعواقب قانونية ما لم يتم الدفع، والموقع لا يستخدم نطاقًا رسميًا. ما الإجراء الصحيح؟",
-        options: {
-            en: ["Pay to avoid escalation", "Record evidence and report to official authorities", "Respond and argue", "Share with others to warn them"],
-            ar: ["الدفع لتجنب التصعيد", "توثيق الأدلة ورفع بلاغ للجهات الرسمية", "الرد والمناقشة", "نشر الرابط لتحذير الآخرين"]
-        },
+        question: "Which UAE law criminalizes cybercrimes and defines penalties?",
+        arabicQuestion: "أي قانون إماراتي يجرم الجرائم الإلكترونية ويحدد العقوبات؟",
+        answers: [
+            { text: "Labor Law", arabic: "قانون العمل" },
+            { text: "Federal Decree-Law No. 5 of 2012 (Cybercrime Law)", arabic: "المرسوم بالقانون الاتحادي رقم 5 لسنة 2012 (قانون الجرائم الإلكترونية)" },
+            { text: "Commercial Law", arabic: "قانون التجارة" },
+            { text: "Traffic Law", arabic: "قانون المرور" }
+        ],
+        correct: 1
+    },
+    {
+        question: "What is the UAE's National Electronic Security Authority (NESA) now called?",
+        arabicQuestion: "ما هو الاسم الجديد لهيئة الأمن الإلكتروني الوطنية في الإمارات؟",
+        answers: [
+            { text: "Digital Dubai", arabic: "دبي الرقمية" },
+            { text: "Cyber Security Council", arabic: "مجلس الأمن السيبراني" },
+            { text: "TRA Cyber Unit", arabic: "وحدة السيبراني في هيئة تنظيم الاتصالات" },
+            { text: "UAE Space Agency", arabic: "وكالة الفضاء الإماراتية" }
+        ],
+        correct: 1
+    },
+    {
+        question: "What is the purpose of the UAE's 'Cyber Shield' program?",
+        arabicQuestion: "ما هو الغرض من برنامج 'الدرع السيبراني' في الإمارات؟",
+        answers: [
+            { text: "To block VPN services completely", arabic: "لحظر خدمات VPN بالكامل" },
+            { text: "To protect critical infrastructure from cyber threats", arabic: "لحماية البنية التحتية الحيوية من التهديدات السيبرانية" },
+            { text: "To monitor only government employees", arabic: "لمراقبة الموظفين الحكوميين فقط" },
+            { text: "To create a social media platform", arabic: "لإنشاء منصة تواصل اجتماعي" }
+        ],
+        correct: 1
+    },
+    {
+        question: "Which month is designated as UAE Cyber Security Awareness Month?",
+        arabicQuestion: "أي شهر تم تعيينه كشهر للتوعية بالأمن السيبراني في الإمارات؟",
+        answers: [
+            { text: "January", arabic: "يناير" },
+            { text: "June", arabic: "يونيو" },
+            { text: "October", arabic: "أكتوبر" },
+            { text: "December", arabic: "ديسمبر" }
+        ],
+        correct: 2
+    },
+    {
+        question: "What is the UAE's Digital Government Strategy focused on regarding cybersecurity?",
+        arabicQuestion: "ما الذي تركز عليه استراتيجية الحكومة الرقمية الإماراتية فيما يتعلق بالأمن السيبراني؟",
+        answers: [
+            { text: "Eliminating all paper documents", arabic: "إلغاء جميع المستندات الورقية" },
+            { text: "Building trust through secure digital services", arabic: "بناء الثقة من خلال الخدمات الرقمية الآمنة" },
+            { text: "Creating a separate internet for UAE only", arabic: "إنشاء إنترنت منفصل للإمارات فقط" },
+            { text: "Blocking all social media", arabic: "حظر جميع وسائل التواصل الاجتماعي" }
+        ],
+        correct: 1
+    },
+    {
+        question: "The UAE Cyber Security Council works under which ministry?",
+        arabicQuestion: "يعمل مجلس الأمن السيبراني الإماراتي تحت أي وزارة؟",
+        answers: [
+            { text: "Ministry of Interior", arabic: "وزارة الداخلية" },
+            { text: "Ministry of Economy", arabic: "وزارة الاقتصاد" },
+            { text: "Cabinet of the UAE", arabic: "مجلس الوزراء الإماراتي" },
+            { text: "Ministry of Foreign Affairs", arabic: "وزارة الخارجية" }
+        ],
+        correct: 2
+    },
+    {
+        question: "What is the UAE's policy on data protection and privacy?",
+        arabicQuestion: "ما هي سياسة الإمارات فيما يتعلق بحماية البيانات والخصوصية؟",
+        answers: [
+            { text: "No data protection laws exist", arabic: "لا توجد قوانين لحماية البيانات" },
+            { text: "Federal Law No. 2 of 2019 (Data Protection Law)", arabic: "القانون الاتحادي رقم 2 لسنة 2019 (قانون حماية البيانات)" },
+            { text: "Only companies need data protection", arabic: "فقط الشركات تحتاج لحماية البيانات" },
+            { text: "Data protection is optional", arabic: "حماية البيانات اختيارية" }
+        ],
+        correct: 1
+    },
+    {
+        question: "What does CERT (Computer Emergency Response Team) in UAE provide?",
+        arabicQuestion: "ما الذي توفره فريق الاستجابة للطوارئ الحاسوبية (CERT) في الإمارات؟",
+        answers: [
+            { text: "Only antivirus software", arabic: "فقط برامج مكافحة الفيروسات" },
+            { text: "Incident response and cybersecurity coordination", arabic: "الاستجابة للحوادث وتنسيق الأمن السيبراني" },
+            { text: "IT hardware support only", arabic: "دعم الأجهزة فقط" },
+            { text: "Website hosting services", arabic: "خدمات استضافة المواقع" }
+        ],
+        correct: 1
+    },
+    {
+        question: "The UAE's 'Smart Dubai' initiative includes which cybersecurity component?",
+        arabicQuestion: "ما هو مكون الأمن السيبراني في مبادرة 'دبي الذكية'؟",
+        answers: [
+            { text: "Dubai Electronic Security Center (DESC)", arabic: "مركز دبي للأمن الإلكتروني" },
+            { text: "Dubai Police Cyber Unit", arabic: "وحدة السيبراني في شرطة دبي" },
+            { text: "Dubai Internet City Security", arabic: "أمن مدينة دبي للإنترنت" },
+            { text: "Dubai Mall Security Cameras", arabic: "كاميرات أمن دبي مول" }
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the UAE's stance on international cybersecurity cooperation?",
+        arabicQuestion: "ما هو موقف الإمارات من التعاون الدولي في مجال الأمن السيبراني؟",
+        answers: [
+            { text: "Complete isolation from global cybersecurity efforts", arabic: "عزل تام عن الجهود العالمية للأمن السيبراني" },
+            { text: "Active participation in global cybersecurity initiatives", arabic: "المشاركة النشطة في المبادرات العالمية للأمن السيبراني" },
+            { text: "Only cooperation with neighboring countries", arabic: "التعاون فقط مع الدول المجاورة" },
+            { text: "No international agreements signed", arabic: "لم يتم توقيع أي اتفاقات دولية" }
+        ],
         correct: 1
     }
 ];
 
-// Sound Effects
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// DOM Elements
+const welcomeScreen = document.getElementById('welcome-screen');
+const countdownScreen = document.getElementById('countdown-screen');
+const quizScreen = document.getElementById('quiz-screen');
+const resultScreen = document.getElementById('result-screen');
+const playerNameInput = document.getElementById('player-name');
+const countdownDisplay = document.getElementById('countdown-display');
+const questionText = document.getElementById('question-text');
+const questionArabic = document.getElementById('question-arabic');
+const answersContainer = document.getElementById('answers-container');
+const timerText = document.getElementById('timer-text');
+const timerFill = document.getElementById('timer-fill');
+const currentQuestionSpan = document.getElementById('current-question');
+const finalScore = document.getElementById('final-score');
+const resultMessage = document.getElementById('result-message');
+const leaderboardEntries = document.getElementById('leaderboard-entries');
 
-function playSound(type) {
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    if (type === 'correct') {
-        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); 
-        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); 
-        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); 
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.4);
-    } else if (type === 'wrong') {
-        oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
-    } else if (type === 'countdown') {
-        oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
-    }
-}
-
-function showScreen(screenName) {
-    Object.values(screens).forEach(screen => screen.classList.add('hidden'));
-    screens[screenName].classList.remove('hidden');
-}
-
-function setLanguage(lang) {
-    currentLanguage = lang;
-    document.body.classList.toggle('rtl', lang === 'AR');
-    
-    const startContainer = document.getElementById('startContainer');
-    startContainer.classList.remove('hidden');
-    setTimeout(() => startContainer.classList.add('visible'), 100);
-    
-    if (audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
-    playSound('correct');
-}
-
+// Start Game Function
 function startGame() {
-    const nameInput = document.getElementById('playerName');
-    playerName = nameInput.value.trim() || 'Anonymous';
+    playerName = playerNameInput.value.trim();
     
-    currentQuestion = 0;
-    score = 0;
-    correctAnswers = 0;
-    wrongAnswers = 0;
+    if (!playerName) {
+        playerNameInput.style.borderColor = '#ef4444';
+        playerNameInput.placeholder = 'Please enter your name / الرجاء إدخال اسمك';
+        return;
+    }
     
-    showScreen('countdown');
-    runCountdown(); // Fixed: function name must match
+    playerNameInput.style.borderColor = '#a855f7';
+    showCountdown();
 }
 
-function runCountdown() { // Fixed: removed illegal bracket and fixed name
+// Show Countdown Function
+function showCountdown() {
+    welcomeScreen.style.display = 'none';
+    countdownScreen.style.display = 'block';
+    
     let count = 3;
-    const countdownNumber = document.getElementById('countdownNumber');
+    countdownDisplay.textContent = count;
+    countdownDisplay.className = 'countdown-number';
     
     const countdownInterval = setInterval(() => {
+        count--;
+        
         if (count > 0) {
-            countdownNumber.textContent = count;
-            playSound('countdown');
-            count--;
+            countdownDisplay.textContent = count;
+            countdownDisplay.style.animation = 'none';
+            countdownDisplay.offsetHeight; // Trigger reflow
+            countdownDisplay.style.animation = 'pulse 1s ease-in-out';
+        } else if (count === 0) {
+            countdownDisplay.textContent = 'GO!';
+            countdownDisplay.className = 'go-text';
         } else {
             clearInterval(countdownInterval);
-            showScreen('quiz');
-            loadQuestion();
+            countdownScreen.style.display = 'none';
+            quizScreen.style.display = 'block';
+            currentQuestion = 0;
+            score = 0;
+            showQuestion();
         }
     }, 1000);
 }
 
-function loadQuestion() {
-    hasAnswered = false;
+// Show Question Function
+function showQuestion() {
+    if (currentQuestion >= questions.length) {
+        endGame();
+        return;
+    }
+    
     const question = questions[currentQuestion];
-    const lang = currentLanguage.toLowerCase();
     
-    document.getElementById('currentQ').textContent = currentQuestion + 1;
-    document.getElementById('totalQ').textContent = questions.length;
-    document.getElementById('currentScore').textContent = score;
+    // Update question counter
+    currentQuestionSpan.textContent = currentQuestion + 1;
     
-    const questionText = document.getElementById('questionText');
-    questionText.textContent = question[lang];
+    // Display question
+    questionText.textContent = question.question;
+    questionArabic.textContent = question.arabicQuestion;
     
-    const options = question.options[lang];
-    const optionButtons = document.querySelectorAll('.option-btn');
+    // Generate answers
+    answersContainer.innerHTML = '';
     
-    optionButtons.forEach((btn, index) => {
-        btn.disabled = false;
-        btn.className = 'option-btn';
-        btn.querySelector('.option-text').textContent = options[index];
+    question.answers.forEach((answer, index) => {
+        const answerCard = document.createElement('div');
+        answerCard.className = 'answer-card';
+        answerCard.style.animationDelay = `${index * 0.1}s`;
+        
+        answerCard.innerHTML = `
+            <p class="answer-text">${answer.text}</p>
+            <p class="answer-arabic">${answer.arabic}</p>
+        `;
+        
+        answerCard.addEventListener('click', () => selectAnswer(index));
+        answersContainer.appendChild(answerCard);
     });
     
+    // Start timer
     startTimer();
 }
 
+// Timer Function
 function startTimer() {
     timeLeft = 15;
-    const timerFill = document.getElementById('timerFill');
-    timerFill.className = 'timer-fill';
-    timerFill.style.width = '100%';
+    updateTimerDisplay();
     
-    clearInterval(timerInterval);
-    
-    timerInterval = setInterval(() => {
+    timer = setInterval(() => {
         timeLeft--;
-        const percentage = (timeLeft / 15) * 100;
-        timerFill.style.width = percentage + '%';
-        
-        if (timeLeft <= 5) {
-            timerFill.className = 'timer-fill danger';
-        } else if (timeLeft <= 10) {
-            timerFill.className = 'timer-fill warning';
-        }
+        updateTimerDisplay();
         
         if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            handleTimeout();
+            clearInterval(timer);
+            timeUp();
         }
     }, 1000);
 }
 
-function handleTimeout() {
-    if (!hasAnswered) {
-        hasAnswered = true;
-        wrongAnswers++;
-        const correctAnswer = questions[currentQuestion].correct;
-        const optionButtons = document.querySelectorAll('.option-btn');
-        optionButtons.forEach((btn, index) => {
-            btn.disabled = true;
-            if (index === correctAnswer) {
-                btn.classList.add('correct');
-            }
-        });
-        playSound('wrong');
-        showFeedback(false, 0);
+// Update Timer Display
+function updateTimerDisplay() {
+    timerText.textContent = timeLeft;
+    const percentage = (timeLeft / 15) * 100;
+    timerFill.style.width = percentage + '%';
+    
+    // Change color as time runs out
+    if (timeLeft <= 5) {
+        timerFill.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+        timerText.style.color = '#ef4444';
+    } else {
+        timerFill.style.background = 'linear-gradient(90deg, #a855f7, #ec4899)';
+        timerText.style.color = '#ec4899';
     }
 }
 
-function selectAnswer(selectedIndex) {
-    if (hasAnswered) return;
-    hasAnswered = true;
+// Time Up Function
+function timeUp() {
+    const answerCards = answersContainer.querySelectorAll('.answer-card');
+    const correctAnswer = questions[currentQuestion].correct;
     
-    clearInterval(timerInterval);
-    
-    const question = questions[currentQuestion];
-    const isCorrect = selectedIndex === question.correct;
-    const timeBonus = Math.round((timeLeft / 15) * 500);
-    const points = isCorrect ? 1000 + timeBonus : 0;
-    
-    if (isCorrect) {
-        correctAnswers++;
-        score += points;
-        playSound('correct');
-    } else {
-        wrongAnswers++;
-        playSound('wrong');
-    }
-    
-    const optionButtons = document.querySelectorAll('.option-btn');
-    optionButtons.forEach((btn, index) => {
-        btn.disabled = true;
-        if (index === question.correct) {
-            btn.classList.add('correct');
-        } else if (index === selectedIndex && !isCorrect) {
-            btn.classList.add('wrong');
+    // Show correct answer
+    answerCards.forEach((card, index) => {
+        card.classList.add('disabled');
+        if (index === correctAnswer) {
+            card.classList.add('correct');
         }
     });
     
-    showFeedback(isCorrect, points);
-}
-
-function showFeedback(isCorrect, points) {
-    const overlay = document.getElementById('feedbackOverlay');
-    const icon = document.getElementById('feedbackIcon');
-    const text = document.getElementById('feedbackText');
-    const pointsText = document.getElementById('feedbackPoints');
-    
-    overlay.classList.remove('hidden');
-    
-    if (isCorrect) {
-        icon.textContent = '🎉';
-        text.textContent = currentLanguage === 'EN' ? 'CORRECT!' : 'صحيح!';
-        text.style.color = '#22c55e';
-        pointsText.textContent = '+' + points;
-        
-        if(typeof confetti === 'function') {
-            confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
-        }
-    } else {
-        icon.textContent = '😢';
-        text.textContent = currentLanguage === 'EN' ? 'WRONG!' : 'خطأ!';
-        text.style.color = '#e21b3c';
-        pointsText.textContent = '+0';
-    }
-    
+    // Move to next question after delay
     setTimeout(() => {
-        overlay.classList.add('hidden');
-        nextQuestion();
+        currentQuestion++;
+        showQuestion();
     }, 2000);
 }
 
-function nextQuestion() {
-    currentQuestion++;
-    if (currentQuestion < questions.length) {
-        loadQuestion();
+// Select Answer Function
+function selectAnswer(selectedIndex) {
+    clearInterval(timer);
+    
+    const answerCards = answersContainer.querySelectorAll('.answer-card');
+    const correctAnswer = questions[currentQuestion].correct;
+    
+    // Disable all cards
+    answerCards.forEach(card => card.classList.add('disabled'));
+    
+    // Show correct/wrong
+    if (selectedIndex === correctAnswer) {
+        answerCards[selectedIndex].classList.add('correct');
+        // Calculate score based on time remaining (max 1000 points)
+        const points = Math.round((timeLeft / 15) * 1000);
+        score += points;
     } else {
-        showResults();
+        answerCards[selectedIndex].classList.add('wrong');
+        answerCards[correctAnswer].classList.add('correct');
+    }
+    
+    // Move to next question after delay
+    setTimeout(() => {
+        currentQuestion++;
+        showQuestion();
+    }, 2000);
+}
+
+// End Game Function
+function endGame() {
+    quizScreen.style.display = 'none';
+    resultScreen.style.display = 'block';
+    
+    // Display score
+    finalScore.textContent = score;
+    
+    // Generate result message
+    let message = '';
+    if (score >= 12000) {
+        message = "Excellent! You're a Cyber Security Expert! ";
+    } else if (score >= 9000) {
+        message = "Great job! You know your cyber security well! 👏";
+    } else if (score >= 6000) {
+        message = "Good effort! Keep learning! 💪";
+    } else {
+        message = "Keep practicing! Cyber security is important! ";
+    }
+    resultMessage.textContent = message;
+    
+    // Update leaderboard
+    updateLeaderboard();
+}
+
+// Update Leaderboard Function
+function updateLeaderboard() {
+    // Add current player to leaderboard
+    leaderboard.push({
+        name: playerName,
+        score: score,
+        isCurrent: true
+    });
+    
+    // Sort by score (highest first)
+    leaderboard.sort((a, b) => b.score - a.score);
+    
+    // Keep only top 10
+    leaderboard = leaderboard.slice(0, 10);
+    
+    // Save to localStorage
+    localStorage.setItem('cyberQuizLeaderboard', JSON.stringify(leaderboard));
+    
+    // Display leaderboard
+    displayLeaderboard();
+}
+
+// Display Leaderboard Function
+function displayLeaderboard() {
+    leaderboardEntries.innerHTML = '';
+    
+    leaderboard.forEach((entry, index) => {
+        const entryDiv = document.createElement('div');
+        entryDiv.className = `leaderboard-entry ${entry.isCurrent ? 'current-player' : ''}`;
+        
+        // Add rank emoji
+        let rankEmoji = '';
+        if (index === 0) rankEmoji = '🥇 ';
+        else if (index === 1) rankEmoji = '🥈 ';
+        else if (index === 2) rankEmoji = '🥉 ';
+        else rankEmoji = `${index + 1}. `;
+        
+        entryDiv.innerHTML = `
+            <span class="player-name">${rankEmoji}${entry.name}</span>
+            <span class="player-score">${entry.score}</span>
+        `;
+        
+        leaderboardEntries.appendChild(entryDiv);
+    });
+}
+
+// Load Leaderboard Function
+function loadLeaderboard() {
+    const saved = localStorage.getItem('cyberQuizLeaderboard');
+    if (saved) {
+        leaderboard = JSON.parse(saved);
     }
 }
 
-function showResults() {
-    showScreen('results');
-    const accuracy = Math.round((correctAnswers / questions.length) * 100);
-    
-    document.getElementById('resultTitle').textContent = accuracy >= 80 ? 
-        (currentLanguage === 'EN' ? 'CHAMPION!' : 'بطل!') : 
-        (currentLanguage === 'EN' ? 'FINISH!' : 'انتهى!');
-    
-    const progressRing = document.getElementById('progressRing');
-    const offset = 565.48 - (565.48 * accuracy / 100);
-    progressRing.style.strokeDashoffset = offset;
-    
-    document.getElementById('finalScore').textContent = score;
-    document.getElementById('playerNameDisplay').textContent = playerName;
-    document.getElementById('correctCount').textContent = correctAnswers;
-    document.getElementById('wrongCount').textContent = wrongAnswers;
-    document.getElementById('accuracy').textContent = accuracy + '%';
+// Restart Game Function
+function restartGame() {
+    resultScreen.style.display = 'none';
+    welcomeScreen.style.display = 'block';
+    playerNameInput.value = '';
+    playerNameInput.style.borderColor = '#a855f7';
+    playerNameInput.placeholder = 'Enter your name / أدخل اسمك';
 }
 
-function playAgain() {
-    showScreen('start');
-    document.getElementById('startContainer').classList.remove('visible');
-    document.getElementById('playerName').value = '';
-}
+// Initialize
+loadLeaderboard();
+displayLeaderboard();
 
-function goHome() {
-    window.location.href = 'index.html';
-}
+// Handle Enter key on name input
+playerNameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        startGame();
+    }
+});
