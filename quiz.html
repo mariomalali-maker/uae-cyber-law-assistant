@@ -7,181 +7,142 @@
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f0f23 100%);
-    min-height: 100vh;
-    color: #ffffff;
-    overflow-x: hidden;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f0f23 100%);
+  min-height: 100vh;
+  color: #ffffff;
 }
 
 /* Welcome Screen */
 #welcome-screen {
-    text-align: center;
-    animation: fadeIn 1s ease-in;
-}
-
-.game-title {
-    font-size: 3rem;
-    font-weight: bold;
-    background: linear-gradient(45deg, #a855f7, #ec4899, #a855f7);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: gradient 3s ease infinite;
-    margin-bottom: 10px;
-}
-
-.game-subtitle {
-    font-size: 1.2rem;
-    color: #a78bfa;
-    margin-bottom: 40px;
-}
-
-.arabic-text {
-    font-family: 'Arial', sans-serif;
-    direction: rtl;
-    font-size: 1.5rem;
-    color: #c4b5fd;
-    margin-bottom: 20px;
+  text-align: center;
 }
 
 #player-name {
-    padding: 15px 25px;
-    font-size: 1.2rem;
-    border: 3px solid #a855f7;
-    border-radius: 50px;
-    background: rgba(168, 85, 247, 0.1);
-    color: #fff;
-    text-align: center;
-    width: 300px;
-    outline: none;
+  padding: 15px 25px;
+  font-size: 1.2rem;
+  border: 3px solid #a855f7;
+  border-radius: 50px;
+  background: rgba(168, 85, 247, 0.1);
+  color: #fff;
+  text-align: center;
+  width: 300px;
+  outline: none;
+  margin:20px;
 }
 
 .start-btn {
-    padding: 15px 50px;
-    font-size: 1.3rem;
-    border-radius: 50px;
-    cursor: pointer;
+  padding: 15px 50px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(45deg, #a855f7, #ec4899);
+  color: white;
+  cursor: pointer;
+  margin-top: 20px;
 }
 
-/* Screens initial */
+/* Screens */
 #countdown-screen { display:none; }
 #quiz-screen { display:none; }
 #result-screen { display:none; }
 
-/* Animations */
-@keyframes fadeIn {
-    from {opacity:0}
-    to {opacity:1}
-}
-@keyframes gradient {
-    0%{background-position:0%}
-    50%{background-position:100%}
-    100%{background-position:0%}
-}
-
-/* Quiz styles */
+/* Quiz */
 .quiz-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 25px;
+  display:flex;
+  justify-content:space-between;
+  padding:15px;
 }
 
-.timer-fill {
-    transition: width 0.3s;
+.question-card {
+  padding:20px;
+  background:rgba(168,85,247,0.15);
+  border-radius:15px;
+  margin-bottom:20px;
 }
 
-@media (max-width:768px){
-    .answers-container{
-        grid-template-columns:1fr;
-    }
+.answers-container {
+  display:grid;
+  gap:15px;
+}
+
+.answer-card {
+  border:2px solid rgba(168,85,247,0.4);
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+  cursor:pointer;
+}
+
+.answer-text { font-size:1.2rem; margin-bottom:8px; }
+.answer-arabic { direction:rtl; font-size:1rem; color:#c4b5fd; }
+
+.score-display {
+  font-size:3rem;
+  margin:20px;
+}
+
+/* Colors for result feedback */
+.correct { background:rgba(16,185,129,0.3); }
+.wrong { background:rgba(239,68,68,0.3); }
+
+@media(max-width:768px){
+  .quiz-header{ flex-direction:column; gap:10px; }
 }
 </style>
 
 </head>
 
 <body>
-
 <div class="container">
 
-<!-- Welcome Screen -->
 <div id="welcome-screen">
-
-<h1 class="game-title">Cyber Security | Test yourself</h1>
-
-<input type="text" id="player-name" placeholder="Enter your name / أدخل اسمك" maxlength="20">
-
-<!-- FIXED ONLY THIS CALL -->
+<h1>Cyber Security | Test yourself</h1>
+<input type="text" id="player-name" placeholder="Enter your name" maxlength="20">
 <button class="start-btn" onclick="startGame()">START GAME</button>
-
 </div>
 
-<!-- Countdown Screen -->
 <div id="countdown-screen">
-<div class="countdown-number" id="countdown-display">3</div>
+<div id="countdown-display">3</div>
 </div>
 
-<!-- Quiz Screen -->
 <div id="quiz-screen">
-
 <div class="quiz-header">
-<div class="question-counter">Question <span id="current-question">1</span>/15</div>
-
-<div class="timer-container">
-<div class="timer-bar">
-<div class="timer-fill" id="timer-fill"></div>
-</div>
-
-<div class="timer-text" id="timer-text">15</div>
-</div>
-
+<div>Question <span id="current-question">1</span>/15</div>
+<div>Time: <span id="timer-text">15</span></div>
 </div>
 
 <div class="question-card">
-<p class="question-text" id="question-text"></p>
-<p class="question-arabic" id="question-arabic"></p>
+<p id="question-text"></p>
+<p id="question-arabic"></p>
 </div>
 
 <div class="answers-container" id="answers-container"></div>
 
 </div>
 
-
-<!-- Result Screen -->
 <div id="result-screen">
-
-<h1 class="game-title">Game Complete!</h1>
-
-<div id="final-score">0</div>
-
+<h1>Game Complete!</h1>
+<div class="score-display" id="final-score">0</div>
 <p id="result-message"></p>
-
 <button class="start-btn play-again-btn" onclick="restartGame()">PLAY AGAIN</button>
 
+<div class="leaderboard">
+<h2>Leaderboard</h2>
+<div id="leaderboard-entries"></div>
 </div>
 
 </div>
 
-<!-- Load script last — correct -->
+</div>
+
 <script src="quiz.js"></script>
-
 </body>
 </html>
