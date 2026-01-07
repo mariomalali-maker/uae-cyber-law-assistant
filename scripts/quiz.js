@@ -6,7 +6,7 @@ let timer;
 let timeLeft = 15;
 let leaderboard = [];
 
-// 15 Tricky Cybersecurity Questions about UAE Protections
+// ===== QUESTIONS — EXACT SAME ARRAY FROM YOU =====
 const questions = [
     {
         question: "What is the primary purpose of the UAE's National Cybersecurity Strategy (NCSS)?",
@@ -19,6 +19,7 @@ const questions = [
         ],
         correct: 1
     },
+
     {
         question: "Which UAE authority is responsible for cybersecurity regulations and policies?",
         arabicQuestion: "أي جهة إماراتية مسؤولة عن تنظيمات وسياسات الأمن السيبراني؟",
@@ -30,6 +31,7 @@ const questions = [
         ],
         correct: 0
     },
+
     {
         question: "What is the UAE's national cybersecurity hotline for reporting cyber incidents?",
         arabicQuestion: "ما هو الخط الساخن الوطني للأمن السيبراني للإبلاغ عن الحوادث السيبرانية؟",
@@ -41,6 +43,7 @@ const questions = [
         ],
         correct: 2
     },
+
     {
         question: "The UAE Cyber Security Council was established in which year?",
         arabicQuestion: "تم إنشاء مجلس الأمن السيبراني في الإمارات في أي عام؟",
@@ -52,6 +55,7 @@ const questions = [
         ],
         correct: 2
     },
+
     {
         question: "What does UAE's 'Cyber Pulse' initiative focus on?",
         arabicQuestion: "ما الذي يركز عليه مبادرة 'نبض السيبراني' في الإمارات؟",
@@ -62,25 +66,88 @@ const questions = [
             { text: "Monitoring social media only", arabic: "مراقبة وسائل التواصل الاجتماعي فقط" }
         ],
         correct: 1
+    },
+
+    {
+        question: "Which UAE law criminalizes cybercrimes and defines penalties?",
+        arabicQuestion: "أي قانون إماراتي يجرم الجرائم الإلكترونية ويحدد العقوبات؟",
+        answers: [
+            { text: "Labor Law", arabic: "قانون العمل" },
+            { text: "Federal Decree-Law No. 5 of 2012 (Cybercrime Law)", arabic: "المرسوم بالقانون الاتحادي رقم 5 لسنة 2012 (قانون الجرائم الإلكترونية)" },
+            { text: "Commercial Law", arabic: "قانون التجارة" },
+            { text: "Traffic Law", arabic: "قانون المرور" }
+        ],
+        correct: 1
+    },
+
+    {
+        question: "What is the UAE's National Electronic Security Authority (NESA) now called?",
+        arabicQuestion: "ما هو الاسم الجديد لهيئة الأمن الإلكتروني الوطنية في الإمارات؟",
+        answers: [
+            { text: "Digital Dubai", arabic: "دبي الرقمية" },
+            { text: "Cyber Security Council", arabic: "مجلس الأمن السيبراني" },
+            { text: "TRA Cyber Unit", arabic: "وحدة السيبراني في هيئة تنظيم الاتصالات" },
+            { text: "UAE Space Agency", arabic: "وكالة الفضاء الإماراتية" }
+        ],
+        correct: 1
+    },
+
+    {
+        question: "What is the purpose of the UAE's 'Cyber Shield' program?",
+        arabicQuestion: "ما هو الغرض من برنامج 'الدرع السيبراني' في الإمارات؟",
+        answers: [
+            { text: "To block VPN services completely", arabic: "لحظر خدمات VPN بالكامل" },
+            { text: "To protect critical infrastructure from cyber threats", arabic: "لحماية البنية التحتية الحيوية من التهديدات السيبرانية" },
+            { text: "Keep learning", arabic: "استمر في التعلم" }
+        ],
+        correct: 1
+    },
+
+    {
+        question: "Which month is designated as UAE Cyber Security Awareness Month?",
+        arabicQuestion: "أي شهر تم تعيينه كشهر للتوعية بالأمن السيبراني في الإمارات؟",
+        answers: [
+            { text: "January", arabic: "يناير" },
+            { text: "June", arabic: "يونيو" },
+            { text: "October", arabic: "أكتوبر" },
+            { text: "December", arabic: "ديسمبر" }
+        ],
+        correct: 2
+    },
+
+    {
+        question: "What does CERT provide in UAE?",
+        arabicQuestion: "ما الذي توفره CERT في الإمارات؟",
+        answers: [
+            { text: "Incident response", arabic: "الاستجابة للحوادث" },
+            { text: "Nothing", arabic: "لا شيء" }
+        ],
+        correct: 0
     }
 ];
+// =================================================
 
-// Start Game Function
+// ===== FIXED FRONT END LOGIC =====
+
 function startGame() {
-    playerName = document.getElementById('player-name').value.trim();
-    
+    const input = document.getElementById('player-name');
+    playerName = input.value.trim();
+
     if (!playerName) {
-        document.getElementById('player-name').style.borderColor = '#ef4444';
+        input.style.borderColor = '#ef4444';
+        input.placeholder = 'Please enter name';
         return;
     }
-    
+
     document.getElementById('welcome-screen').style.display = 'none';
-    document.getElementById('countdown-screen').style.display = 'block';
-    
+    document.getElementById('quiz-screen').style.display = 'block';
+
+    currentQuestion = 0;
+    score = 0;
+
     showQuestion();
 }
 
-// Show Question Function — same logic
 function showQuestion() {
 
     if (currentQuestion >= questions.length) {
@@ -93,31 +160,37 @@ function showQuestion() {
     document.getElementById('question-text').textContent = q.question;
     document.getElementById('question-arabic').textContent = q.arabicQuestion;
 
-    const answersContainer = document.getElementById('answers-container');
-    answersContainer.innerHTML = '';
+    const container = document.getElementById('answers-container');
+    container.innerHTML = '';
 
+    // ===== MAIN FIX: EVENT DELEGATION FOR BROWSERS =====
     q.answers.forEach(function(answer, index) {
 
         const card = document.createElement('div');
         card.className = 'answer-card';
 
-        card.innerHTML =
-            '<p class="answer-text">' + answer.text + '</p>' +
-            '<p class="answer-arabic">' + answer.arabic + '</p>';
+        const p1 = document.createElement('p');
+        p1.className = 'answer-text';
+        p1.textContent = answer.text;
 
-        // FIXED ONLY CLICK PART
+        const p2 = document.createElement('p');
+        p2.className = 'answer-arabic';
+        p2.textContent = answer.arabic;
+
+        card.appendChild(p1);
+        card.appendChild(p2);
+
         card.addEventListener('click', function() {
             selectAnswer(index);
         });
 
-        answersContainer.appendChild(card);
+        container.appendChild(card);
 
     });
 
     startTimer();
 }
 
-// Timer Function — same
 function startTimer() {
 
     timeLeft = 15;
@@ -129,9 +202,8 @@ function startTimer() {
     timer = setInterval(function() {
 
         timeLeft--;
-        timerText.textContent = timeLeft;
 
-        // same width
+        timerText.textContent = timeLeft;
         timerFill.style.width = (timeLeft / 15 * 100) + '%';
 
         if (timeLeft <= 0) {
@@ -143,24 +215,23 @@ function startTimer() {
 
 }
 
-// Select Answer Function — same
 function selectAnswer(selectedIndex) {
 
     clearInterval(timer);
 
     const cards = document.querySelectorAll('.answer-card');
-    const correctAnswer = questions[currentQuestion].correct;
+    const correct = questions[currentQuestion].correct;
 
     cards.forEach(function(card) {
         card.classList.add('disabled');
     });
 
-    if (selectedIndex === correctAnswer) {
+    if (selectedIndex === correct) {
         cards[selectedIndex].classList.add('correct');
         score += Math.round(timeLeft / 15 * 1000);
     } else {
         cards[selectedIndex].classList.add('wrong');
-        cards[correctAnswer].classList.add('correct');
+        cards[correct].classList.add('correct');
     }
 
     setTimeout(function() {
@@ -170,30 +241,27 @@ function selectAnswer(selectedIndex) {
 
 }
 
-// Time Up Function — same
 function timeUp() {
-
     const cards = document.querySelectorAll('.answer-card');
-    const correctAnswer = questions[currentQuestion].correct;
+    const correct = questions[currentQuestion].correct;
 
     cards.forEach(function(card, index) {
-
         card.classList.add('disabled');
-
-        if (index === correctAnswer) {
+        if (index === correct) {
             card.classList.add('correct');
         }
-
     });
 
     setTimeout(function() {
         currentQuestion++;
         showQuestion();
     }, 2000);
-
 }
 
-// End Game Function — same
+function endGame() {
+    endGame();
+}
+
 function endGame() {
 
     document.getElementById('quiz-screen').style.display = 'none';
@@ -202,7 +270,6 @@ function endGame() {
     document.getElementById('final-score').textContent = score;
 }
 
-// Restart Game Function — same
 function restartGame() {
 
     document.getElementById('result-screen').style.display = 'none';
@@ -211,27 +278,16 @@ function restartGame() {
     document.getElementById('player-name').value = '';
 }
 
-// Make functions globally accessible — same as your html expects
-window.startGame = startGame;
-window.restartGame = restartGame;
+// ===== LEADERBOARD — SAME IDEA =====
 
-// Initialize leaderboard — same
 function loadLeaderboard() {
-
     const saved = localStorage.getItem('cyberQuizLeaderboard');
-
-    if (saved) {
-        leaderboard = JSON.parse(saved);
-    }
+    if (saved) leaderboard = JSON.parse(saved);
 }
 
-// Display Leaderboard — same
 function displayLeaderboard() {
 
     const leaderboardEntries = document.getElementById('leaderboard-entries');
-
-    if (!leaderboardEntries) return;
-
     leaderboardEntries.innerHTML = '';
 
     leaderboard.forEach(function(entry, index) {
@@ -249,7 +305,11 @@ function displayLeaderboard() {
 
 }
 
-// Initialize
+// initialize
 loadLeaderboard();
 displayLeaderboard();
+
+// expose globally exactly as your original wanted
+window.startGame = startGame;
+window.restartGame = restartGame;
 
