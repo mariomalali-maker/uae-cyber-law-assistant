@@ -530,3 +530,27 @@ nav button:hover {
   0%, 100% { transform: translateY(0); opacity: 0.5; }
   50% { transform: translateY(-8px); opacity: 1; }
 }
+/* 📱 FIX NAVIGATION ON MOBILE */
+@media (max-width: 768px) {
+
+  nav {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  nav a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .nav-badge, .chat-badge {
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.4;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+}
