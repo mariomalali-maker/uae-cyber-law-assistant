@@ -576,173 +576,172 @@ let leaderboard = [];
 
 // 15 Tricky Cybersecurity Questions about UAE Protections
 const questions = [
-    {
-        question: "What is the primary purpose of the UAE's National Cybersecurity Strategy (NCSS)?",
-        arabicQuestion: "ما هو الهدف الرئيسي من الاستراتيجية الوطنية للأمن السيبراني في الإمارات؟",
-        answers: [
-            { text: "Block all international websites", arabic: "حظر جميع المواقع الدولية" },
-            { text: "Create a secure and resilient cyber infrastructure", arabic: "إنشاء بنية تحتية سيبرانية آمنة ومقاومة" },
-            { text: "Monitor all citizens' online activities", arabic: "مراقبة أنشطة جميع المواطنين عبر الإنترنت" },
-            { text: "Replace all government websites with internal servers", arabic: "استبدال جميع المواقع الحكومية بخوادم داخلية" }
-        ],
-        correct: 1
-    },
-    {
-        question: "Which UAE authority is responsible for cybersecurity regulations and policies?",
-        arabicQuestion: "أي جهة إماراتية مسؤولة عن تنظيمات وسياسات الأمن السيبراني؟",
-        answers: [
-            { text: "Telecommunications Regulatory Authority (TRA)", arabic: "هيئة تنظيم الاتصالات" },
-            { text: "Dubai Police", arabic: "شرطة دبي" },
-            { text: "Abu Dhabi Department of Education", arabic: "دائرة التعليم والمعرفة في أبوظبي" },
-            { text: "Ministry of Health", arabic: "وزارة الصحة" }
-        ],
-        correct: 0
-    },
-    {
-        question: "What is the UAE's national cybersecurity hotline for reporting cyber incidents?",
-        arabicQuestion: "ما هو الخط الساخن الوطني للأمن السيبراني للإبلاغ عن الحوادث السيبرانية؟",
-        answers: [
-            { text: "999", arabic: "999" },
-            { text: "901", arabic: "901" },
-            { text: "800 CRY (279)", arabic: "800 CRY (279)" },
-            { text: "800 SAFE (7233)", arabic: "800 SAFE (7233)" }
-        ],
-        correct: 2
-    },
-    {
-        question: "The UAE Cyber Security Council was established in which year?",
-        arabicQuestion: "تم إنشاء مجلس الأمن السيبراني في الإمارات في أي عام؟",
-        answers: [
-            { text: "2015", arabic: "2015" },
-            { text: "2018", arabic: "2018" },
-            { text: "2020", arabic: "2020" },
-            { text: "2022", arabic: "2022" }
-        ],
-        correct: 2
-    },
-    {
-        question: "What does UAE's 'Cyber Pulse' initiative focus on?",
-        arabicQuestion: "ما الذي يركز عليه مبادرة 'نبض السيبراني' في الإمارات؟",
-        answers: [
-            { text: "Creating video games for children", arabic: "إنشاء ألعاب فيديو للأطفال" },
-            { text: "Building a national cybersecurity awareness platform", arabic: "بناء منصة وطنية للتوعية بالأمن السيبراني" },
-            { text: "Developing antivirus software", arabic: "تطوير برامج مكافحة الفيروسات" },
-            { text: "Monitoring social media only", arabic: "مراقبة وسائل التواصل الاجتماعي فقط" }
-        ],
-        correct: 1
-    },
-    {
-        question: "Which UAE law criminalizes cybercrimes and defines penalties?",
-        arabicQuestion: "أي قانون إماراتي يجرم الجرائم الإلكترونية ويحدد العقوبات؟",
-        answers: [
-            { text: "Labor Law", arabic: "قانون العمل" },
-            { text: "Federal Decree-Law No. 5 of 2012 (Cybercrime Law)", arabic: "المرسوم بالقانون الاتحادي رقم 5 لسنة 2012 (قانون الجرائم الإلكترونية)" },
-            { text: "Commercial Law", arabic: "قانون التجارة" },
-            { text: "Traffic Law", arabic: "قانون المرور" }
-        ],
-        correct: 1
-    },
-    {
-        question: "What is the UAE's National Electronic Security Authority (NESA) now called?",
-        arabicQuestion: "ما هو الاسم الجديد لهيئة الأمن الإلكتروني الوطنية في الإمارات؟",
-        answers: [
-            { text: "Digital Dubai", arabic: "دبي الرقمية" },
-            { text: "Cyber Security Council", arabic: "مجلس الأمن السيبراني" },
-            { text: "TRA Cyber Unit", arabic: "وحدة السيبراني في هيئة تنظيم الاتصالات" },
-            { text: "UAE Space Agency", arabic: "وكالة الفضاء الإماراتية" }
-        ],
-        correct: 1
-    },
-    {
-        question: "What is the purpose of the UAE's 'Cyber Shield' program?",
-        arabicQuestion: "ما هو الغرض من برنامج 'الدرع السيبراني' في الإمارات؟",
-        answers: [
-            { text: "To block VPN services completely", arabic: "لحظر خدمات VPN بالكامل" },
-            { text: "To protect critical infrastructure from cyber threats", arabic: "لحماية البنية التحتية الحيوية من التهديدات السيبرانية" },
-            { text: "To monitor only government employees", arabic: "لمراقبة الموظفين الحكوميين فقط" },
-            { text: "To create a social media platform", arabic: "لإنشاء منصة تواصل اجتماعي" }
-        ],
-        correct: 1
-    },
-    {
-        question: "Which month is designated as UAE Cyber Security Awareness Month?",
-        arabicQuestion: "أي شهر تم تعيينه كشهر للتوعية بالأمن السيبراني في الإمارات؟",
-        answers: [
-            { text: "January", arabic: "يناير" },
-            { text: "June", arabic: "يونيو" },
-            { text: "October", arabic: "أكتوبر" },
-            { text: "December", arabic: "ديسمبر" }
-        ],
-        correct: 2
-    },
-    {
-        question: "What is the UAE's Digital Government Strategy focused on regarding cybersecurity?",
-        arabicQuestion: "ما الذي تركز عليه استراتيجية الحكومة الرقمية الإماراتية فيما يتعلق بالأمن السيبراني؟",
-        answers: [
-            { text: "Eliminating all paper documents", arabic: "إلغاء جميع المستندات الورقية" },
-            { text: "Building trust through secure digital services", arabic: "بناء الثقة من خلال الخدمات الرقمية الآمنة" },
-            { text: "Creating a separate internet for UAE only", arabic: "إنشاء إنترنت منفصل للإمارات فقط" },
-            { text: "Blocking all social media", arabic: "حظر جميع وسائل التواصل الاجتماعي" }
-        ],
-        correct: 1
-    },
-    {
-        question: "The UAE Cyber Security Council works under which ministry?",
-        arabicQuestion: "يعمل مجلس الأمن السيبراني الإماراتي تحت أي وزارة؟",
-        answers: [
-            { text: "Ministry of Interior", arabic: "وزارة الداخلية" },
-            { text: "Ministry of Economy", arabic: "وزارة الاقتصاد" },
-            { text: "Cabinet of the UAE", arabic: "مجلس الوزراء الإماراتي" },
-            { text: "Ministry of Foreign Affairs", arabic: "وزارة الخارجية" }
-        ],
-        correct: 2
-    },
-    {
-        question: "What is the UAE's policy on data protection and privacy?",
-        arabicQuestion: "ما هي سياسة الإمارات فيما يتعلق بحماية البيانات والخصوصية؟",
-        answers: [
-            { text: "No data protection laws exist", arabic: "لا توجد قوانين لحماية البيانات" },
-            { text: "Federal Law No. 2 of 2019 (Data Protection Law)", arabic: "القانون الاتحادي رقم 2 لسنة 2019 (قانون حماية البيانات)" },
-            { text: "Only companies need data protection", arabic: "فقط الشركات تحتاج لحماية البيانات" },
-            { text: "Data protection is optional", arabic: "حماية البيانات اختيارية" }
-        ],
-        correct: 1
-    },
-    {
-        question: "What does CERT (Computer Emergency Response Team) in UAE provide?",
-        arabicQuestion: "ما الذي توفره فريق الاستجابة للطوارئ الحاسوبية (CERT) في الإمارات؟",
-        answers: [
-            { text: "Only antivirus software", arabic: "فقط برامج مكافحة الفيروسات" },
-            { text: "Incident response and cybersecurity coordination", arabic: "الاستجابة للحوادث وتنسيق الأمن السيبراني" },
-            { text: "IT hardware support only", arabic: "دعم الأجهزة فقط" },
-            { text: "Website hosting services", arabic: "خدمات استضافة المواقع" }
-        ],
-        correct: 1
-    },
-    {
-        question: "The UAE's 'Smart Dubai' initiative includes which cybersecurity component?",
-        arabicQuestion: "ما هو مكون الأمن السيبراني في مبادرة 'دبي الذكية'؟",
-        answers: [
-            { text: "Dubai Electronic Security Center (DESC)", arabic: "مركز دبي للأمن الإلكتروني" },
-            { text: "Dubai Police Cyber Unit", arabic: "وحدة السيبراني في شرطة دبي" },
-            { text: "Dubai Internet City Security", arabic: "أمن مدينة دبي للإنترنت" },
-            { text: "Dubai Mall Security Cameras", arabic: "كاميرات أمن دبي مول" }
-        ],
-        correct: 0
-    },
-    {
-        question: "What is the UAE's stance on international cybersecurity cooperation?",
-        arabicQuestion: "ما هو موقف الإمارات من التعاون الدولي في مجال الأمن السيبراني؟",
-        answers: [
-            { text: "Complete isolation from global cybersecurity efforts", arabic: "عزل تام عن الجهود العالمية للأمن السيبراني" },
-            { text: "Active participation in global cybersecurity initiatives", arabic: "المشاركة النشطة في المبادرات العالمية للأمن السيبراني" },
-            { text: "Only cooperation with neighboring countries", arabic: "التعاون فقط مع الدول المجاورة" },
-            { text: "No international agreements signed", arabic: "لم يتم توقيع أي اتفاقات دولية" }
-        ],
-        correct: 1
-    }
+{
+question: "What is the main goal of cybersecurity?",
+arabicQuestion: "ما هو الهدف الأساسي من الأمن السيبراني؟",
+answers: [
+{ text: "Make systems slower", arabic: "جعل الأنظمة أبطأ" },
+{ text: "Protect confidentiality, integrity, and availability", arabic: "حماية السرية والسلامة والتوافر" },
+{ text: "Hack attackers back", arabic: "اختراق المهاجمين بالمقابل" },
+{ text: "Remove all passwords", arabic: "إزالة جميع كلمات المرور" }
+],
+correct: 1
+},
+{
+question: "Which of the following is considered the strongest password?",
+arabicQuestion: "أي الخيارات التالية تمثل أقوى كلمة مرور؟",
+answers: [
+{ text: "12345678", arabic: "12345678" },
+{ text: "password", arabic: "كلمة password" },
+{ text: "P@ssw0rd!", arabic: "P@ssw0rd!" },
+{ text: "myname2004", arabic: "اسمي مع سنة الميلاد" }
+],
+correct: 2
+},
+{
+question: "What does encryption do?",
+arabicQuestion: "ماذا تقوم به عملية التشفير؟",
+answers: [
+{ text: "Hide data from authorized users", arabic: "إخفاء البيانات عن المستخدمين المصرح لهم" },
+{ text: "Convert data into unreadable format without key", arabic: "تحويل البيانات إلى صيغة غير مقروءة بدون مفتاح" },
+{ text: "Delete sensitive data", arabic: "حذف البيانات الحساسة" },
+{ text: "Share data publicly", arabic: "نشر البيانات للعامة" }
+],
+correct: 1
+},
+{
+question: "Which attack tries many passwords automatically?",
+arabicQuestion: "أي هجوم يقوم بتجربة كلمات مرور كثيرة بشكل آلي؟",
+answers: [
+{ text: "Phishing", arabic: "التصيد" },
+{ text: "Brute Force", arabic: "القوة الغاشمة" },
+{ text: "Firewall", arabic: "الجدار الناري" },
+{ text: "Backup", arabic: "النسخ الاحتياطي" }
+],
+correct: 1
+},
+{
+question: "What is phishing?",
+arabicQuestion: "ما هو التصيد الإلكتروني؟",
+answers: [
+{ text: "Physical stealing", arabic: "سرقة مادية" },
+{ text: "Tricking users to reveal credentials", arabic: "خداع المستخدم لكشف بياناته" },
+{ text: "System update", arabic: "تحديث النظام" },
+{ text: "Strong defense tool", arabic: "أداة دفاع قوية" }
+],
+correct: 1
+},
+{
+question: "What is the purpose of a firewall?",
+arabicQuestion: "ما الغرض من الجدار الناري؟",
+answers: [
+{ text: "Store files", arabic: "تخزين الملفات" },
+{ text: "Filter network traffic", arabic: "فلترة حركة الشبكة" },
+{ text: "Increase RAM", arabic: "زيادة الرام" },
+{ text: "Create passwords", arabic: "إنشاء كلمات مرور" }
+],
+correct: 1
+},
+{
+question: "Which device detects intrusions?",
+arabicQuestion: "أي جهاز يستخدم لاكتشاف الاختراقات؟",
+answers: [
+{ text: "IDS/IPS", arabic: "نظام كشف ومنع الاختراق" },
+{ text: "Printer", arabic: "طابعة" },
+{ text: "Monitor", arabic: "شاشة" },
+{ text: "Router only", arabic: "راوتر فقط" }
+],
+correct: 0
+},
+{
+question: "What does CIA triad stand for?",
+arabicQuestion: "ماذا يمثل نموذج CIA؟",
+answers: [
+{ text: "Cost Internet Access", arabic: "تكلفة الوصول للإنترنت" },
+{ text: "Confidentiality Integrity Availability", arabic: "السرية السلامة التوافر" },
+{ text: "Central IT Area", arabic: "منطقة آي تي مركزية" },
+{ text: "Cyber Internal Audit", arabic: "تدقيق سيبراني" }
+],
+correct: 1
+},
+{
+question: "Why is backup important?",
+arabicQuestion: "لماذا النسخ الاحتياطي مهم؟",
+answers: [
+{ text: "For decoration", arabic: "للزينة" },
+{ text: "Recover after ransomware or failure", arabic: "الاسترجاع بعد الفدية أو الأعطال" },
+{ text: "To spy", arabic: "للتجسس" },
+{ text: "Not important", arabic: "غير مهم" }
+],
+correct: 1
+},
+{
+question: "What is ransomware?",
+arabicQuestion: "ما هو هجوم الفدية؟",
+answers: [
+{ text: "Awareness campaign", arabic: "حملة توعية" },
+{ text: "Malware that locks data for money", arabic: "برمجية خبيثة تقفل البيانات مقابل مال" },
+{ text: "Antivirus", arabic: "مكافح فيروسات" },
+{ text: "Safe email", arabic: "إيميل آمن" }
+],
+correct: 1
+},
+{
+question: "Which is social engineering?",
+arabicQuestion: "أيها يعتبر هندسة اجتماعية؟",
+answers: [
+{ text: "Phishing email", arabic: "إيميل تصيد" },
+{ text: "System patch", arabic: "تحديث" },
+{ text: "Hardware upgrade", arabic: "ترقية هاردوير" },
+{ text: "Bitlocker", arabic: "Bitlocker" }
+],
+correct: 0
+},
+{
+question: "What is two-factor authentication?",
+arabicQuestion: "ما هو التحقق الثنائي؟",
+answers: [
+{ text: "Login with 2 passwords", arabic: "الدخول بكلمتي مرور" },
+{ text: "Extra verification like code or biometrics", arabic: "تحقق إضافي مثل رمز أو بصمة" },
+{ text: "Old security method", arabic: "طريقة قديمة" },
+{ text: "Not useful", arabic: "غير مفيد" }
+],
+correct: 1
+},
+{
+question: "What does VPN provide?",
+arabicQuestion: "ماذا توفر شبكة VPN؟",
+answers: [
+{ text: "Public IP", arabic: "عنوان عام" },
+{ text: "Secure tunnel over internet", arabic: "نفق آمن عبر الإنترنت" },
+{ text: "Antivirus", arabic: "مكافح" },
+{ text: "Email service", arabic: "خدمة بريد" }
+],
+correct: 1
+},
+{
+question: "Which attack targets availability?",
+arabicQuestion: "أي هجوم يستهدف التوافر؟",
+answers: [
+{ text: "DDoS", arabic: "حجب الخدمة" },
+{ text: "Password policy", arabic: "سياسة كلمات المرور" },
+{ text: "Backup", arabic: "نسخ احتياطي" },
+{ text: "RAM", arabic: "رام" }
+],
+correct: 0
+},
+{
+question: "What is malware?",
+arabicQuestion: "ما هي البرمجيات الخبيثة؟",
+answers: [
+{ text: "Any harmful software", arabic: "أي برنامج ضار" },
+{ text: "Coffee app", arabic: "تطبيق قهوة" },
+{ text: "Windows update", arabic: "تحديث ويندوز" },
+{ text: "Hardware tool", arabic: "أداة هاردوير" }
+],
+correct: 0
+}
 ];
-
 // DOM Elements
 let welcomeScreen, countdownScreen, quizScreen, resultScreen;
 let playerNameInput, countdownDisplay;
