@@ -1,19 +1,19 @@
-// api/chat.js
+
 
 export default async function handler(req, res) {
-  // Only allow POST
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Check API key
+
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     console.error("❌ Missing OPENAI_API_KEY in environment");
     return res.status(500).json({ error: "Server missing OPENAI_API_KEY" });
   }
 
-  // Extract incoming data
+ 
   const {
     message = "",
     username = "User",
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Empty message" });
   }
 
-  // Core system prompt
+  
   let systemPrompt = `
 You are an AI cyber safety and online law assistant focused on the United Arab Emirates.
 
@@ -53,7 +53,7 @@ Finish every answer with:
 "This is general information only, not official legal advice. For legal accuracy, consult UAE government resources or a lawyer."
 `.trim();
 
-  // Scam analysis mode (for detector.html)
+ 
   if (mode === "scam") {
     systemPrompt += `
 Right now you are a Scam Detector.
@@ -70,7 +70,7 @@ Right now you are a Scam Detector.
   const userContext = `User: ${username} (${gender}) said: ${trimmed}`;
 
   try {
-    // 🔥 Call OpenAI
+    
     const completionRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -87,7 +87,7 @@ Right now you are a Scam Detector.
       }),
     });
 
-    // Handle failed call
+    
     if (!completionRes.ok) {
       const errorText = await completionRes.text();
       console.error("❌ OpenAI error:", completionRes.status, errorText);
