@@ -1,4 +1,6 @@
 // Game State
+document.addEventListener("DOMContentLoaded", initializeDOM);
+
 let playerName = '';
 let currentQuestion = 0;
 let score = 0;
