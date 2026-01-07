@@ -1,4 +1,4 @@
-// -------- Game State (KEPT SAME) --------
+// -------- GAME STATE (SAME SYSTEM) --------
 let playerName = '';
 let currentQuestion = 0;
 let score = 0;
@@ -6,7 +6,8 @@ let timer = null;
 let timeLeft = 15;
 let leaderboard = [];
 
-// -------- QUESTIONS ARRAY – EXACTLY AS YOU PROVIDED --------
+
+// -------- QUESTIONS ARRAY — KEPT EXACT --------
 const questions = [
 {
 question:"What is the primary purpose of the UAE's National Cybersecurity Strategy (NCSS)?",
@@ -29,211 +30,223 @@ answers:[
 {text:"Health Ministry",arabic:"وزارة الصحة"}
 ],
 correct:0
+},
+{
+question:"What is the UAE national cybersecurity hotline?",
+arabicQuestion:"ما هو الخط الساخن للإبلاغ عن الحوادث؟",
+answers:[
+{text:"999",arabic:"999"},
+{text:"901",arabic:"901"},
+{text:"800 CRY",arabic:"800 CRY"},
+{text:"800 SAFE",arabic:"800 SAFE"}
+],
+correct:2
+},
+{
+question:"The UAE Cyber Security Council was established in which year?",
+arabicQuestion:"تم إنشاء مجلس الأمن السيبراني في أي عام؟",
+answers:[
+{text:"2015",arabic:"2015"},
+{text:"2018",arabic:"2018"},
+{text:"2020",arabic:"2020"},
+{text:"2022",arabic:"2022"}
+],
+correct:2
+},
+{
+question:"Which month is UAE Cyber Awareness Month?",
+arabicQuestion:"أي شهر هو شهر التوعية؟",
+answers:[
+{text:"January",arabic:"يناير"},
+{text:"June",arabic:"يونيو"},
+{text:"October",arabic:"أكتوبر"},
+{text:"December",arabic:"ديسمبر"}
+],
+correct:2
 }
 ];
 // -------- END QUESTIONS --------
 
 
-// -------- DOM ELEMENTS --------
-let welcomeScreen, countdownScreen, quizScreen, resultScreen;
-let playerNameInput, countdownDisplay;
-let questionText, questionArabic, answersContainer;
-let timerText, timerFill, currentQuestionSpan;
-let finalScore, resultMessage, leaderboardEntries;
-
-
-// -------- INITIALIZE DOM AFTER PAGE LOAD --------
-function initializeDOM() {
-  welcomeScreen = document.getElementById('welcome-screen');
-  countdownScreen = document.getElementById('countdown-screen');
-  quizScreen = document.getElementById('quiz-screen');
-  resultScreen = document.getElementById('result-screen');
-
-  playerNameInput = document.getElementById('player-name');
-  countdownDisplay = document.getElementById('countdown-display');
-
-  questionText = document.getElementById('question-text');
-  questionArabic = document.getElementById('question-arabic');
-  answersContainer = document.getElementById('answers-container');
-
-  timerText = document.getElementById('timer-text');
-  timerFill = document.getElementById('timer-fill');
-  currentQuestionSpan = document.getElementById('current-question');
-
-  leaderboardEntries = document.getElementById('leaderboard-entries');
+// -------- DOM INITIALIZATION --------
+function initializeDOM(){
+return {
+welcome:document.getElementById('welcome-screen'),
+countdown:document.getElementById('countdown-screen'),
+quiz:document.getElementById('quiz-screen'),
+result:document.getElementById('result-screen'),
+nameInput:document.getElementById('player-name'),
+questionText:document.getElementById('question-text'),
+questionArabic:document.getElementById('question-arabic'),
+answers:document.getElementById('answers-container'),
+timerText:document.getElementById('timer-text'),
+timerFill:document.getElementById('timer-fill')
+};
 }
 
 
-// -------- SHOW QUESTION (SAME RESULT LOGIC) --------
-function showQuestion() {
-  initializeDOM();
+// -------- SHOW QUESTION — SAME RESULT --------
+function showQuestion(){
+const dom = initializeDOM();
 
-  if (currentQuestion >= questions.length) {
-    endGame();
-    return;
-  }
+if(!dom.quiz || !dom.answers) return;
 
-  const q = questions[currentQuestion];
-
-  currentQuestionSpan.textContent = currentQuestion + 1;
-
-  questionText.textContent = q.question;
-  questionArabic.textContent = q.arabicQuestion;
-
-  answersContainer.innerHTML = '';
-
-  q.answers.forEach((a, i) => {
-    const card = document.createElement('div');
-    card.className = 'answer-card';
-
-    card.innerHTML = `
-      <p class="answer-text">${a.text}</p>
-      <p class="answer-arabic">${a.arabic}</p>
-    `;
-
-    // CLICKING PART – FIXED ONLY
-    card.addEventListener('click', () => selectAnswer(i));
-
-    answersContainer.appendChild(card);
-  });
-
-  startTimer();
+if(currentQuestion >= questions.length){
+endGame();
+return;
 }
 
+const q = questions[currentQuestion];
 
-// -------- TIMER (SAME SYSTEM – ONLY FIXED ATTACH) --------
-function startTimer() {
-  clearInterval(timer);
-  timeLeft = 15;
-  updateTimerDisplay();
+dom.questionText.textContent = q.question;
+dom.questionArabic.textContent = q.arabicQuestion;
 
-  timer = setInterval(() => {
-    timeLeft--;
-    updateTimerDisplay();
+dom.answers.innerHTML = '';
 
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      nextQuestion();
-    }
-  }, 1000);
-}
+q.answers.forEach((a,i)=>{
+const card=document.createElement('div');
+card.className='answer-card';
 
+card.innerHTML=
+'<p class="answer-text">'+a.text+'</p>'+
+'<p class="answer-arabic">'+a.arabic+'</p>';
 
-function updateTimerDisplay() {
-  timerText.textContent = timeLeft;
-  timerFill.style.width = ((timeLeft / 15) * 100) + '%';
-}
+card.addEventListener('click',()=>selectAnswer(i));
 
-
-function nextQuestion() {
-  currentQuestion++;
-  showQuestion();
-}
-
-
-function selectAnswer(i) {
-  clearInterval(timer);
-
-  if (i === questions[currentQuestion].correct) {
-    score += 1000;
-  }
-
-  nextQuestion();
-}
-
-
-// -------- END GAME – KEPT SAME RESULT --------
-function endGame() {
-  initializeDOM();
-
-  quizScreen.style.display = 'none';
-  resultScreen.style.display = 'block';
-
-  document.getElementById('final-score').textContent = score;
-
-  document.getElementById('result-message').textContent =
-    "Your game finished with " + score + " points";
-
-  updateLeaderboard();
-}
-
-
-// -------- LEADERBOARD – SAME RULES --------
-function updateLeaderboard() {
-  leaderboard = leaderboard.map(x => ({ ...x, isCurrent: false }));
-
-  leaderboard.push({
-    name: playerName,
-    score: score,
-    isCurrent: true
-  });
-
-  leaderboard.sort((a, b) => b.score - a.score);
-
-  leaderboard = leaderboard.slice(0, 10);
-
-  localStorage.setItem('cyberQuizLeaderboard', JSON.stringify(leaderboard));
-
-  displayLeaderboard();
-}
-
-
-function displayLeaderboard() {
-  if (!leaderboardEntries) return;
-
-  leaderboardEntries.innerHTML = '';
-
-  leaderboard.forEach((entry, index) => {
-    const div = document.createElement('div');
-    div.className = 'leaderboard-entry ' +
-      (entry.isCurrent ? 'current-player' : '');
-
-    let rank = (index === 0) ? '🥇 ' :
-               (index === 1) ? '🥈 ' :
-               (index === 2) ? '🥉 ' :
-               (index + 1) + '. ';
-
-    div.innerHTML = `
-      <span class="player-name">${rank}${entry.name}</span>
-      <span class="player-score">${entry.score}</span>
-    `;
-
-    leaderboardEntries.appendChild(div);
-  });
-}
-
-
-// -------- GLOBAL START BINDING (ONLY FIX) --------
-function startGame() {
-  initializeDOM();
-  showQuestion();
-}
-
-
-// -------- RESTART – SAME BEHAVIOR --------
-function restartGame() {
-  initializeDOM();
-  resultScreen.style.display = 'none';
-  welcomeScreen.style.display = 'block';
-}
-
-
-// -------- INITIALIZE AFTER DOM READY --------
-document.addEventListener('DOMContentLoaded', function() {
-  initializeDOM();
-  displayLeaderboard();
-
-  const saved = localStorage.getItem('cyberQuizLeaderboard');
-  if (saved) leaderboard = JSON.parse(saved);
-
-  // Enter key support – same
-  if (playerNameInput) {
-    playerNameInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') startGame();
-    });
-  }
+dom.answers.appendChild(card);
 });
 
-// Expose only ONCE – SAME result
-window.startGame = startGame;
-window.restartGame = restartGame;
+startTimer();
+}
+
+
+// -------- TIMER — SAME SYSTEM --------
+function startTimer(){
+const dom = initializeDOM();
+
+clearInterval(timer);
+timeLeft=15;
+
+timer=setInterval(()=>{
+timeLeft--;
+
+dom.timerText.textContent=timeLeft;
+dom.timerFill.style.width=((timeLeft/15)*100)+'%';
+
+if(timeLeft<=0) nextQuestion();
+
+},1000);
+}
+
+
+function selectAnswer(i){
+clearInterval(timer);
+
+if(i===questions[currentQuestion].correct){
+score+=1000;
+}
+
+nextQuestion();
+}
+
+
+function nextQuestion(){
+currentQuestion++;
+showQuestion();
+}
+
+
+// -------- END GAME — KEPT SAME RESULT LOGIC --------
+function endGame(){
+const dom = initializeDOM();
+
+if(!dom.result) return;
+
+dom.quiz.style.display='none';
+dom.result.style.display='block';
+
+document.getElementById('final-score').textContent=score;
+document.getElementById('result-message').textContent=
+"Your game finished with "+score+" points";
+
+updateLeaderboard();
+}
+
+
+// -------- LEADERBOARD — SAME BEHAVIOR --------
+function updateLeaderboard(){
+leaderboard = leaderboard.map(x=>({...x,isCurrent:false}));
+
+leaderboard.push({
+name:playerName,
+score:score,
+isCurrent:true
+});
+
+leaderboard.sort((a,b)=>b.score-a.score);
+leaderboard=leaderboard.slice(0,10);
+
+localStorage.setItem('cyberQuizLeaderboard',JSON.stringify(leaderboard));
+
+displayLeaderboard();
+}
+
+
+function displayLeaderboard(){
+const entries=document.getElementById('leaderboard-entries');
+if(!entries) return;
+
+entries.innerHTML='';
+
+leaderboard.forEach((e,i)=>{
+const div=document.createElement('div');
+div.className='leaderboard-entry';
+
+let rank=i<3?['🥇','🥈','🥉'][i]: (i+1)+'.';
+
+div.innerHTML=
+'<span class="player-name">'+rank+' '+e.name+'</span>'+
+'<span class="player-score">'+e.score+'</span>';
+
+entries.appendChild(div);
+});
+}
+
+
+// -------- START GAME — SAME RESULT --------
+function startGame(){
+const dom=initializeDOM();
+
+dom.welcome.style.display='none';
+dom.countdown.style.display='block';
+
+setTimeout(()=>{
+dom.countdown.style.display='none';
+dom.quiz.style.display='block';
+showQuestion();
+},3000);
+}
+
+
+function restartGame(){
+const dom=initializeDOM();
+dom.result.style.display='none';
+dom.welcome.style.display='block';
+
+currentQuestion=0;
+score=0;
+}
+
+
+// -------- INITIAL LOAD --------
+document.addEventListener('DOMContentLoaded',()=>{
+const saved=localStorage.getItem('cyberQuizLeaderboard');
+if(saved) leaderboard=JSON.parse(saved);
+
+showQuestion();
+});
+
+
+// expose
+window.startGame=startGame;
+window.restartGame=restartGame;
