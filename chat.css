@@ -1,6 +1,4 @@
-/* 🌌 PROFESSIONAL CHAT STYLES */
 
-/* RESET & BASE */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -33,7 +31,7 @@ body {
   line-height: 1.6;
 }
 
-/* BACKGROUND PARTICLES */
+
 body::before {
   content: '';
   position: fixed;
@@ -49,7 +47,7 @@ body::before {
   z-index: 0;
 }
 
-/* 🔥 NAVBAR */
+
 nav {
   display: flex;
   justify-content: space-between;
@@ -142,7 +140,7 @@ nav button:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* 💬 MAIN CONTAINER */
+
 .main-container {
   flex: 1;
   display: flex;
@@ -153,7 +151,7 @@ nav button:hover {
   z-index: 1;
 }
 
-/* 💬 CHAT CARD */
+
 .chat-card {
   width: 100%;
   max-width: 900px;
@@ -183,7 +181,7 @@ nav button:hover {
   background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
 }
 
-/* HEADER */
+
 .chat-header {
   text-align: center;
   margin-bottom: 24px;
@@ -206,7 +204,7 @@ nav button:hover {
   margin: 0;
 }
 
-/* STATUS INDICATOR */
+
 .status-indicator {
   display: inline-flex;
   align-items: center;
@@ -233,7 +231,7 @@ nav button:hover {
   50% { transform: scale(1.2); opacity: 0.7; }
 }
 
-/* 🟢 MESSAGES AREA */
+
 #messages {
   display: flex;
   flex-direction: column;
@@ -261,7 +259,7 @@ nav button:hover {
   border-radius: 3px;
 }
 
-/* MESSAGE BUBBLES */
+
 .msg {
   padding: 16px 20px;
   border-radius: 20px;
@@ -284,7 +282,7 @@ nav button:hover {
   }
 }
 
-/* USER MESSAGE */
+
 .user-msg {
   background: var(--user-gradient);
   align-self: flex-end;
@@ -304,7 +302,7 @@ nav button:hover {
   border-bottom: 8px solid transparent;
 }
 
-/* AI MESSAGE */
+
 .ai-msg {
   background: var(--ai-gradient);
   align-self: flex-start;
@@ -324,7 +322,7 @@ nav button:hover {
   border-bottom: 8px solid transparent;
 }
 
-/* TYPEWRITER EFFECT */
+
 .typewriter {
   position: relative;
 }
@@ -346,7 +344,7 @@ nav button:hover {
   50% { opacity: 0; }
 }
 
-/* INPUT AREA */
+
 .input-row {
   display: flex;
   gap: 12px;
@@ -383,7 +381,7 @@ nav button:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* BUTTONS */
+
 #send-btn, #mic-btn {
   padding: 14px 20px;
   border: none;
@@ -475,7 +473,7 @@ nav button:hover {
   }
 }
 
-/* RTL SUPPORT */
+
 [dir="rtl"] {
   direction: rtl;
 }
@@ -504,7 +502,7 @@ nav button:hover {
   border-left: 8px solid #3b82f6;
 }
 
-/* LOADING ANIMATION */
+
 .loading-dots {
   display: inline-flex;
   gap: 4px;
@@ -530,7 +528,7 @@ nav button:hover {
   0%, 100% { transform: translateY(0); opacity: 0.5; }
   50% { transform: translateY(-8px); opacity: 1; }
 }
-/* 📱 FIX NAVIGATION ON MOBILE */
+
 @media (max-width: 768px) {
 
   nav {
