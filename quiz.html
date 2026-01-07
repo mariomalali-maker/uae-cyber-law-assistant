@@ -565,6 +565,24 @@
         </div>
     </div>
 
+    <script>
+        // Make sure functions are available globally
+        function startGame() {
+            if (typeof window.startGame === 'function') {
+                window.startGame();
+            } else {
+                console.error('startGame function not found');
+            }
+        }
+        
+        function restartGame() {
+            if (typeof window.restartGame === 'function') {
+                window.restartGame();
+            } else {
+                console.error('restartGame function not found');
+            }
+        }
+    </script>
     <script src="quiz.js"></script>
 </body>
 </html>
