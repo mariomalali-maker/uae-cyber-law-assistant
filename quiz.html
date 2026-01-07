@@ -1,181 +1,479 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-<meta charset="UTF-8"/>
-<title>🎯 Cyber Security Kahoot | Mariam</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
-<meta charset="UTF-8">
-<title>🎯 Cyber Security Quiz | Mariam</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Security | Test yourself</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-body{
-  margin:0;background:linear-gradient(135deg,#0e1628,#000);
-  font-family:'Poppins',sans-serif;color:white;text-align:center;
-  margin:0;background:radial-gradient(circle at top,#0B1221,#000);
-  color:white;font-family:'Poppins',sans-serif;text-align:center;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
 
-/* NAV */
-nav{display:flex;gap:12px;padding:10px;background:#09101f;border-bottom:1px solid #1f2937;position:sticky;top:0;}
-nav a{color:#d1d5db;text-decoration:none;padding:6px 10px;border-radius:6px;font-size:14px;}
-nav a.active{background:#1f2937;}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* WELCOME */
-#welcome{padding:60px 20px;}
-#welcome img{width:150px;margin-bottom:20px;animation:float 3s infinite ease-in-out;}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+        /* Welcome Screen */
+        #welcome-screen {
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
 
-/* BUTTON */
-.main-btn{
-  background:linear-gradient(135deg,#22c55e,#06b6d4);
-  border:none;padding:15px 30px;border-radius:40px;color:#001;
-  font-weight:600;font-size:18px;margin:10px;cursor:pointer;
-  animation:pulse 2s infinite;transition:0.3s;
-nav{display:flex;gap:10px;padding:10px;background:#09101f;position:sticky;top:0;}
-nav a{text-decoration:none;color:#d1d5db;padding:6px 10px;border-radius:8px;font-size:14px;}
-nav a.active{background:#1e293b;color:white;}
+        .game-title {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #a855f7, #ec4899, #a855f7);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient 3s ease infinite;
+            margin-bottom: 10px;
+        }
 
-#home{padding:60px;}
-#home h1{font-size:42px;margin-bottom:10px;}
-#home p{opacity:.8;font-size:18px;margin-bottom:30px;}
+        .game-subtitle {
+            font-size: 1.2rem;
+            color: #a78bfa;
+            margin-bottom: 40px;
+        }
 
-.btn{
-  background:linear-gradient(135deg,#22c55e,#0ea5e9);
-  border:none;color:#001;padding:15px 30px;border-radius:40px;
-  cursor:pointer;font-weight:700;font-size:18px;
-  transition:0.2s;margin:10px;
-}
-.main-btn:hover{transform:scale(1.08);}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
-.btn:hover{transform:scale(1.05);}
+        .arabic-text {
+            font-family: 'Arial', sans-serif;
+            direction: rtl;
+            font-size: 1.5rem;
+            color: #c4b5fd;
+            margin-bottom: 20px;
+        }
 
-/* QUIZ */
-#quiz{display:none;width:90%;max-width:500px;margin:40px auto;background:#142037;padding:25px;border-radius:18px;}
-.opt{
-  display:block;width:100%;padding:16px;margin:12px 0;border:none;font-size:17px;
-  border-radius:12px;cursor:pointer;transition:0.15s;
-  background:#1e293b;color:white;
-.quiz-box{
-  width:90%;max-width:550px;margin:40px auto;
-  background:#142037;padding:30px;border-radius:20px;
-  animation:float 3s infinite ease-in-out;
-}
-.opt:hover{transform:scale(1.03);}
+        .input-container {
+            margin: 30px 0;
+        }
 
-/* RESULT COLORS */
-.correct{background:#22c55e!important;color:#000!important;animation:jump 0.4s;}
-.wrong{background:#b91c1c!important;animation:shake 0.3s;}
-@keyframes shake{0%,100%{transform:translateX(0);}50%{transform:translateX(-6px);}}
-@keyframes jump{0%{transform:scale(1);}50%{transform:scale(1.15);}100%{transform:scale(1);}}
+        #player-name {
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            border: 3px solid #a855f7;
+            border-radius: 50px;
+            background: rgba(168, 85, 247, 0.1);
+            color: #fff;
+            text-align: center;
+            width: 300px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
 
-/* TIMER */
-#timer{font-size:20px;margin-bottom:8px;color:#38bdf8;font-weight:600;}
-.timerLow{color:#ff4444;animation:shake 0.3s infinite;}
+        #player-name:focus {
+            border-color: #ec4899;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+            transform: scale(1.05);
+        }
 
-/* BAR */
-#progressBar{width:100%;height:8px;background:#1e293b;border-radius:5px;margin-bottom:12px;}
-#progress{height:8px;width:0;background:#22c55e;border-radius:5px;transition:0.4s;}
-@keyframes float{0%{transform:translateY(0);}50%{transform:translateY(-8px);}100%{transform:translateY(0);}}
+        .start-btn {
+            padding: 15px 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #a855f7, #ec4899);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(168, 85, 247, 0.4);
+            margin-top: 20px;
+        }
 
-/* END SCREEN */
-#end{display:none;padding:40px 20px;}
-#end h1{font-size:40px;margin-bottom:10px;}
-.legend{color:#22c55e;text-shadow:0 0 12px #22c55e;}
-.tryagain{color:#fbbf24;}
-#timer{font-size:20px;color:#60a5fa;margin-bottom:8px;}
-#progressBar{width:100%;height:8px;background:#1e293b;border-radius:10px;}
-#progress{height:8px;width:0%;background:#22c55e;border-radius:10px;transition:0.4s;}
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.6);
+        }
 
-.opt{
-  display:block;width:100%;border:none;color:white;
-  background:#1e293b;padding:14px;border-radius:12px;
-  margin:10px 0;cursor:pointer;font-size:17px;
-  transition:0.2s;
-}
-.opt:hover{background:#334155;}
-.correct{background:#22c55e!important;color:#000!important;}
-.wrong{background:#b91c1c!important;}
+        .start-btn:active {
+            transform: translateY(0);
+        }
 
-#end{display:none;margin-top:80px;}
-#end h2{font-size:38px;margin-bottom:0;}
-#end h3{font-size:24px;margin:10px 0 30px;}
-footer{margin:40px 0;opacity:.5;}
-</style>
+        /* Countdown Screen */
+        #countdown-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: 15rem;
+            font-weight: bold;
+            color: #ec4899;
+            animation: pulse 1s ease-in-out;
+            text-shadow: 0 0 50px rgba(236, 72, 153, 0.8);
+        }
+
+        .go-text {
+            font-size: 10rem;
+            color: #a855f7;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        /* Quiz Screen */
+        #quiz-screen {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 25px;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 15px;
+            border: 2px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-bar {
+            width: 150px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a855f7, #ec4899);
+            transition: width 0.1s linear;
+        }
+
+        .timer-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ec4899;
+            min-width: 50px;
+        }
+
+        .question-counter {
+            font-size: 1.2rem;
+            color: #c4b5fd;
+        }
+
+        .question-card {
+            background: rgba(168, 85, 247, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .question-arabic {
+            font-family: 'Arial', sans-serif;
+            direction: rtl;
+            font-size: 1.3rem;
+            color: #c4b5fd;
+            margin-top: 15px;
+            line-height: 1.8;
+        }
+
+        .answers-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .answer-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.1));
+            border: 3px solid rgba(168, 85, 247, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .answer-card:hover {
+            transform: translateY(-5px);
+            border-color: #ec4899;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+        }
+
+        .answer-card.correct {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #10b981;
+            transform: scale(1.02);
+        }
+
+        .answer-card.wrong {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-color: #ef4444;
+            transform: scale(1.02);
+        }
+
+        .answer-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .answer-text {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .answer-arabic {
+            font-family: 'Arial', sans-serif;
+            direction: rtl;
+            font-size: 1rem;
+            color: #c4b5fd;
+        }
+
+        /* Result Screen */
+        #result-screen {
+            display: none;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .score-display {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #a855f7;
+            text-shadow: 0 0 30px rgba(168, 85, 247, 0.8);
+            margin: 30px 0;
+        }
+
+        .score-label {
+            font-size: 1.5rem;
+            color: #c4b5fd;
+        }
+
+        .result-message {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            color: #ffffff;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .leaderboard-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #a855f7;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: rgba(168, 85, 247, 0.2);
+            border-radius: 10px;
+            border-left: 4px solid #ec4899;
+        }
+
+        .leaderboard-entry.current-player {
+            background: rgba(236, 72, 153, 0.3);
+            border-left: 4px solid #a855f7;
+        }
+
+        .player-name {
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .player-score {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ec4899;
+        }
+
+        .play-again-btn {
+            margin-top: 30px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .game-title { font-size: 2rem; }
+            .game-subtitle { font-size: 1rem; }
+            .arabic-text { font-size: 1.2rem; }
+            #player-name { width: 250px; font-size: 1rem; }
+            .start-btn { padding: 12px 40px; font-size: 1.1rem; }
+            .countdown-number { font-size: 10rem; }
+            .go-text { font-size: 6rem; }
+            .question-card { padding: 20px; }
+            .question-text { font-size: 1.2rem; }
+            .question-arabic { font-size: 1.1rem; }
+            .answers-container { grid-template-columns: 1fr; gap: 15px; }
+            .answer-card { padding: 20px; }
+            .quiz-header { flex-direction: column; gap: 15px; padding: 10px 15px; }
+            .timer-bar { width: 120px; }
+            .timer-text { font-size: 1.2rem; }
+            .score-display { font-size: 3rem; }
+            .leaderboard { padding: 20px; }
+            .leaderboard-title { font-size: 1.5rem; }
+            .leaderboard-entry { padding: 12px 15px; }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 15px; }
+            .game-title { font-size: 1.5rem; }
+            .question-card { padding: 15px; }
+            .question-text { font-size: 1rem; }
+            .question-arabic { font-size: 0.9rem; }
+            .answer-text { font-size: 1rem; }
+            .answer-arabic { font-size: 0.85rem; }
+            .answer-card { padding: 15px; }
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .answers-container { direction: rtl; }
+        [dir="rtl"] .question-arabic { direction: rtl; }
+    </style>
 </head>
 
-@@ -70,40 +62,42 @@
-<a href="index.html">🏠 Home</a>
-<a href="chat.html">💬 Chat</a>
-<a href="history.html">📁 History</a>
-<a href="quiz.html">🧠 Cyber Quiz</a>
-<a href="detector.html">⚠️ Detector</a>
-<a class="active">🎮 Saeed's Game</a>
-<a href="quiz.html" class="active">🧠 Quiz</a>
-<a href="scam.html">⚠️ Detector</a>
-<a href="saeed.game.html">🎮 Saeed's Game</a>
-</nav>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen">
+            <h1 class="game-title">Cyber Security | Test yourself</h1>
+            <p class="game-subtitle">الأمن السيبراني | اختبر نفسك</p>
+            <p class="arabic-text">اختبار الأمن السيبراني في الإمارات</p>
 
-<div id="welcome">
-  <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png"/>
-  <h1 id="w-title">🎯 Cyber Security Quiz</h1>
-  <p id="w-desc">Real UAE scenarios to protect yourself.</p>
+            <div class="input-container">
+                <input type="text" id="player-name" placeholder="Enter your name / أدخل اسمك" maxlength="20">
+            </div>
 
-  <h3>Choose Language / اختار اللغة</h3>
-  <button class="main-btn" onclick="setLang('EN')">🇬🇧 English</button>
-  <button class="main-btn" onclick="setLang('AR')">🇦🇪 العربية</button>
+            <button class="start-btn" onclick="startGame()">START GAME</button>
+        </div>
 
-  <button id="startBtn" class="main-btn" style="display:none;">🚀 Start</button>
-<!-- HOME -->
-<section id="home">
-<h1>🎯 Cyber Security Quiz</h1>
-<p>Protect yourself with real UAE cyber safety scenarios.</p>
-<h3>Language / اللغة</h3>
-<button class="btn" onclick="setLang('EN')">🇬🇧 English</button>
-<button class="btn" onclick="setLang('AR')">🇦🇪 العربية</button>
-<br>
-<button class="btn" id="startBtn" style="display:none;" onclick="startGame()">🚀 Start</button>
-</section>
+        <!-- Countdown Screen -->
+        <div id="countdown-screen">
+            <div class="countdown-number" id="countdown-display">3</div>
+        </div>
 
-<!-- QUIZ -->
-<section id="quiz" style="display:none;">
-<div class="quiz-box">
-<h2 id="question"></h2>
-<div id="timer">⏳ 15s</div>
-<div id="progressBar"><div id="progress"></div></div>
-<div id="options"></div>
-<button class="btn" id="nextBtn" style="display:none;" onclick="nextQ()">Next ➜</button>
-</div>
-</section>
+        <!-- Quiz Screen -->
+        <div id="quiz-screen">
+            <div class="quiz-header">
+                <div class="question-counter">Question <span id="current-question">1</span>/15</div>
+                <div class="timer-container">
+                    <div class="timer-bar">
+                        <div class="timer-fill" id="timer-fill"></div>
+                    </div>
+                    <div class="timer-text" id="timer-text">15</div>
+                </div>
+            </div>
 
-<div id="quiz">
-  <h2 id="q"></h2>
-  <div id="timer">⏳ 15s</div>
-  <div id="progressBar"><div id="progress"></div></div>
-  <div id="options"></div>
-  <button id="next" class="main-btn" style="display:none;">Next ➜</button>
-</div>
+            <div class="question-card">
+                <p class="question-text" id="question-text"></p>
+                <p class="question-arabic" id="question-arabic"></p>
+            </div>
 
-<div id="end">
-  <h1 id="resultTitle"></h1>
-  <h2 id="score"></h2>
-  <button class="main-btn" onclick="location.reload()">🔁 Play Again</button>
-</div>
-<!-- END -->
-<section id="end">
-<h2 id="endTitle"></h2>
-<h3 id="endScore"></h3>
-<button class="btn" onclick="location.reload()">🔁 Play Again</button>
-</section>
+            <div class="answers-container" id="answers-container">
+                <!-- Answers will be generated dynamically -->
+            </div>
+        </div>
 
-<footer style="margin:40px 0;opacity:.6;">Created by Mariam — 2025</footer>
-<footer>Created by Mariam — 2025</footer>
-<script src="scripts/quiz.js"></script>
+        <!-- Result Screen -->
+        <div id="result-screen">
+            <h1 class="game-title">Game Complete!</h1>
+            <p class="arabic-text">انتهت اللعبة!</p>
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
-<script src="scripts/quiz.js?v=100"></script>
+            <div class="score-display" id="final-score">0</div>
+            <p class="score-label">Points / النقاط</p>
+
+            <p class="result-message" id="result-message"></p>
+
+            <div class="leaderboard">
+                <h2 class="leaderboard-title">🏆 Leaderboard / المتصدرين 🏆</h2>
+                <div id="leaderboard-entries"></div>
+            </div>
+
+            <button class="start-btn play-again-btn" onclick="restartGame()">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script src="quiz.js"></script>
 </body>
 </html>
