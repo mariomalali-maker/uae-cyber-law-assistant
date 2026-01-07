@@ -6,9 +6,7 @@
 <title>Saeed: Cyber Survival (Pro Edition)</title>
 
 <style>
-/* =========================
-   RESET + THEME
-========================= */
+
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg0:#050816;
@@ -41,9 +39,7 @@ body{
   overflow:hidden;
 }
 
-/* =========================
-   GAME SHELL
-========================= */
+
 #game{
   width:min(1100px,100%);
   height:min(800px, calc(100vh - 32px));
@@ -56,9 +52,7 @@ body{
   background: linear-gradient(180deg, rgba(2,6,23,.60), rgba(0,0,0,.95));
 }
 
-/* =========================
-   PARTICLE SYSTEM
-========================= */
+
 #particles{
   position:absolute; inset:0;
   pointer-events:none;
@@ -78,9 +72,7 @@ body{
   50%{transform:translateY(-100px) translateX(50px); opacity:.8}
 }
 
-/* =========================
-   BACKGROUND (PARALLAX CITY)
-========================= */
+
 #bg{
   position:absolute; inset:0;
   background:
@@ -161,9 +153,7 @@ body{
 }
 @keyframes scan{to{transform:translateX(680%)}}
 
-/* =========================
-   HUD (TOP)
-========================= */
+
 #hud{
   position:absolute; top:16px; left:16px; right:16px;
   z-index:40;
@@ -221,17 +211,13 @@ body{
   font-weight:500;
 }
 
-/* =========================
-   MAIN SCENE
-========================= */
+
 #scene{
   position:absolute; inset:0;
   padding-top:70px;
 }
 
-/* =========================
-   AVATAR (Saeed) - PRO LEVEL
-========================= */
+
 #avatarWrap{
   position:absolute;
   left:20%;
@@ -267,7 +253,7 @@ body{
 }
 #avatar svg{width:100%;height:100%}
 
-/* Avatar pro features */
+
 .avatar-glow{
   filter:drop-shadow(0 0 20px rgba(34,211,238,.3));
 }
@@ -282,16 +268,14 @@ body{
   95%{transform:scaleY(.1)}
 }
 
-/* Avatar custom */
+
 #shirtFill{transition:.3s ease}
 #hoodieFill{transition:.3s ease}
 #hairFill{transition:.3s ease}
 #capGroup{transition:.3s ease}
 #hoodGroup{transition:.3s ease}
 
-/* =========================
-   PHONE UI - PRO LEVEL
-========================= */
+
 #phone{
   position:absolute;
   right:6%;
@@ -427,9 +411,7 @@ body{
   box-shadow:0 4px 15px rgba(239,68,68,.3);
 }
 
-/* =========================
-   LEADERBOARD MINI - PRO
-========================= */
+
 #leaderboard{
   position:absolute;
   left:16px;
@@ -464,9 +446,7 @@ body{
   margin:10px 0;
 }
 
-/* =========================
-   OVERLAYS - PRO
-========================= */
+
 .overlay{
   position:absolute; inset:0;
   display:flex; align-items:center; justify-content:center;
@@ -588,9 +568,7 @@ select:focus{
   .cert p{font-size:18px;line-height:1.6;color:#334155}
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+
 @media(max-width:1000px){
   #avatarWrap{left:16%}
   #phone{right:4%; width:360px}
@@ -623,10 +601,10 @@ select:focus{
 
 <div id="game">
 
-  <!-- PARTICLE SYSTEM -->
+  
   <div id="particles"></div>
 
-  <!-- BACKGROUND -->
+
   <div id="bg">
     <div class="scan"></div>
     <div class="city">
@@ -638,7 +616,7 @@ select:focus{
     <div class="roadLine"></div>
   </div>
 
-  <!-- HUD -->
+
   <div id="hud">
     <div class="badges">
       <div class="pill" id="levelPill">🎮 <span id="levelText">Level 1</span></div>
@@ -655,16 +633,15 @@ select:focus{
     <div class="pill" id="langBtn">🌍 <span id="langText">EN</span></div>
   </div>
 
-  <!-- SCENE -->
+
   <div id="scene">
 
-    <!-- AVATAR - PRO LEVEL -->
     <div id="avatarWrap">
       <div class="halo"></div>
       <div id="avatar" aria-label="Saeed Avatar" class="avatar-glow">
         <svg viewBox="0 0 280 400">
           <defs>
-            <!-- Gradients for realistic look -->
+            
             <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" style="stop-color:#fde68a"/>
               <stop offset="50%" style="stop-color:#fcd34d"/>
@@ -683,78 +660,77 @@ select:focus{
             </filter>
           </defs>
 
-          <!-- Enhanced shadow -->
+         
           <ellipse cx="140" cy="385" rx="65" ry="14" fill="rgba(0,0,0,.5)" filter="url(#shadowFilter)"/>
 
-          <!-- Legs with detail -->
+        
           <rect x="112" y="295" width="22" height="52" rx="10" fill="url(#shirtGrad)" filter="url(#shadowFilter)"/>
           <rect x="146" y="295" width="22" height="52" rx="10" fill="url(#shirtGrad)" filter="url(#shadowFilter)"/>
-          <!-- Shoes with design -->
+       
           <rect x="104" y="340" width="40" height="18" rx="10" fill="#1e293b"/>
           <rect x="136" y="340" width="40" height="18" rx="10" fill="#1e293b"/>
           <rect x="108" y="345" width="32" height="8" rx="4" fill="#334155"/>
 
-          <!-- Body base with gradient -->
+          
           <rect id="shirtFill" x="94" y="165" width="92" height="145" rx="38" fill="url(#shirtGrad)" filter="url(#shadowFilter)"/>
-          <!-- Hoodie overlay -->
+     
           <g id="hoodGroup" opacity="0">
             <path id="hoodieFill" d="M94 185 Q140 130 186 185 L186 310 Q140 345 94 310Z" fill="rgba(34,211,238,.25)" filter="url(#shadowFilter)"/>
           </g>
 
-          <!-- Arms with muscle detail -->
+      
           <rect x="62" y="185" width="32" height="95" rx="16" fill="url(#shirtGrad)" filter="url(#shadowFilter)"/>
           <rect x="186" y="185" width="32" height="95" rx="16" fill="url(#shirtGrad)" filter="url(#shadowFilter)"/>
-          <!-- Hands -->
+    
           <ellipse cx="78" cy="285" rx="14" ry="18" fill="url(#skinGrad)"/>
           <ellipse cx="202" cy="285" rx="14" ry="18" fill="url(#skinGrad)"/>
 
-          <!-- Head with realistic proportions -->
+          
           <ellipse cx="140" cy="110" rx="68" ry="72" fill="url(#skinGrad)" filter="url(#shadowFilter)"/>
           
-          <!-- Hair with volume -->
+          
           <path id="hairFill" d="M78 105 Q140 35 202 105 L202 148 Q178 175 140 175 Q102 175 78 148Z" fill="url(#hairGrad)"/>
           <path d="M85 100 Q140 55 195 100" stroke="rgba(255,255,255,.15)" stroke-width="10" stroke-linecap="round" fill="none"/>
-          <!-- Hair texture -->
+         
           <path d="M90 95 Q140 60 190 95" stroke="rgba(0,0,0,.1)" stroke-width="4" stroke-linecap="round" fill="none"/>
 
-          <!-- Cap -->
+          
           <g id="capGroup" opacity="0">
             <path d="M78 100 Q140 48 202 100" fill="rgba(251,113,133,.28)" filter="url(#shadowFilter)"/>
             <rect x="92" y="88" width="96" height="22" rx="11" fill="rgba(251,113,133,.32)"/>
             <ellipse cx="140" cy="100" rx="48" ry="11" fill="rgba(251,113,133,.25)"/>
           </g>
 
-          <!-- Eyebrows with expression -->
+          
           <path id="browL" d="M108 120 Q124 108 140 120" stroke="#1e293b" stroke-width="9" stroke-linecap="round" opacity=".25"/>
           <path id="browR" d="M140 120 Q156 108 172 120" stroke="#1e293b" stroke-width="9" stroke-linecap="round" opacity=".25"/>
 
-          <!-- Eyes with detail -->
+     
           <ellipse class="eye" cx="120" cy="142" rx="10" ry="12" fill="#0f172a"/>
           <ellipse class="eye" cx="160" cy="142" rx="10" ry="12" fill="#0f172a"/>
-          <!-- Eye shine -->
+     
           <circle cx="117" cy="139" r="3" fill="rgba(255,255,255,.8)"/>
           <circle cx="157" cy="139" r="3" fill="rgba(255,255,255,.8)"/>
 
-          <!-- Nose -->
+          
           <path d="M140 140 L140 160 Q136 168 128 170" stroke="rgba(0,0,0,.15)" stroke-width="3" fill="none" stroke-linecap="round"/>
 
-          <!-- Cheeks with blush -->
           <g id="cheeks">
             <ellipse cx="104" cy="168" rx="14" ry="9" fill="#fb7185" opacity=".3"/>
             <ellipse cx="176" cy="168" rx="14" ry="9" fill="#fb7185" opacity=".3"/>
           </g>
 
-          <!-- Mouth with expression -->
+         
           <path id="mouth" d="M108 180 Q140 210 172 180" stroke="#b91c1c" stroke-width="9" stroke-linecap="round" fill="none"/>
           
-          <!-- Ears -->
+      
           <ellipse cx="78" cy="115" rx="10" ry="18" fill="url(#skinGrad)"/>
           <ellipse cx="202" cy="115" rx="10" ry="18" fill="url(#skinGrad)"/>
         </svg>
       </div>
     </div>
 
-    <!-- PHONE UI -->
+    
     <div id="phone">
       <div class="phoneShell">
         <div class="phoneGlow"></div>
@@ -788,7 +764,7 @@ select:focus{
 
   </div>
 
-  <!-- MINI LEADERBOARD -->
+ 
   <div id="leaderboard">
     <h3 id="lbTitle">Mini Leaderboard</h3>
     <div class="lbRow head">
@@ -800,7 +776,7 @@ select:focus{
     <div id="lbList"></div>
   </div>
 
-  <!-- INTRO -->
+ 
   <div class="overlay" id="introOverlay">
     <div class="panel">
       <div class="panelTitle">🧩 <span id="introTitle">Saeed Cyber Survival</span></div>
@@ -837,7 +813,7 @@ select:focus{
     </div>
   </div>
 
-  <!-- HOW -->
+
   <div class="overlay" id="howOverlay" style="display:none;">
     <div class="panel">
       <div class="panelTitle">📘 <span id="howTitle">How to Play</span></div>
@@ -848,14 +824,14 @@ select:focus{
     </div>
   </div>
 
-  <!-- END -->
+
   <div class="overlay" id="endOverlay" style="display:none;">
     <div class="panel" id="endPanel"></div>
   </div>
 
 </div>
 
-<!-- PRINT CERTIFICATE -->
+
 <div id="printArea">
   <div class="cert">
     <h1>Certificate of Cyber Safety</h1>
@@ -869,15 +845,11 @@ select:focus{
 (() => {
   "use strict";
 
-  /* =========================
-     HELPERS
-  ========================= */
+  
   const $ = (id) => document.getElementById(id);
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
-  /* =========================
-     PARTICLE SYSTEM
-  ========================= */
+ 
   function createParticles(){
     const container = $("particles");
     for(let i=0;i<30;i++){
@@ -892,9 +864,7 @@ select:focus{
   }
   createParticles();
 
-  /* =========================
-     BACKGROUND BUILD
-  ========================= */
+
   function makeLayer(elId, count, minH, maxH){
     const el = $(elId);
     for(let i=0;i<count;i++){
@@ -914,7 +884,7 @@ select:focus{
   makeLayer("layerMid",  14, 125, 260);
   makeLayer("layerFront",14, 145, 290);
 
-  // Stars
+ 
   for(let i=0;i<100;i++){
     const s=document.createElement("div");
     s.className="star";
@@ -925,9 +895,7 @@ select:focus{
     $("bg").appendChild(s);
   }
 
-  /* =========================
-     LANGUAGE
-  ========================= */
+ 
   let lang = "en";
   const T = {
     en:{
@@ -1069,9 +1037,7 @@ Reach Level 8 to win and unlock the certificate.`,
     renderLeaderboard();
   }
 
-  /* =========================
-     STORY DATA (8 Levels)
-  ========================= */
+
   const SCENES = [
     {
       icon:"📩",
@@ -1331,9 +1297,7 @@ What is the strongest survival plan?`,
     }
   ];
 
-  /* =========================
-     STATE
-  ========================= */
+
   const state = {
     started:false,
     idx:0,
@@ -1343,9 +1307,7 @@ What is the strongest survival plan?`,
     player:"Player"
   };
 
-  /* =========================
-     AVATAR CUSTOM
-  ========================= */
+  
   function setOutfit(mode){
     const shirt = $("shirtFill");
     const hood = $("hoodGroup");
@@ -1407,9 +1369,7 @@ What is the strongest survival plan?`,
     avatar.style.transition = "transform .3s cubic-bezier(.4,0,.2,1)";
   }
 
-  /* =========================
-     TIME (iphone vibe)
-  ========================= */
+  
   function setTime(){
     const d = new Date();
     const hh = d.getHours()%12 || 12;
@@ -1419,9 +1379,7 @@ What is the strongest survival plan?`,
   setTime();
   setInterval(setTime, 15000);
 
-  /* =========================
-     LEADERBOARD (localStorage)
-  ========================= */
+  
   const LB_KEY="saeed_cyber_story_lb_v2";
   function loadLB(){
     try{ return JSON.parse(localStorage.getItem(LB_KEY) || "[]"); }
@@ -1455,9 +1413,7 @@ What is the strongest survival plan?`,
     return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
 
-  /* =========================
-     RENDER
-  ========================= */
+  
   function updateHud(){
     const levelNum = state.idx + 1;
     $("levelText").textContent = isAR() ? `المستوى ${levelNum}` : `Level ${levelNum}`;
@@ -1486,9 +1442,7 @@ What is the strongest survival plan?`,
     updateHud();
   }
 
-  /* =========================
-     APPLY EFFECTS + FLOW
-  ========================= */
+
   function applyEffect(eff){
     if(eff.score) state.score += eff.score;
     if(eff.danger) state.danger += eff.danger;
@@ -1583,9 +1537,7 @@ What is the strongest survival plan?`,
     }, 600);
   }
 
-  /* =========================
-     UI EVENTS - FIXED
-  ========================= */
+ 
   function bindSafeClicks(el, fn){
     let lastTime=0;
     const run=(e)=>{
@@ -1648,9 +1600,7 @@ What is the strongest survival plan?`,
     applyLangUI();
   });
 
-  /* =========================
-     INIT
-  ========================= */
+  
   setDir();
   applyLangUI();
   renderLeaderboard();
